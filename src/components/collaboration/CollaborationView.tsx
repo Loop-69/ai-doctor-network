@@ -159,7 +159,7 @@ const CollaborationView = () => {
           />
         </div>
         <div className="flex space-x-2">
-          <Button className="font-bold">
+          <Button>
             <Video className="mr-2 h-4 w-4" />
             Start Meeting
           </Button>
