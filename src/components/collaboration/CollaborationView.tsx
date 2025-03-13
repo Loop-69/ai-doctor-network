@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
@@ -23,8 +22,10 @@ import {
   FileText,
   Share,
   Plus,
-  Heart
+  Heart,
+  UserPlus
 } from "lucide-react";
+import CollaborativeConsultation from "./CollaborativeConsultation";
 
 const colleagues = [
   {
@@ -114,7 +115,7 @@ const sharedCases = [
 
 const CollaborationView = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState("colleagues");
+  const [activeTab, setActiveTab] = useState("ai-collaboration");
 
   const filteredColleagues = colleagues.filter(colleague => 
     colleague.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -138,7 +139,7 @@ const CollaborationView = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          Connect with colleagues, schedule meetings, and share patient cases
+          Connect with colleagues, AI specialists, and share patient cases
         </motion.p>
       </header>
 
@@ -170,7 +171,7 @@ const CollaborationView = () => {
       </motion.div>
 
       <Tabs 
-        defaultValue="colleagues" 
+        defaultValue="ai-collaboration" 
         value={activeTab}
         onValueChange={setActiveTab}
         className="space-y-4"
@@ -180,12 +181,29 @@ const CollaborationView = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
         >
-          <TabsList className="grid grid-cols-3 md:w-[500px]">
-            <TabsTrigger value="colleagues">Colleagues</TabsTrigger>
-            <TabsTrigger value="meetings">Meetings</TabsTrigger>
-            <TabsTrigger value="shared">Shared Cases</TabsTrigger>
+          <TabsList className="grid grid-cols-4 md:w-[600px]">
+            <TabsTrigger value="ai-collaboration">
+              <UserPlus className="mr-2 h-4 w-4" />
+              AI Collaboration
+            </TabsTrigger>
+            <TabsTrigger value="colleagues">
+              <Users className="mr-2 h-4 w-4" />
+              Colleagues
+            </TabsTrigger>
+            <TabsTrigger value="meetings">
+              <Calendar className="mr-2 h-4 w-4" />
+              Meetings
+            </TabsTrigger>
+            <TabsTrigger value="shared">
+              <Share className="mr-2 h-4 w-4" />
+              Shared Cases
+            </TabsTrigger>
           </TabsList>
         </motion.div>
+
+        <TabsContent value="ai-collaboration" className="space-y-4">
+          <CollaborativeConsultation />
+        </TabsContent>
 
         <TabsContent value="colleagues" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

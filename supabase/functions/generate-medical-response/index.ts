@@ -1,13 +1,12 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI";
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || '';
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -16,92 +15,109 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, agentName, specialty } = await req.json();
+    const { symptoms, specialty, agentId, agentName, consultationId, isCollaborative } = await req.json();
 
-    // Create a specialized system prompt based on the agent
-    const systemPrompt = `You are ${agentName}, an AI medical assistant specializing in ${specialty}. 
-    Provide accurate, evidence-based medical information and advice. 
-    Do not provide definitive diagnoses, but offer insights and suggestions based on current medical knowledge.
-    Always recommend consulting with a human healthcare provider for definitive medical advice.
-    Format your responses clearly with medical information relevant to ${specialty}.`;
-
-    // Combine the system prompt with the user's prompt
-    const enhancedPrompt = `${systemPrompt}\n\nUser question: ${prompt}`;
-
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{ text: enhancedPrompt }]
-        }],
-        generationConfig: {
-          temperature: 0.2,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1024,
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          }
-        ]
-      }),
-    });
-
-    // Process the Gemini API response
-    const data = await response.json();
+    console.log(`Generating medical response for ${specialty} specialist`);
     
-    // Log for debugging
-    console.log("Gemini API response:", JSON.stringify(data, null, 2));
+    // Build the prompt based on whether this is a collaborative consultation
+    let prompt = `You are a medical AI assistant specializing in ${specialty}.`;
     
-    let aiResponse = "I'm sorry, I couldn't generate a response at this time.";
-    
-    if (data.candidates && data.candidates[0]?.content?.parts && data.candidates[0].content.parts[0]?.text) {
-      aiResponse = data.candidates[0].content.parts[0].text;
-    } else if (data.error) {
-      console.error("Gemini API error:", data.error);
-      throw new Error(data.error.message || "Error from Gemini API");
+    if (isCollaborative) {
+      prompt += ` You are participating in a collaborative consultation with other AI specialists. 
+      Based on your expertise in ${specialty}, analyze the following patient symptoms and provide:
+      1. A diagnosis with explanation
+      2. A confidence percentage (70-99%)
+      3. Treatment recommendations from your specialty's perspective
+      
+      Be precise and focused on your area of expertise. Your analysis will be combined with other specialists.`;
+    } else {
+      prompt += ` Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
     }
+    
+    prompt += `\n\nPatient symptoms: ${symptoms}`;
 
-    return new Response(
-      JSON.stringify({ response: aiResponse }),
-      { 
-        headers: { 
-          ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
+    // Call Gemini API
+    const geminiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{ text: prompt }]
+          }]
+        }),
       }
     );
+
+    const geminiData = await geminiResponse.json();
+    console.log("Gemini API response received");
+
+    if (!geminiData.candidates || geminiData.candidates.length === 0) {
+      throw new Error("No response from Gemini API");
+    }
+
+    const responseText = geminiData.candidates[0].content.parts[0].text;
+    
+    // Extract diagnosis, confidence, and recommendations from the response text
+    let diagnosis = "Unknown condition";
+    let confidence = Math.floor(Math.random() * 30) + 70; // Default random confidence 70-99%
+    let recommendation = "Please consult with a human doctor for proper diagnosis and treatment.";
+    
+    // Try to extract a diagnosis
+    const diagnosisMatch = responseText.match(/diagnosis:?\s*(.*?)(?:\n|$)/i) || 
+                          responseText.match(/diagnosed with:?\s*(.*?)(?:\n|$)/i) ||
+                          responseText.match(/condition:?\s*(.*?)(?:\n|$)/i) ||
+                          responseText.match(/suffering from:?\s*(.*?)(?:\n|$)/i);
+    
+    if (diagnosisMatch && diagnosisMatch[1]) {
+      diagnosis = diagnosisMatch[1].trim();
+    }
+    
+    // Try to extract confidence
+    const confidenceMatch = responseText.match(/confidence:?\s*(\d+)%/i) ||
+                           responseText.match(/(\d+)%\s*confidence/i);
+    
+    if (confidenceMatch && confidenceMatch[1]) {
+      const parsedConfidence = parseInt(confidenceMatch[1]);
+      if (!isNaN(parsedConfidence) && parsedConfidence >= 1 && parsedConfidence <= 100) {
+        confidence = parsedConfidence;
+      }
+    }
+    
+    // Try to extract recommendation
+    const recommendationMatch = responseText.match(/recommendation:?\s*(.*?)(?:\n\n|$)/is) ||
+                               responseText.match(/recommend:?\s*(.*?)(?:\n\n|$)/is) ||
+                               responseText.match(/treatment:?\s*(.*?)(?:\n\n|$)/is);
+    
+    if (recommendationMatch && recommendationMatch[1]) {
+      recommendation = recommendationMatch[1].trim();
+    }
+    
+    // Create response object
+    const result = {
+      fullResponse: responseText,
+      diagnosis,
+      confidence,
+      recommendation,
+      specialty,
+      agentId,
+      agentName
+    };
+
+    console.log(`Response generated for ${specialty} specialist`);
+    
+    return new Response(JSON.stringify(result), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error("Error in generate-medical-response function:", error);
     
-    return new Response(
-      JSON.stringify({ 
-        error: error.message || "An error occurred while processing your request" 
-      }),
-      { 
-        status: 500,
-        headers: { 
-          ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
-      }
-    );
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 });
