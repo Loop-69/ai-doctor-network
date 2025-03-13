@@ -14,7 +14,9 @@ import Dashboard from "./pages/Dashboard";
 import PatientRecords from "./pages/PatientRecords";
 import Agents from "./pages/Agents";
 import Collaboration from "./pages/Collaboration";
+import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +61,22 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Collaboration />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/analytics" 
+                element={
+                  <ProtectedRoute>
+                    <Analytics />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/settings" 
+                element={
+                  <ProtectedRoute>
+                    <Settings />
                   </ProtectedRoute>
                 } 
               />
