@@ -22,6 +22,8 @@ import {
   FileText,
   BarChart3,
   MessageSquare,
+  Heart,
+  Microscope,
 } from "lucide-react";
 import AgentSelector from "../agents/AgentSelector";
 

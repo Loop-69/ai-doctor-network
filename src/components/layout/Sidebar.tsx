@@ -11,6 +11,7 @@ import {
   Settings,
   LogOut,
   Menu,
+  LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -114,7 +115,7 @@ const Sidebar = ({ className }: SidebarProps) => {
 
 type NavItemProps = {
   to: string;
-  icon: React.FC<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   label: string;
   collapsed: boolean;
 };

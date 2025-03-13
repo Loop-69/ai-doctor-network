@@ -10,9 +10,6 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
-// Add framer-motion dependency
-<lov-add-dependency>framer-motion@10.18.0</lov-add-dependency>
-
 const queryClient = new QueryClient();
 
 const App = () => (
