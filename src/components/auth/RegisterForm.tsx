@@ -23,18 +23,26 @@ const formSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
+  confirmPassword: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn } = useAuth();
+  const [emailSent, setEmailSent] = useState(false);
+  const { signUp } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -42,12 +50,13 @@ const LoginForm = () => {
     setIsLoading(true);
     
     try {
-      const { error, success } = await signIn(values.email, values.password);
+      const { error, success } = await signUp(values.email, values.password);
       
       if (error) {
-        toast.error(error.message || "Login failed. Please check your credentials.");
+        toast.error(error.message || "Registration failed. Please try again.");
       } else if (success) {
-        toast.success("Login successful");
+        setEmailSent(true);
+        toast.success("Registration successful! Please check your email to confirm your account.");
       }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");
@@ -57,13 +66,27 @@ const LoginForm = () => {
     }
   }
 
+  if (emailSent) {
+    return (
+      <div className="w-full max-w-md text-center space-y-4">
+        <h2 className="text-2xl font-bold">Verification Email Sent</h2>
+        <p className="text-muted-foreground">
+          We've sent a verification email to your address. Please check your inbox and follow the instructions to complete your registration.
+        </p>
+        <Button asChild className="mt-4">
+          <Link to="/login">Return to Login</Link>
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-md">
       <div className="space-y-6 animate-fadeIn">
         <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight">Sign in to AIDA</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Create your account</h1>
           <p className="text-md text-muted-foreground">
-            Enter your credentials to access your account
+            Enter your details to join AIDA's healthcare platform
           </p>
         </div>
 
@@ -100,7 +123,7 @@ const LoginForm = () => {
                       <Input
                         placeholder="••••••••"
                         type={showPassword ? "text" : "password"}
-                        autoComplete="current-password"
+                        autoComplete="new-password"
                         disabled={isLoading}
                         className="pr-10"
                         {...field}
@@ -125,12 +148,29 @@ const LoginForm = () => {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="••••••••"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="flex items-center justify-between">
               <Button variant="link" size="sm" className="px-0 font-medium" asChild>
-                <Link to="/register">Create account</Link>
-              </Button>
-              <Button variant="link" size="sm" className="px-0 font-medium">
-                Forgot password?
+                <Link to="/login">Already have an account?</Link>
               </Button>
             </div>
 
@@ -139,18 +179,18 @@ const LoginForm = () => {
               className="w-full py-6"
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? "Creating account..." : "Create account"}
             </Button>
           </form>
         </Form>
 
         <div className="flex items-center justify-center text-sm text-muted-foreground space-x-2">
           <ShieldCheck size={14} />
-          <span>HIPAA-compliant & secure authentication</span>
+          <span>HIPAA-compliant & secure registration</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

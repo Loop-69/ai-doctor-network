@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   ChevronLeft,
@@ -11,9 +11,12 @@ import {
   Settings,
   LogOut,
   Menu,
-  LucideIcon,
+  User,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 type SidebarProps = {
   className?: string;
@@ -21,8 +24,19 @@ type SidebarProps = {
 
 const Sidebar = ({ className }: SidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
-
+  const { user, signOut } = useAuth();
+  
   const toggleSidebar = () => setCollapsed(!collapsed);
+  
+  const handleSignOut = () => {
+    signOut();
+  };
+
+  // Get user initials for avatar
+  const getInitials = () => {
+    if (!user?.email) return "U";
+    return user.email.charAt(0).toUpperCase();
+  };
 
   return (
     <div
@@ -94,6 +108,24 @@ const Sidebar = ({ className }: SidebarProps) => {
       </div>
 
       <div className="p-4 border-t border-border">
+        {!collapsed && (
+          <div className="flex items-center space-x-3 mb-3 px-2 py-2">
+            <Avatar className="h-8 w-8 bg-aida-100">
+              <AvatarFallback className="bg-aida-500 text-white">
+                {getInitials()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {user?.email}
+              </p>
+              <p className="text-xs text-gray-500 truncate">
+                Medical Professional
+              </p>
+            </div>
+          </div>
+        )}
+        
         <nav className="space-y-1">
           <NavItem
             to="/settings"
@@ -101,12 +133,17 @@ const Sidebar = ({ className }: SidebarProps) => {
             label="Settings"
             collapsed={collapsed}
           />
-          <NavItem
-            to="/logout"
-            icon={LogOut}
-            label="Log Out"
-            collapsed={collapsed}
-          />
+          <button 
+            onClick={handleSignOut}
+            className={cn(
+              "flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-all",
+              "text-red-500 hover:bg-red-50",
+              collapsed ? "justify-center" : "space-x-3"
+            )}
+          >
+            <LogOut size={20} className={collapsed ? "mx-auto" : ""} />
+            {!collapsed && <span>Log Out</span>}
+          </button>
         </nav>
       </div>
     </div>
