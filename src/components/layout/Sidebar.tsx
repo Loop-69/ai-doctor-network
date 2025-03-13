@@ -12,11 +12,13 @@ import {
   LogOut,
   Menu,
   User,
+  Heart,
+  Microscope,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type SidebarProps = {
   className?: string;
@@ -93,7 +95,7 @@ const Sidebar = ({ className }: SidebarProps) => {
             collapsed={collapsed}
           />
           <NavItem
-            to="/records"
+            to="/patients"
             icon={FileText}
             label="Patient Records"
             collapsed={collapsed}
