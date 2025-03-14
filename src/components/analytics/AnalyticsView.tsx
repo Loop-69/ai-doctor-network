@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
@@ -36,7 +35,9 @@ import {
   ArrowDown, 
   ArrowUp,
   Stethoscope,
-  FileBarChart
+  FileBarChart,
+  UserPlus,
+  Video
 } from "lucide-react";
 
 // Sample data - in a real app this would come from your backend
