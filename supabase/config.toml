@@ -38,7 +38,11 @@ enable_signup = true
 enable_confirmations = false
 
 [functions]
-port = 54324
+# Removed the direct port assignment and properly structured each function
+serve_port = 54324
 
 [functions.generate-medical-response]
+verify_jwt = true
+
+[functions.generate-followup-questions]
 verify_jwt = true
