@@ -14,6 +14,7 @@ import {
   User,
   Heart,
   Microscope,
+  Phone,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,17 +53,17 @@ const Sidebar = ({ className }: SidebarProps) => {
         {!collapsed && (
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-md bg-aida-500 flex items-center justify-center">
-              <span className="text-white font-semibold text-sm">AI</span>
+              <span className="text-white font-semibold text-sm">LA</span>
             </div>
             <span className="font-display font-bold text-lg text-foreground">
-              AIDA
+              Leny-AI
             </span>
           </div>
         )}
         {collapsed && (
           <div className="mx-auto">
             <div className="w-8 h-8 rounded-md bg-aida-500 flex items-center justify-center">
-              <span className="text-white font-semibold text-sm">AI</span>
+              <span className="text-white font-semibold text-sm">LA</span>
             </div>
           </div>
         )}
@@ -98,6 +99,12 @@ const Sidebar = ({ className }: SidebarProps) => {
             to="/patients"
             icon={FileText}
             label="Patient Records"
+            collapsed={collapsed}
+          />
+          <NavItem
+            to="/followup-scheduler"
+            icon={Phone}
+            label="Follow-up Calls"
             collapsed={collapsed}
           />
           <NavItem

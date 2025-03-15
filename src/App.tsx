@@ -17,6 +17,7 @@ import Collaboration from "./pages/Collaboration";
 import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
+import FollowupScheduler from "./pages/FollowupScheduler";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Settings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/followup-scheduler" 
+                element={
+                  <ProtectedRoute>
+                    <FollowupScheduler />
                   </ProtectedRoute>
                 } 
               />
