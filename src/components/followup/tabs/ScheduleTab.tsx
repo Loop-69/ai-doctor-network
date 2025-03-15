@@ -1,7 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Calendar as CalendarIcon, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -37,6 +37,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { generateFollowUpQuestions } from "@/components/agents/services/agentService";
 
 interface ScheduleFormValues {
   patientId: string;
@@ -44,11 +45,13 @@ interface ScheduleFormValues {
   date: Date;
   time: string;
   purpose: string;
+  condition: string;
   questions: string;
 }
 
 const ScheduleTab = () => {
   const [date, setDate] = useState<Date>();
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
   const { toast } = useToast();
   
   const form = useForm<ScheduleFormValues>({
@@ -58,9 +61,68 @@ const ScheduleTab = () => {
       date: undefined,
       time: "",
       purpose: "",
+      condition: "",
       questions: "",
     },
   });
+
+  const watchCondition = form.watch("condition");
+  const watchAgentId = form.watch("agentId");
+
+  // Get specialty based on selected agent
+  const getSpecialtyForAgent = (agentId: string): string | undefined => {
+    switch (agentId) {
+      case "cardio":
+        return "Cardiology";
+      case "neuro":
+        return "Neurology";
+      case "gen":
+        return "General Practice";
+      case "path":
+        return "Pathology";
+      default:
+        return undefined;
+    }
+  };
+
+  // Generate questions when condition changes
+  useEffect(() => {
+    const condition = watchCondition;
+    const agentId = watchAgentId;
+    
+    if (condition && condition.length > 3) {
+      const specialty = getSpecialtyForAgent(agentId);
+      setIsGeneratingQuestions(true);
+      
+      const delayDebounceFn = setTimeout(async () => {
+        try {
+          const questions = await generateFollowUpQuestions(condition, specialty);
+          
+          if (questions && questions.length > 0) {
+            // Format the questions as a numbered list
+            const formattedQuestions = questions.map((q, i) => `${i + 1}. ${q}`).join('\n\n');
+            form.setValue('questions', formattedQuestions);
+            
+            toast({
+              title: "Questions generated",
+              description: "Follow-up questions have been generated based on the condition",
+            });
+          }
+        } catch (error) {
+          console.error("Failed to generate questions:", error);
+          toast({
+            title: "Failed to generate questions",
+            description: "An error occurred while generating questions. Please try again.",
+            variant: "destructive"
+          });
+        } finally {
+          setIsGeneratingQuestions(false);
+        }
+      }, 1000);
+      
+      return () => clearTimeout(delayDebounceFn);
+    }
+  }, [watchCondition, watchAgentId, form, toast]);
 
   const onSubmit = (data: ScheduleFormValues) => {
     console.log("Form submitted:", data);
@@ -251,19 +313,47 @@ const ScheduleTab = () => {
 
             <FormField
               control={form.control}
+              name="condition"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Patient Condition</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="E.g., Hypertension, Post-operative recovery, Diabetes" 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Enter the patient's condition to generate relevant follow-up questions
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="questions"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Follow-up Questions</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Follow-up Questions</FormLabel>
+                    {isGeneratingQuestions && (
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating questions...
+                      </div>
+                    )}
+                  </div>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter the questions the AI should ask during the follow-up"
-                      className="min-h-[120px]"
+                      placeholder="Questions will be auto-generated when you enter a condition, or you can type custom questions here"
+                      className="min-h-[180px]"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Enter specific questions for the AI agent to ask the patient
+                    Questions are automatically generated based on the condition, but you can edit or add your own
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

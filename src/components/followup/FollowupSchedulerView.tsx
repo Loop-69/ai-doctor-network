@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, Phone, FileText, Users } from "lucide-react";
+import { Calendar, Clock, FileText } from "lucide-react";
 
 import ScheduleTab from "./tabs/ScheduleTab";
 import UpcomingTab from "./tabs/UpcomingTab";
