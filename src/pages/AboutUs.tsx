@@ -1,9 +1,8 @@
-
 import { motion } from "framer-motion";
-import { AppLayout } from "@/components/layout";
 import { User, Award, Heart, BookOpen, Briefcase, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import PublicLayout from "@/components/layout/PublicLayout";
 
 const teamMembers = [
   {
@@ -72,7 +71,7 @@ const values = [
 
 const AboutUs = () => {
   return (
-    <AppLayout>
+    <PublicLayout>
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
         <motion.div 
@@ -81,7 +80,7 @@ const AboutUs = () => {
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto text-center mb-16"
         >
-          <h1 className="h1 mb-4">About AIDA Health</h1>
+          <h1 className="h1 mb-4">About LENY-AI Health</h1>
           <p className="p-large max-w-2xl mx-auto">
             We're on a mission to transform healthcare through intelligent AI, 
             making specialized medical knowledge more accessible and enhancing 
@@ -99,7 +98,7 @@ const AboutUs = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 max-w-4xl mx-auto">
             <h2 className="h2 mb-6 text-center">Our Story</h2>
             <p className="mb-4">
-              AIDA Health was founded in 2021 by a team of physicians and AI researchers who recognized 
+              LENY-AI Health was founded in 2021 by a team of physicians and AI researchers who recognized 
               the potential for artificial intelligence to address key challenges in healthcare delivery.
             </p>
             <p className="mb-4">
@@ -113,7 +112,7 @@ const AboutUs = () => {
               the work of healthcare professionals rather than replace the human element essential to quality care.
             </p>
             <p>
-              Today, AIDA is used by thousands of healthcare providers across multiple specialties, 
+              Today, LENY-AI is used by thousands of healthcare providers across multiple specialties, 
               helping them deliver more effective, evidence-based care to their patients.
             </p>
           </div>
@@ -199,7 +198,7 @@ const AboutUs = () => {
           </p>
         </motion.div>
       </div>
-    </AppLayout>
+    </PublicLayout>
   );
 };
 

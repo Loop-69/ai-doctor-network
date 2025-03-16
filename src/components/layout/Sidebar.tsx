@@ -56,7 +56,7 @@ const Sidebar = ({ className }: SidebarProps) => {
               <span className="text-white font-semibold text-sm">LA</span>
             </div>
             <span className="font-display font-bold text-lg text-foreground">
-              Leny-AI
+              LENY-AI
             </span>
           </div>
         )}
