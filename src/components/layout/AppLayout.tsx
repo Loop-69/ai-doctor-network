@@ -17,18 +17,18 @@ const AppLayout = ({ children, forcePublic = false }: AppLayoutProps) => {
   // If user is not authenticated and this is not a public page, render without sidebar
   if (!isAuthenticated && !forcePublic) {
     return (
-      <div className="min-h-screen bg-[#f0f5fa]">
+      <div className="min-h-screen bg-background">
         {children || <Outlet />}
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f0f5fa]">
+    <div className="flex h-screen overflow-hidden">
       {isAuthenticated && <Sidebar />}
       <div className={`flex-1 flex flex-col overflow-hidden ${!isAuthenticated ? 'min-h-screen' : ''}`}>
         {isAuthenticated && <Navbar />}
-        <main className={`flex-1 overflow-y-auto ${isAuthenticated ? 'p-4 sm:p-6' : ''}`}>
+        <main className={`flex-1 overflow-y-auto bg-background ${isAuthenticated ? 'p-4 sm:p-6' : ''}`}>
           {children || <Outlet />}
         </main>
       </div>
