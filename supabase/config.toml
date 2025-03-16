@@ -38,11 +38,13 @@ enable_signup = true
 enable_confirmations = false
 
 [functions]
-# Removed the direct port assignment and properly structured each function
+# Properly structured each function
 serve_port = 54324
 
 [functions.generate-medical-response]
 verify_jwt = true
+env_vars = ["GOOGLE_API_KEY=AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"]
 
 [functions.generate-followup-questions]
 verify_jwt = true
+env_vars = ["GOOGLE_API_KEY=AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"]

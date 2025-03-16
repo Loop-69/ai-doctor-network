@@ -18,6 +18,7 @@ import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import FollowupScheduler from "./pages/FollowupScheduler";
+import Features from "./pages/Features";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/features" element={<Features />} />
               <Route 
                 path="/dashboard" 
                 element={
