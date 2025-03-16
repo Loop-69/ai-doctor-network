@@ -21,6 +21,7 @@ import FollowupScheduler from "./pages/FollowupScheduler";
 import Features from "./pages/Features";
 import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <FollowupScheduler />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/notifications" 
+                element={
+                  <ProtectedRoute>
+                    <Notifications />
                   </ProtectedRoute>
                 } 
               />

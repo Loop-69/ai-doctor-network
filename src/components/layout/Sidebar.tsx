@@ -15,11 +15,13 @@ import {
   Heart,
   Microscope,
   Phone,
+  Bell,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useToast } from "@/hooks/use-toast";
 
 type SidebarProps = {
   className?: string;
@@ -28,11 +30,16 @@ type SidebarProps = {
 const Sidebar = ({ className }: SidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const { user, signOut } = useAuth();
+  const { toast } = useToast();
   
   const toggleSidebar = () => setCollapsed(!collapsed);
   
   const handleSignOut = () => {
     signOut();
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully."
+    });
   };
 
   // Get user initials for avatar
@@ -111,6 +118,12 @@ const Sidebar = ({ className }: SidebarProps) => {
             to="/collaboration"
             icon={Users}
             label="Collaboration"
+            collapsed={collapsed}
+          />
+          <NavItem
+            to="/notifications"
+            icon={Bell}
+            label="Notifications"
             collapsed={collapsed}
           />
         </nav>

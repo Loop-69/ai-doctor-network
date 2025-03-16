@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bell, Search, User, Settings, LogOut, Heart, MessageSquare, Calendar, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 type NavbarProps = {
   className?: string;
@@ -61,6 +63,9 @@ const notifications = [
 ];
 
 const Navbar = ({ className }: NavbarProps) => {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchOpen, setSearchOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userNotifications, setUserNotifications] = useState(notifications);
@@ -75,10 +80,31 @@ const Navbar = ({ className }: NavbarProps) => {
 
   const markAllAsRead = () => {
     setUserNotifications(userNotifications.map(notification => ({ ...notification, unread: false })));
+    toast({
+      title: "All notifications marked as read",
+      description: "All notifications have been marked as read successfully."
+    });
   };
 
   const dismissNotification = (id: number) => {
     setUserNotifications(userNotifications.filter(notification => notification.id !== id));
+    toast({
+      title: "Notification dismissed",
+      description: "The notification has been removed from your list."
+    });
+  };
+
+  const viewAllNotifications = () => {
+    setNotificationsOpen(false);
+    navigate("/notifications");
+  };
+  
+  const handleLogout = () => {
+    signOut();
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully."
+    });
   };
 
   return (
@@ -198,8 +224,8 @@ const Navbar = ({ className }: NavbarProps) => {
               )}
             </div>
             <div className="p-4 border-t text-center">
-              <Button variant="ghost" size="sm" className="text-xs w-full" asChild>
-                <Link to="/notifications">View all notifications</Link>
+              <Button variant="ghost" size="sm" className="text-xs w-full" onClick={viewAllNotifications}>
+                View all notifications
               </Button>
             </div>
           </PopoverContent>
@@ -240,7 +266,7 @@ const Navbar = ({ className }: NavbarProps) => {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
