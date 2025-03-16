@@ -19,6 +19,8 @@ import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import FollowupScheduler from "./pages/FollowupScheduler";
 import Features from "./pages/Features";
+import AboutUs from "./pages/AboutUs";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +37,8 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/features" element={<Features />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<Contact />} />
               <Route 
                 path="/dashboard" 
                 element={
