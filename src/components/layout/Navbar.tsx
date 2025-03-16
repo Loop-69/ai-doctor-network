@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Bell, Search, User, Settings, LogOut, Heart, MessageSquare, Calendar, X } from "lucide-react";
+import { Bell, Search, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,48 +19,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import NotificationsList from "./NotificationsList";
 
 type NavbarProps = {
   className?: string;
 };
-
-const notifications = [
-  {
-    id: 1,
-    title: "New patient referral",
-    description: "Dr. Johnson shared a patient case with you",
-    time: "10 minutes ago",
-    unread: true,
-    icon: <Heart className="h-4 w-4 text-medical-red" />,
-  },
-  {
-    id: 2,
-    title: "Meeting reminder",
-    description: "Weekly department meeting in 30 minutes",
-    time: "30 minutes ago",
-    unread: true,
-    icon: <Calendar className="h-4 w-4 text-blue-500" />,
-  },
-  {
-    id: 3,
-    title: "Message from Dr. Lee",
-    description: "I've reviewed the patient's ECG results and...",
-    time: "2 hours ago",
-    unread: false,
-    icon: <MessageSquare className="h-4 w-4 text-green-500" />,
-  },
-  {
-    id: 4,
-    title: "System update",
-    description: "The system will be down for maintenance tonight",
-    time: "Yesterday",
-    unread: false,
-    icon: <Bell className="h-4 w-4 text-amber-500" />,
-  },
-];
 
 const Navbar = ({ className }: NavbarProps) => {
   const { signOut } = useAuth();
@@ -68,37 +33,7 @@ const Navbar = ({ className }: NavbarProps) => {
   const { toast } = useToast();
   const [searchOpen, setSearchOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [userNotifications, setUserNotifications] = useState(notifications);
 
-  const unreadCount = userNotifications.filter(n => n.unread).length;
-
-  const markAsRead = (id: number) => {
-    setUserNotifications(userNotifications.map(notification => 
-      notification.id === id ? { ...notification, unread: false } : notification
-    ));
-  };
-
-  const markAllAsRead = () => {
-    setUserNotifications(userNotifications.map(notification => ({ ...notification, unread: false })));
-    toast({
-      title: "All notifications marked as read",
-      description: "All notifications have been marked as read successfully."
-    });
-  };
-
-  const dismissNotification = (id: number) => {
-    setUserNotifications(userNotifications.filter(notification => notification.id !== id));
-    toast({
-      title: "Notification dismissed",
-      description: "The notification has been removed from your list."
-    });
-  };
-
-  const viewAllNotifications = () => {
-    setNotificationsOpen(false);
-    navigate("/notifications");
-  };
-  
   const handleLogout = () => {
     signOut();
     toast({
@@ -110,7 +45,7 @@ const Navbar = ({ className }: NavbarProps) => {
   return (
     <div
       className={cn(
-        "h-16 border-b border-border bg-background/95 backdrop-blur-sm flex items-center justify-between px-4 sm:px-6",
+        "h-16 border-b border-border bg-white shadow-sm flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10",
         className
       )}
     >
@@ -126,7 +61,7 @@ const Navbar = ({ className }: NavbarProps) => {
                 autoFocus
                 type="search"
                 placeholder="Search patients, records, or AI agents..."
-                className="pl-10 py-2"
+                className="pl-10 py-2 border-blue-100 focus:border-blue-300"
                 onBlur={() => setSearchOpen(false)}
               />
             </div>
@@ -136,7 +71,7 @@ const Navbar = ({ className }: NavbarProps) => {
             variant="ghost"
             size="icon"
             onClick={() => setSearchOpen(true)}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
           >
             <Search size={18} />
           </Button>
@@ -149,85 +84,16 @@ const Navbar = ({ className }: NavbarProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="relative text-muted-foreground hover:text-foreground"
+              className="relative text-blue-600 hover:text-blue-700 hover:bg-blue-50"
             >
               <Bell size={18} />
-              {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-medical-red text-[10px] font-medium text-white">
-                  {unreadCount}
-                </span>
-              )}
+              <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-medical-red text-[10px] font-medium text-white">
+                2
+              </span>
             </Button>
           </PopoverTrigger>
           <PopoverContent align="end" className="w-80 p-0">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="font-medium text-sm">Notifications</h3>
-              {unreadCount > 0 && (
-                <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs h-7">
-                  Mark all as read
-                </Button>
-              )}
-            </div>
-            <div className="max-h-80 overflow-y-auto">
-              {userNotifications.length > 0 ? (
-                <div className="divide-y">
-                  {userNotifications.map((notification) => (
-                    <div 
-                      key={notification.id} 
-                      className={cn(
-                        "p-4 relative hover:bg-muted",
-                        notification.unread && "bg-muted/50"
-                      )}
-                    >
-                      <div className="flex gap-3">
-                        <div className="mt-1 h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
-                          {notification.icon}
-                        </div>
-                        <div className="space-y-1 flex-1">
-                          <div className="flex items-start justify-between">
-                            <h4 className="text-sm font-medium">
-                              {notification.title}
-                              {notification.unread && (
-                                <Badge variant="outline" className="ml-2 bg-blue-50 text-blue-700 hover:bg-blue-50 hover:text-blue-700">New</Badge>
-                              )}
-                            </h4>
-                            <button 
-                              onClick={() => dismissNotification(notification.id)}
-                              className="text-muted-foreground hover:text-foreground"
-                            >
-                              <X size={12} />
-                            </button>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {notification.description}
-                          </p>
-                          <p className="text-xs text-muted-foreground pt-1">
-                            {notification.time}
-                          </p>
-                        </div>
-                      </div>
-                      {notification.unread && (
-                        <button 
-                          onClick={() => markAsRead(notification.id)}
-                          className="absolute inset-0 w-full h-full cursor-default"
-                          aria-label="Mark as read"
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="py-8 text-center">
-                  <Bell className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">No notifications</p>
-                </div>
-              )}
-            </div>
-            <div className="p-4 border-t text-center">
-              <Button variant="ghost" size="sm" className="text-xs w-full" onClick={viewAllNotifications}>
-                View all notifications
-              </Button>
-            </div>
+            <NotificationsList />
           </PopoverContent>
         </Popover>
 
@@ -235,11 +101,11 @@ const Navbar = ({ className }: NavbarProps) => {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="relative h-9 w-9 rounded-full flex items-center justify-center"
+              className="relative h-9 w-9 rounded-full flex items-center justify-center hover:bg-blue-50"
             >
-              <Avatar className="h-8 w-8">
+              <Avatar className="h-8 w-8 border border-blue-100">
                 <AvatarImage src="/avatar-placeholder.jpg" alt="Dr. Sarah Chen" />
-                <AvatarFallback className="bg-aida-100 text-aida-800">SC</AvatarFallback>
+                <AvatarFallback className="bg-blue-100 text-blue-800">SC</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -255,18 +121,18 @@ const Navbar = ({ className }: NavbarProps) => {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link to="/settings" className="cursor-pointer">
-                <User className="mr-2 h-4 w-4" />
+                <User className="mr-2 h-4 w-4 text-blue-600" />
                 <span>Profile</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link to="/settings" className="cursor-pointer">
-                <Settings className="mr-2 h-4 w-4" />
+                <Settings className="mr-2 h-4 w-4 text-blue-600" />
                 <span>Settings</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 hover:text-red-700 focus:text-red-700 hover:bg-red-50 focus:bg-red-50">
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>

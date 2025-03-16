@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 4%;
 
-    --primary: 222 83% 55%;
+    --primary: 210 100% 50%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -23,7 +23,7 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 222 83% 55%;
+    --accent: 210 100% 50%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -31,18 +31,18 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222 83% 55%;
+    --ring: 210 100% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 224 71% 4%;
-    --sidebar-primary: 222 83% 55%;
+    --sidebar-primary: 210 100% 50%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 210 40% 96.1%;
     --sidebar-accent-foreground: 222.2 47.4% 11.2%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 222 83% 55%;
+    --sidebar-ring: 210 100% 50%;
   }
 
   .dark {
@@ -55,7 +55,7 @@
     --popover: 224 71% 4%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 222 83% 55%;
+    --primary: 210 100% 50%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -64,7 +64,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 222 83% 55%;
+    --accent: 210 100% 50%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -72,17 +72,17 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 222 83% 55%;
+    --ring: 210 100% 50%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border selection:bg-aida-100 selection:text-aida-900;
+    @apply border-border selection:bg-blue-100 selection:text-blue-900;
   }
   
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-[#f0f5fa] text-foreground font-sans antialiased;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
 
@@ -94,7 +94,7 @@
 /* Custom Utilities */
 @layer utilities {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-glass;
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-sm;
   }
   
   .subtle-shadow {
@@ -109,27 +109,27 @@
 /* Typography Adjustments */
 @layer components {
   .h1 {
-    @apply text-4xl font-display font-bold tracking-tight text-foreground;
+    @apply text-4xl font-display font-bold tracking-tight text-blue-900;
   }
   
   .h2 {
-    @apply text-3xl font-display font-bold tracking-tight text-foreground;
+    @apply text-3xl font-display font-bold tracking-tight text-blue-900;
   }
   
   .h3 {
-    @apply text-2xl font-display font-semibold tracking-tight text-foreground;
+    @apply text-2xl font-display font-semibold tracking-tight text-blue-900;
   }
   
   .h4 {
-    @apply text-xl font-display font-semibold tracking-tight text-foreground;
+    @apply text-xl font-display font-semibold tracking-tight text-blue-900;
   }
   
   .p-large {
-    @apply text-lg text-muted-foreground;
+    @apply text-lg text-slate-600;
   }
   
   .p-small {
-    @apply text-sm text-muted-foreground;
+    @apply text-sm text-slate-600;
   }
 }
 
@@ -156,15 +156,15 @@
 
 /* Modern card designs */
 .card-modern {
-  @apply rounded-xl border border-gray-100 bg-white p-6 shadow-lg transition-all hover:shadow-xl dark:border-gray-800 dark:bg-gray-900;
+  @apply rounded-lg border border-blue-100 bg-white p-6 shadow-sm transition-all hover:shadow-md;
 }
 
 .card-modern-gradient {
-  @apply bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800;
+  @apply bg-gradient-to-br from-white to-blue-50;
 }
 
 .card-glass {
-  @apply bg-white/30 backdrop-blur-lg border border-white/20 dark:bg-black/30 dark:border-white/10;
+  @apply bg-white/30 backdrop-blur-lg border border-white/20;
 }
 
 /* Button effects */
@@ -183,9 +183,9 @@
 
 /* Feature card styles */
 .feature-card {
-  @apply relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900;
+  @apply relative overflow-hidden rounded-lg border border-blue-100 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md;
 }
 
 .feature-icon-container {
-  @apply mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary;
+  @apply mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600;
 }

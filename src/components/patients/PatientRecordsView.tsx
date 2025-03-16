@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Search, UserPlus } from "lucide-react";
+import { Search, UserPlus, FileText, PlusCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Import components
@@ -79,9 +79,9 @@ const PatientRecordsView = () => {
   
   return (
     <div className="space-y-6">
-      <header className="space-y-2">
+      <header className="space-y-2 bg-white p-6 rounded-lg shadow-sm border border-blue-50">
         <motion.h1 
-          className="h1"
+          className="text-3xl font-bold text-blue-900"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -89,7 +89,7 @@ const PatientRecordsView = () => {
           Patient Records
         </motion.h1>
         <motion.p 
-          className="text-muted-foreground"
+          className="text-slate-500"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
@@ -99,15 +99,15 @@ const PatientRecordsView = () => {
       </header>
 
       <motion.div
-        className="flex items-center justify-between"
+        className="flex items-center justify-between space-y-0 bg-white p-6 rounded-lg shadow-sm border border-blue-50"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
       >
         <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-400" />
           <Input 
-            className="pl-10" 
+            className="pl-10 border-blue-100 focus:border-blue-300 focus:ring-blue-200" 
             placeholder="Search patients by name or condition..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -115,7 +115,7 @@ const PatientRecordsView = () => {
         </div>
         <Dialog open={newPatientDialogOpen} onOpenChange={setNewPatientDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
               <UserPlus className="mr-2 h-4 w-4" />
               Add New Patient
             </Button>
@@ -139,16 +139,37 @@ const PatientRecordsView = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
+          className="bg-white p-6 rounded-lg shadow-sm border border-blue-50"
         >
-          <TabsList className="grid grid-cols-4 md:w-[600px]">
-            <TabsTrigger value="all">All Patients</TabsTrigger>
-            <TabsTrigger value="critical">Critical</TabsTrigger>
-            <TabsTrigger value="stable">Stable</TabsTrigger>
-            <TabsTrigger value="recent">Recent Visits</TabsTrigger>
+          <TabsList className="grid grid-cols-4 md:w-[600px] bg-blue-50">
+            <TabsTrigger 
+              value="all" 
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              All Patients
+            </TabsTrigger>
+            <TabsTrigger 
+              value="critical"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Critical
+            </TabsTrigger>
+            <TabsTrigger 
+              value="stable"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Stable
+            </TabsTrigger>
+            <TabsTrigger 
+              value="recent"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Recent Visits
+            </TabsTrigger>
           </TabsList>
         </motion.div>
 
-        <TabsContent value="all" className="space-y-4">
+        <TabsContent value="all" className="space-y-4 mt-6">
           <div className="grid gap-4">
             {filteredPatients.map((patient, index) => (
               <PatientCard 
@@ -160,14 +181,23 @@ const PatientRecordsView = () => {
               />
             ))}
             {filteredPatients.length === 0 && (
-              <div className="text-center py-10">
-                <p className="text-muted-foreground">No patients found matching your search criteria.</p>
+              <div className="text-center py-10 bg-white rounded-lg shadow-sm border border-blue-50">
+                <FileText className="h-12 w-12 text-blue-200 mx-auto mb-3" />
+                <p className="text-slate-500">No patients found matching your search criteria.</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4 border-blue-200 text-blue-700 hover:bg-blue-50"
+                  onClick={() => setNewPatientDialogOpen(true)}
+                >
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Add a new patient
+                </Button>
               </div>
             )}
           </div>
         </TabsContent>
         
-        <TabsContent value="critical" className="space-y-4">
+        <TabsContent value="critical" className="space-y-4 mt-6">
           <div className="grid gap-4">
             {filteredPatients
               .filter(p => p.status === "Critical")
@@ -183,7 +213,7 @@ const PatientRecordsView = () => {
           </div>
         </TabsContent>
         
-        <TabsContent value="stable" className="space-y-4">
+        <TabsContent value="stable" className="space-y-4 mt-6">
           <div className="grid gap-4">
             {filteredPatients
               .filter(p => p.status === "Stable")
@@ -199,7 +229,7 @@ const PatientRecordsView = () => {
           </div>
         </TabsContent>
         
-        <TabsContent value="recent" className="space-y-4">
+        <TabsContent value="recent" className="space-y-4 mt-6">
           <div className="grid gap-4">
             {filteredPatients
               .sort((a, b) => new Date(b.lastVisit).getTime() - new Date(a.lastVisit).getTime())

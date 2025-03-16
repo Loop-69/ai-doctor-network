@@ -53,17 +53,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        aida: {
+        leny: {
           50: "#F0F7FF",
           100: "#E0EFFF",
           200: "#B8DBFF",
           300: "#8CC2FF",
           400: "#5AA2FF",
-          500: "#3080FF",
-          600: "#2066E0",
-          700: "#1550B0",
-          800: "#0B3A80",
-          900: "#042550",
+          500: "#0E78F9",
+          600: "#0A60E0",
+          700: "#0850B0",
+          800: "#043A80",
+          900: "#022550",
         },
         medical: {
           red: "#E63946",
@@ -140,6 +140,11 @@ export default {
         glass: "0 4px 20px rgba(0, 0, 0, 0.03)",
         card: "0 2px 12px 0 rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02)",
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-light-blue': 'linear-gradient(109.6deg, rgba(223,234,247,1) 11.2%, rgba(244,248,252,1) 91.1%)',
+        'gradient-blue': 'linear-gradient(90deg, hsla(221, 45%, 73%, 1) 0%, hsla(220, 78%, 29%, 1) 100%)',
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],
