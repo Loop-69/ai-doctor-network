@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Card, 
@@ -79,14 +78,11 @@ const SecurityTab = () => {
       return;
     }
     
-    // Password update logic would go here
-    
     toast({
       title: "Password updated",
       description: "Your password has been successfully updated."
     });
     
-    // Add to activity logs
     const newLog = {
       id: activityLogs.length + 1,
       message: "Password changed",
@@ -95,7 +91,6 @@ const SecurityTab = () => {
     };
     setActivityLogs([newLog, ...activityLogs]);
     
-    // Reset form
     setPasswordForm({
       current: "",
       new: "",
@@ -111,7 +106,6 @@ const SecurityTab = () => {
       description: !twoFactorEnabled ? "Your account is now more secure." : "Two-factor authentication has been turned off."
     });
     
-    // Add to activity logs
     const newLog = {
       id: activityLogs.length + 1,
       message: !twoFactorEnabled ? "Two-factor authentication enabled" : "Two-factor authentication disabled",
@@ -127,7 +121,6 @@ const SecurityTab = () => {
       description: `${deviceName} has been logged out.`
     });
     
-    // Add to activity logs
     const newLog = {
       id: activityLogs.length + 1,
       message: `Device logged out: ${deviceName}`,
@@ -143,7 +136,6 @@ const SecurityTab = () => {
       description: "You have been logged out from all devices except this one."
     });
     
-    // Add to activity logs
     const newLog = {
       id: activityLogs.length + 1,
       message: "Logged out from all devices",
@@ -156,7 +148,6 @@ const SecurityTab = () => {
   const runSecurityScan = () => {
     setIsSecurityScanRunning(true);
     
-    // Simulate a security scan
     setTimeout(() => {
       setIsSecurityScanRunning(false);
       
@@ -169,7 +160,6 @@ const SecurityTab = () => {
           variant: "warning"
         });
         
-        // Add to activity logs
         const newLog = {
           id: activityLogs.length + 1,
           message: "Security scan found and fixed vulnerabilities",
@@ -183,7 +173,6 @@ const SecurityTab = () => {
           description: "No security vulnerabilities were found."
         });
         
-        // Add to activity logs
         const newLog = {
           id: activityLogs.length + 1,
           message: "Security scan completed with no issues",
@@ -203,7 +192,6 @@ const SecurityTab = () => {
       description: !selfHealingEnabled ? "System will automatically fix detected issues." : "Automatic issue resolution has been turned off."
     });
     
-    // Add to activity logs
     const newLog = {
       id: activityLogs.length + 1,
       message: !selfHealingEnabled ? "Self-healing system enabled" : "Self-healing system disabled",
@@ -501,3 +489,4 @@ const SecurityTab = () => {
 };
 
 export default SecurityTab;
+
