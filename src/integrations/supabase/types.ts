@@ -47,7 +47,9 @@ export type Database = {
           doctor_notes: string | null
           ended_at: string | null
           expert_id: string | null
+          feedback: string | null
           id: string
+          rating: number | null
           recommendation: string | null
           referred_to_doctor: boolean | null
           severity: string | null
@@ -61,7 +63,9 @@ export type Database = {
           doctor_notes?: string | null
           ended_at?: string | null
           expert_id?: string | null
+          feedback?: string | null
           id?: string
+          rating?: number | null
           recommendation?: string | null
           referred_to_doctor?: boolean | null
           severity?: string | null
@@ -75,7 +79,9 @@ export type Database = {
           doctor_notes?: string | null
           ended_at?: string | null
           expert_id?: string | null
+          feedback?: string | null
           id?: string
+          rating?: number | null
           recommendation?: string | null
           referred_to_doctor?: boolean | null
           severity?: string | null
@@ -85,6 +91,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "ai_consultations_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "agent_analytics"
+            referencedColumns: ["expert_id"]
+          },
           {
             foreignKeyName: "ai_consultations_expert_id_fkey"
             columns: ["expert_id"]
@@ -114,6 +127,13 @@ export type Database = {
           id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "ai_expert_capabilities_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "agent_analytics"
+            referencedColumns: ["expert_id"]
+          },
           {
             foreignKeyName: "ai_expert_capabilities_expert_id_fkey"
             columns: ["expert_id"]
@@ -193,6 +213,54 @@ export type Database = {
             columns: ["knowledge_base_id"]
             isOneToOne: false
             referencedRelation: "ai_expert_knowledge_base"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_expert_personalities: {
+        Row: {
+          communication_style: string | null
+          created_at: string | null
+          description: string | null
+          expert_id: string | null
+          id: string
+          name: string
+          tone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          communication_style?: string | null
+          created_at?: string | null
+          description?: string | null
+          expert_id?: string | null
+          id?: string
+          name: string
+          tone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          communication_style?: string | null
+          created_at?: string | null
+          description?: string | null
+          expert_id?: string | null
+          id?: string
+          name?: string
+          tone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_expert_personalities_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "agent_analytics"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "ai_expert_personalities_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "ai_experts"
             referencedColumns: ["id"]
           },
         ]
@@ -289,6 +357,58 @@ export type Database = {
             foreignKeyName: "ai_expert_training_data_expert_id_fkey"
             columns: ["expert_id"]
             isOneToOne: false
+            referencedRelation: "agent_analytics"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "ai_expert_training_data_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "ai_experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_expert_versions: {
+        Row: {
+          changes: string | null
+          created_at: string | null
+          created_by: string | null
+          expert_id: string | null
+          id: string
+          is_active: boolean | null
+          version: string
+        }
+        Insert: {
+          changes?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          expert_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          version: string
+        }
+        Update: {
+          changes?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          expert_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_expert_versions_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "agent_analytics"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "ai_expert_versions_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
             referencedRelation: "ai_experts"
             referencedColumns: ["id"]
           },
@@ -296,7 +416,10 @@ export type Database = {
       }
       ai_experts: {
         Row: {
+          agent_type: string | null
           api_key: string | null
+          color: string | null
+          configuration: Json | null
           created_at: string | null
           created_by: string | null
           description: string | null
@@ -317,7 +440,10 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          agent_type?: string | null
           api_key?: string | null
+          color?: string | null
+          configuration?: Json | null
           created_at?: string | null
           created_by?: string | null
           description?: string | null
@@ -338,7 +464,10 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          agent_type?: string | null
           api_key?: string | null
+          color?: string | null
+          configuration?: Json | null
           created_at?: string | null
           created_by?: string | null
           description?: string | null
@@ -410,7 +539,18 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      agent_analytics: {
+        Row: {
+          average_rating: number | null
+          completed_consultations: number | null
+          consultation_count: number | null
+          expert_id: string | null
+          expert_name: string | null
+          in_progress_consultations: number | null
+          specialty: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
