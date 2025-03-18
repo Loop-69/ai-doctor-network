@@ -38,5 +38,6 @@ verify_jwt = false
 [functions.generate-followup-questions]
 verify_jwt = false
 
-[functions.environment]
+[[functions.environments]]
+name = "production"
 GEMINI_API_KEY = "AIzaSyA4J0M8aEyn6SZtDcWYi6m1VhsmMmPs-0Q"
