@@ -12,6 +12,10 @@ type AuthContextType = {
     error: Error | null;
     success: boolean;
   }>;
+  signInWithGoogle: () => Promise<{
+    error: Error | null;
+    success: boolean;
+  }>;
   signUp: (email: string, password: string) => Promise<{
     error: Error | null;
     success: boolean;
@@ -66,6 +70,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + "/dashboard",
+        },
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      return { error: null, success: true };
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      return { error: error as Error, success: false };
+    }
+  };
+
   const signUp = async (email: string, password: string) => {
     try {
       const { error } = await supabase.auth.signUp({
@@ -103,6 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         loading,
         signIn,
+        signInWithGoogle,
         signUp,
         signOut,
       }}
