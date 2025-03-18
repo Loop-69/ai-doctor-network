@@ -29,7 +29,6 @@ serve(async (req) => {
 
     console.log(`Generating follow-up questions for condition: ${condition}`);
     console.log(`Using model: ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
-    console.log(`Using API key: ${GEMINI_API_KEY.slice(0, 5)}...`);
     
     if (specialty) {
       console.log(`With specialty context: ${specialty}`);

@@ -47,26 +47,22 @@ const DropdownSelectors: React.FC<DropdownSelectorsProps> = ({
       <h3 className="text-lg font-medium">Consultation Information</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Patient Selector */}
         <PatientSelector
           selectedPatient={selectedPatient}
           onPatientSelect={handlePatientSelect}
         />
 
-        {/* Symptoms Selector */}
         <SymptomsSelector
           selectedSymptoms={selectedSymptoms}
           onSymptomsSelect={handleSymptomsSelect}
         />
 
-        {/* Questions Selector */}
         <QuestionsSelector
           selectedQuestions={selectedQuestions}
           onQuestionsSelect={handleQuestionsSelect}
         />
       </div>
       
-      {/* Add to Chat Button */}
       <AddToChatButton
         selectedPatient={selectedPatient}
         selectedSymptoms={selectedSymptoms}

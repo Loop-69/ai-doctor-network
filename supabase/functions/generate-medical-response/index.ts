@@ -25,7 +25,6 @@ serve(async (req) => {
 
     console.log(`Generating medical response for ${specialty || 'general'} specialist using ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
     console.log(`Input: ${prompt || symptoms || 'No input provided'}`);
-    console.log(`Using API key: ${GEMINI_API_KEY.slice(0, 5)}...`);
     
     // Build the prompt based on whether this is a collaborative consultation
     let promptText = `You are a medical AI assistant`;

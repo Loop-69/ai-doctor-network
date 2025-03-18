@@ -21,7 +21,7 @@ const ChatInput = ({ onSendMessage, isLoading, agentName }: ChatInputProps) => {
 
   // Listen for addToChat events
   useEffect(() => {
-    const handleAddToChat = (event: any) => {
+    const handleAddToChat = (event: CustomEvent<{ message: string }>) => {
       setChatInput(prev => {
         // If there's already text, add a line break
         if (prev.trim()) {
@@ -31,10 +31,10 @@ const ChatInput = ({ onSendMessage, isLoading, agentName }: ChatInputProps) => {
       });
     };
     
-    window.addEventListener('addToChat', handleAddToChat);
+    window.addEventListener('addToChat', handleAddToChat as EventListener);
     
     return () => {
-      window.removeEventListener('addToChat', handleAddToChat);
+      window.removeEventListener('addToChat', handleAddToChat as EventListener);
     };
   }, []);
 

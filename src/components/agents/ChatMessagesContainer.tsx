@@ -11,7 +11,6 @@ interface ChatMessagesContainerProps {
 }
 
 const ChatMessagesContainer = ({ messages, isLoading }: ChatMessagesContainerProps) => {
-  // Create a ref for the messages container to enable auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to the bottom when messages change or when loading
