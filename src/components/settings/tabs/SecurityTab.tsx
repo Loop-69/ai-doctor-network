@@ -32,6 +32,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
+type LogBadgeVariant = "default" | "secondary" | "destructive" | "warning" | "outline";
+
 const SecurityTab = () => {
   const { toast } = useToast();
   const { user } = useAuth();
@@ -157,7 +159,7 @@ const SecurityTab = () => {
         toast({
           title: "Security scan complete",
           description: "Security vulnerabilities were found and fixed.",
-          variant: "warning"
+          variant: "warning" as const
         });
         
         const newLog = {
@@ -201,7 +203,7 @@ const SecurityTab = () => {
     setActivityLogs([newLog, ...activityLogs]);
   };
   
-  const getLogBadgeVariant = (level) => {
+  const getLogBadgeVariant = (level: string): LogBadgeVariant => {
     switch (level) {
       case "warning":
         return "warning";
@@ -489,4 +491,3 @@ const SecurityTab = () => {
 };
 
 export default SecurityTab;
-
