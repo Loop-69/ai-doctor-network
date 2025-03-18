@@ -38,5 +38,8 @@ verify_jwt = false
 [functions.generate-followup-questions]
 verify_jwt = false
 
+# Environment variables must be properly formatted in config.toml
+# The key should not have quotes and should be in all uppercase
 [functions.environment]
-GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
+GEMINI_API_KEY = AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI
+
