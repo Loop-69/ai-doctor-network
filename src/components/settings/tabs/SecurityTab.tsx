@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { 
   Card, 
@@ -159,7 +160,7 @@ const SecurityTab = () => {
         toast({
           title: "Security scan complete",
           description: "Security vulnerabilities were found and fixed.",
-          variant: "warning" as const
+          variant: "destructive"  // Changed from "warning" to "destructive" which is a valid variant
         });
         
         const newLog = {
