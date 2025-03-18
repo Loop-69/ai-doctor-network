@@ -38,12 +38,11 @@ enable_signup = true
 enable_confirmations = false
 
 [functions]
-serve_port = 54324
-
 [functions.generate-medical-response]
-verify_jwt = true
-env_vars = ["GEMINI_API_KEY=AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"]
+[functions.generate-medical-response.environment]
+GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
 
 [functions.generate-followup-questions]
-verify_jwt = true
-env_vars = ["GEMINI_API_KEY=AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"]
+[functions.generate-followup-questions.environment]
+GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
+
