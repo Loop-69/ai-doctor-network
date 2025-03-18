@@ -3,8 +3,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, Bell, Shield, Palette } from "lucide-react";
-
-// Import tab components
 import AccountTab from "./tabs/AccountTab";
 import NotificationsTab from "./tabs/NotificationsTab";
 import AppearanceTab from "./tabs/AppearanceTab";
@@ -12,73 +10,52 @@ import SecurityTab from "./tabs/SecurityTab";
 
 const SettingsView = () => {
   const [activeTab, setActiveTab] = useState("account");
-  
+
   return (
     <div className="space-y-6">
-      <header className="space-y-2">
-        <motion.h1 
-          className="h1"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          Settings
-        </motion.h1>
-        <motion.p 
-          className="text-muted-foreground"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          Manage your account preferences and application settings
-        </motion.p>
-      </header>
-
-      <Tabs 
-        defaultValue="account" 
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="space-y-4"
+      <motion.h1 
+        className="text-3xl font-bold"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-        >
-          <TabsList className="grid grid-cols-4 md:w-[600px]">
-            <TabsTrigger value="account">
-              <User className="mr-2 h-4 w-4" />
-              Account
-            </TabsTrigger>
-            <TabsTrigger value="notifications">
-              <Bell className="mr-2 h-4 w-4" />
-              Notifications
-            </TabsTrigger>
-            <TabsTrigger value="appearance">
-              <Palette className="mr-2 h-4 w-4" />
-              Appearance
-            </TabsTrigger>
-            <TabsTrigger value="security">
-              <Shield className="mr-2 h-4 w-4" />
-              Security
-            </TabsTrigger>
-          </TabsList>
-        </motion.div>
+        Settings
+      </motion.h1>
 
-        <TabsContent value="account" className="space-y-4">
+      <Tabs defaultValue="account" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4 lg:w-[400px]">
+          <TabsTrigger value="account" className="flex items-center gap-2">
+            <User className="h-4 w-4" />
+            <span>Account</span>
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="flex items-center gap-2">
+            <Bell className="h-4 w-4" />
+            <span>Notifications</span>
+          </TabsTrigger>
+          <TabsTrigger value="security" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            <span>Security</span>
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="flex items-center gap-2">
+            <Palette className="h-4 w-4" />
+            <span>Appearance</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="account">
           <AccountTab />
         </TabsContent>
         
-        <TabsContent value="notifications" className="space-y-4">
+        <TabsContent value="notifications">
           <NotificationsTab />
         </TabsContent>
         
-        <TabsContent value="appearance" className="space-y-4">
-          <AppearanceTab />
+        <TabsContent value="security">
+          <SecurityTab />
         </TabsContent>
         
-        <TabsContent value="security" className="space-y-4">
-          <SecurityTab />
+        <TabsContent value="appearance">
+          <AppearanceTab />
         </TabsContent>
       </Tabs>
     </div>

@@ -5,7 +5,9 @@ import SettingsView from "@/components/settings/SettingsView";
 const SettingsPage = () => {
   return (
     <AppLayout>
-      <SettingsView />
+      <div className="container py-6">
+        <SettingsView />
+      </div>
     </AppLayout>
   );
 };
