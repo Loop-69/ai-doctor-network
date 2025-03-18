@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -7,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-// Use environment variable first, fall back to hardcoded key if not available
+// Access the environment variable correctly
 const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI';
 
 serve(async (req) => {

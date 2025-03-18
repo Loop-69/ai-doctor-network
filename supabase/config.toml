@@ -38,9 +38,6 @@ verify_jwt = false
 [functions.generate-followup-questions]
 verify_jwt = false
 
-# Define environment variables at the function level
-[functions.generate-medical-response.environment]
-GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
-
-[functions.generate-followup-questions.environment]
+# Environment variables defined at the top level
+[env]
 GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
