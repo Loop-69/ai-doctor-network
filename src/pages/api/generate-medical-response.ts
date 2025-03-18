@@ -1,46 +1,29 @@
 
-// Creating a standard API endpoint compatible with both Next.js App Router and other frameworks
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export async function POST(req: Request) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const body = await req.json();
-    console.log("API route: Calling generate-medical-response with:", JSON.stringify(body).substring(0, 200));
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    console.log("API route: Calling generate-medical-response with:", JSON.stringify(req.body).substring(0, 200));
     
     // Import supabase from the correct path
     const { supabase } = await import('@/integrations/supabase/client');
 
     const { data, error } = await supabase.functions.invoke('generate-medical-response', {
-      body: body
+      body: req.body
     });
 
     if (error) {
       console.error('Error invoking Edge Function:', error);
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      return res.status(500).json({ error: error.message });
     }
 
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    return res.status(200).json(data);
   } catch (error) {
     console.error('API route error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to process request' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    return res.status(500).json({ error: 'Failed to process request' });
   }
 }
-
-// This is needed for some frameworks, but not all
-export const config = {
-  runtime: 'edge',
-};
