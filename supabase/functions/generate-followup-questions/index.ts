@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 // Use environment variable first, fall back to hardcoded key if not available
-const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyA4J0M8aEyn6SZtDcWYi6m1VhsmMmPs-0Q';
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI';
 
 serve(async (req) => {
   // Handle CORS preflight requests

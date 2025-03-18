@@ -38,5 +38,5 @@ verify_jwt = false
 [functions.generate-followup-questions]
 verify_jwt = false
 
-[functions.environments]
-GEMINI_API_KEY = "AIzaSyA4J0M8aEyn6SZtDcWYi6m1VhsmMmPs-0Q"
+[functions.environment]
+GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
