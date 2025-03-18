@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import { 
-  Sheet,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -21,7 +20,7 @@ import {
 } from "@/components/ui/select";
 
 export type LogLevel = "info" | "warning" | "error";
-export type LogBadgeVariant = "default" | "secondary" | "destructive" | "warning" | "outline";
+export type LogBadgeVariant = "default" | "secondary" | "destructive" | "outline";
 export type ActivityLog = {
   id: number;
   message: string;
@@ -34,12 +33,12 @@ type SecurityLogsSheetProps = {
 };
 
 export const SecurityLogsSheet = ({ activityLogs }: SecurityLogsSheetProps) => {
-  const [logLevel, setLogLevel] = useState("info");
+  const [logLevel, setLogLevel] = useState<string>("all");
 
   const getLogBadgeVariant = (level: string): LogBadgeVariant => {
     switch (level) {
       case "warning":
-        return "warning";
+        return "secondary";
       case "error":
         return "destructive";
       default:

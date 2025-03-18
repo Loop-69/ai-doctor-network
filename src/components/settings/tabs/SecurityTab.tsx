@@ -1,11 +1,13 @@
 
 import { useState } from "react";
-import { Sheet } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { PasswordCard } from "../security/PasswordCard";
 import { TwoFactorCard } from "../security/TwoFactorCard";
 import { SelfHealingCard } from "../security/SelfHealingCard";
 import { LoginSessionsCard } from "../security/LoginSessionsCard";
 import { SecurityLogsSheet, type ActivityLog } from "../security/SecurityLogsSheet";
+import { SheetTrigger } from "@/components/ui/sheet";
+import { Sheet } from "@/components/ui/sheet";
 
 const SecurityTab = () => {
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([
@@ -33,6 +35,11 @@ const SecurityTab = () => {
       <LoginSessionsCard onSessionEvent={addLogEntry} />
       
       <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" className="w-full">
+            View Security Activity Logs
+          </Button>
+        </SheetTrigger>
         <SecurityLogsSheet activityLogs={activityLogs} />
       </Sheet>
     </div>
