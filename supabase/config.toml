@@ -39,10 +39,11 @@ enable_confirmations = false
 
 [functions]
 [functions.generate-medical-response]
+verify_jwt = false
 [functions.generate-medical-response.environment]
 GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
 
 [functions.generate-followup-questions]
+verify_jwt = false
 [functions.generate-followup-questions.environment]
 GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
-
