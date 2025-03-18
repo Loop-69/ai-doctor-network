@@ -34,10 +34,10 @@ enable_signup = true
 [functions]
 [functions.generate-medical-response]
 verify_jwt = false
+[functions.generate-medical-response.vars]
+GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
 
 [functions.generate-followup-questions]
 verify_jwt = false
-
-# Environment variables defined at the top level
-[env]
+[functions.generate-followup-questions.vars]
 GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
