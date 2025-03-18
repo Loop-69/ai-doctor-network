@@ -16,27 +16,33 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Received request to generate medical response");
     const { symptoms, specialty, agentId, agentName, consultationId, isCollaborative, modelProvider, modelName, prompt } = await req.json();
 
-    console.log(`Generating medical response for ${specialty} specialist using ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
+    console.log(`Generating medical response for ${specialty || 'general'} specialist using ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
+    console.log(`Input: ${prompt || symptoms || 'No input provided'}`);
     
     // Build the prompt based on whether this is a collaborative consultation
-    let promptText = `You are a medical AI assistant specializing in ${specialty}.`;
+    let promptText = `You are a medical AI assistant`;
+    if (specialty) {
+      promptText += ` specializing in ${specialty}`;
+    }
     
     if (isCollaborative) {
-      promptText += ` You are participating in a collaborative consultation with other AI specialists. 
-      Based on your expertise in ${specialty}, analyze the following patient symptoms and provide:
+      promptText += `. You are participating in a collaborative consultation with other AI specialists. 
+      Based on your expertise${specialty ? ` in ${specialty}` : ''}, analyze the following patient symptoms and provide:
       1. A diagnosis with explanation
       2. A confidence percentage (70-99%)
       3. Treatment recommendations from your specialty's perspective
       
       Be precise and focused on your area of expertise. Your analysis will be combined with other specialists.`;
     } else {
-      promptText += ` Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
+      promptText += `. Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
     }
     
-    promptText += `\n\nPatient symptoms: ${symptoms || prompt}`;
+    promptText += `\n\nPatient symptoms: ${symptoms || prompt || 'No symptoms provided'}`;
 
+    console.log("Calling Gemini API with prompt");
     // Call Gemini API
     const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -57,6 +63,7 @@ serve(async (req) => {
     console.log("Gemini API response received");
 
     if (!geminiData.candidates || geminiData.candidates.length === 0) {
+      console.error("No response from Gemini API:", geminiData);
       throw new Error("No response from Gemini API");
     }
 
@@ -109,7 +116,7 @@ serve(async (req) => {
       agentName
     };
 
-    console.log(`Response generated for ${specialty} specialist`);
+    console.log(`Response generated for ${specialty || 'general'} specialist`);
     
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

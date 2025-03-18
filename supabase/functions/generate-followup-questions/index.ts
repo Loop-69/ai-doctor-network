@@ -16,6 +16,7 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Received request to generate follow-up questions");
     const { condition, specialty, modelProvider, modelName } = await req.json();
 
     if (!condition) {
@@ -24,6 +25,9 @@ serve(async (req) => {
 
     console.log(`Generating follow-up questions for condition: ${condition}`);
     console.log(`Using model: ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
+    if (specialty) {
+      console.log(`With specialty context: ${specialty}`);
+    }
     
     // Build the prompt for the Gemini API
     const prompt = `
@@ -41,6 +45,7 @@ serve(async (req) => {
     Example format: ["Question 1?", "Question 2?", "Question 3?"]
     `;
 
+    console.log("Calling Gemini API with prompt");
     // Call Gemini API
     const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -61,6 +66,7 @@ serve(async (req) => {
     console.log("Gemini API response received");
 
     if (!geminiData.candidates || geminiData.candidates.length === 0) {
+      console.error("No response from Gemini API:", geminiData);
       throw new Error("No response from Gemini API");
     }
 
@@ -106,6 +112,8 @@ serve(async (req) => {
         "Have you experienced any new symptoms or side effects?"
       ];
     }
+    
+    console.log("Generated questions:", questions);
     
     return new Response(JSON.stringify({ questions }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

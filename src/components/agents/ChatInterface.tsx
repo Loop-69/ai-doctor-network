@@ -64,9 +64,20 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error("Error generating AI response:", error);
+      
+      // Add error message to chat
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: "I'm sorry, I encountered an error while processing your request. Please try again or check if the API connection is working correctly.",
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+      
       toast({
-        title: "Error",
-        description: "Failed to generate AI response. Please try again.",
+        title: "API Error",
+        description: "Failed to generate AI response. Please check the console for details.",
         variant: "destructive"
       });
     } finally {
