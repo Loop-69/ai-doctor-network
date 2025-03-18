@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2, Bot, RefreshCw, Send } from "lucide-react";
 import { 
   Card, 
@@ -15,6 +15,7 @@ import { Agent, Message } from "./types/agentTypes";
 import { generateAIResponse } from "./services/agentService";
 import ChatMessage from "./ChatMessage";
 import AgentProfile from "./AgentProfile";
+import DropdownSelectors from "./DropdownSelectors";
 
 interface ChatInterfaceProps {
   selectedAgent: Agent;
@@ -31,6 +32,9 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<any>(null);
+  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const { toast } = useToast();
 
   // Function to handle sending a message
@@ -95,7 +99,29 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
         timestamp: new Date()
       }
     ]);
+    setSelectedPatient(null);
+    setSelectedSymptoms([]);
+    setSelectedQuestions([]);
   };
+
+  // Listen for addToChat events
+  useEffect(() => {
+    const handleAddToChat = (event: any) => {
+      setChatInput(prev => {
+        // If there's already text, add a line break
+        if (prev.trim()) {
+          return prev + "\n\n" + event.detail.message;
+        }
+        return event.detail.message;
+      });
+    };
+    
+    window.addEventListener('addToChat', handleAddToChat);
+    
+    return () => {
+      window.removeEventListener('addToChat', handleAddToChat);
+    };
+  }, []);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -122,16 +148,26 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="flex-grow overflow-y-auto max-h-[500px] pb-0">
-            <div className="space-y-4">
-              {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
-              ))}
-              {isLoading && (
-                <div className="flex justify-center items-center py-4">
-                  <Loader2 className="h-6 w-6 animate-spin text-aida-500" />
-                </div>
-              )}
+          <CardContent className="flex-grow overflow-y-auto pb-0 space-y-4">
+            {/* Dropdown Selectors for Patient, Symptoms, and Questions */}
+            <DropdownSelectors 
+              onPatientSelect={setSelectedPatient}
+              onSymptomsSelect={setSelectedSymptoms}
+              onQuestionsSelect={setSelectedQuestions}
+            />
+            
+            {/* Chat Messages */}
+            <div className="max-h-[400px] overflow-y-auto">
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <ChatMessage key={message.id} message={message} />
+                ))}
+                {isLoading && (
+                  <div className="flex justify-center items-center py-4">
+                    <Loader2 className="h-6 w-6 animate-spin text-aida-500" />
+                  </div>
+                )}
+              </div>
             </div>
           </CardContent>
           <CardFooter className="pt-6">
