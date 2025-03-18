@@ -10,15 +10,30 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
   const isUser = message.role === 'user';
   
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div 
+      className={cn(
+        "flex w-full animate-fadeIn", 
+        isUser ? "justify-end" : "justify-start"
+      )}
+    >
       <div 
         className={cn(
-          "max-w-[80%] px-4 py-3 rounded-lg",
-          isUser ? "bg-aida-500 text-white" : "bg-muted"
+          "max-w-[85%] px-4 py-3 rounded-lg shadow-sm",
+          isUser 
+            ? "bg-aida-500 text-white rounded-tr-none" 
+            : "bg-slate-100 dark:bg-slate-800 rounded-tl-none"
         )}
       >
-        <p className="text-sm">{message.content}</p>
-        <p className="text-xs mt-1 opacity-70">
+        <p className={cn(
+          "text-sm whitespace-pre-wrap",
+          isUser ? "text-white" : "text-foreground"
+        )}>
+          {message.content}
+        </p>
+        <p className={cn(
+          "text-xs mt-2 text-right",
+          isUser ? "text-white/70" : "text-muted-foreground"
+        )}>
           {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
