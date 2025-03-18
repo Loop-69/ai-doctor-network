@@ -1,29 +1,40 @@
 
-import { NextApiRequest, NextApiResponse } from 'next';
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+// Create a standard API endpoint using Web API standards
+export async function POST(req: Request) {
   try {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    console.log("API route: Calling generate-followup-questions with:", JSON.stringify(req.body).substring(0, 200));
+    const body = await req.json();
+    console.log("API route: Calling generate-followup-questions with:", JSON.stringify(body).substring(0, 200));
     
     // Import supabase from the correct path
     const { supabase } = await import('@/integrations/supabase/client');
 
     const { data, error } = await supabase.functions.invoke('generate-followup-questions', {
-      body: req.body
+      body: body
     });
 
     if (error) {
       console.error('Error invoking Edge Function:', error);
-      return res.status(500).json({ error: error.message });
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
     }
 
-    return res.status(200).json(data);
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (error) {
     console.error('API route error:', error);
-    return res.status(500).json({ error: 'Failed to process request' });
+    return new Response(JSON.stringify({ error: 'Failed to process request' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }
