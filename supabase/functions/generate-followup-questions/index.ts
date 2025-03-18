@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 // Use environment variable first, fall back to hardcoded key if not available
-const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI';
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyA4J0M8aEyn6SZtDcWYi6m1VhsmMmPs-0Q';
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -25,6 +25,8 @@ serve(async (req) => {
 
     console.log(`Generating follow-up questions for condition: ${condition}`);
     console.log(`Using model: ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
+    console.log(`Using API key: ${GEMINI_API_KEY.slice(0, 5)}...`);
+    
     if (specialty) {
       console.log(`With specialty context: ${specialty}`);
     }
@@ -46,7 +48,7 @@ serve(async (req) => {
     `;
 
     console.log("Calling Gemini API with prompt");
-    // Call Gemini API
+    // Call Gemini API with the format specified in the curl example
     const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
@@ -61,6 +63,12 @@ serve(async (req) => {
         }),
       }
     );
+    
+    if (!geminiResponse.ok) {
+      const errorData = await geminiResponse.text();
+      console.error("Error response from Gemini API:", errorData);
+      throw new Error(`Gemini API error (${geminiResponse.status}): ${errorData}`);
+    }
 
     const geminiData = await geminiResponse.json();
     console.log("Gemini API response received");

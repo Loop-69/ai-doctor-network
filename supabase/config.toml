@@ -39,4 +39,4 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.environment]
-GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI"
+GEMINI_API_KEY = "AIzaSyA4J0M8aEyn6SZtDcWYi6m1VhsmMmPs-0Q"
