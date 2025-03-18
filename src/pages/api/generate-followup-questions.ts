@@ -1,11 +1,14 @@
 
-import { supabase } from '@/integrations/supabase/client';
+// Creating a standard API endpoint compatible with both Next.js App Router and other frameworks
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     console.log("API route: Calling generate-followup-questions with:", JSON.stringify(body).substring(0, 200));
     
+    // Import supabase from the correct path
+    const { supabase } = await import('@/integrations/supabase/client');
+
     const { data, error } = await supabase.functions.invoke('generate-followup-questions', {
       body: body
     });
@@ -37,6 +40,7 @@ export async function POST(req: Request) {
   }
 }
 
+// This is needed for some frameworks, but not all
 export const config = {
   runtime: 'edge',
 };

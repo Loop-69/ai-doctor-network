@@ -8,7 +8,11 @@ export const generateAIResponse = async (prompt: string, agent: Agent): Promise<
     console.log(`Generating AI response for prompt: ${prompt.substring(0, 50)}...`);
     console.log(`Using agent: ${agent.name}, specialty: ${agent.specialty}`);
     
-    const response = await fetch("/api/generate-medical-response", {
+    // Make the API path absolute to ensure it works correctly
+    const apiPath = window.location.origin + "/api/generate-medical-response";
+    console.log(`Calling API endpoint: ${apiPath}`);
+    
+    const response = await fetch(apiPath, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +28,7 @@ export const generateAIResponse = async (prompt: string, agent: Agent): Promise<
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("API Error response:", errorText);
+      console.error(`API Error response (${response.status}):`, errorText);
       throw new Error(`Failed to generate response: ${response.status} ${response.statusText}`);
     }
     
@@ -44,7 +48,11 @@ export const generateFollowUpQuestions = async (condition: string, specialty?: s
       console.log(`Specialty context: ${specialty}`);
     }
     
-    const response = await fetch("/api/generate-followup-questions", {
+    // Make the API path absolute to ensure it works correctly
+    const apiPath = window.location.origin + "/api/generate-followup-questions";
+    console.log(`Calling API endpoint: ${apiPath}`);
+    
+    const response = await fetch(apiPath, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +67,7 @@ export const generateFollowUpQuestions = async (condition: string, specialty?: s
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("API Error response:", errorText);
+      console.error(`API Error response (${response.status}):`, errorText);
       throw new Error(`Failed to generate follow-up questions: ${response.status} ${response.statusText}`);
     }
     
