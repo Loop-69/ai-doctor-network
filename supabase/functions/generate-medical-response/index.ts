@@ -6,7 +6,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || '';
+// Use environment variable first, fall back to hardcoded key if not available
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI';
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -15,15 +16,15 @@ serve(async (req) => {
   }
 
   try {
-    const { symptoms, specialty, agentId, agentName, consultationId, isCollaborative } = await req.json();
+    const { symptoms, specialty, agentId, agentName, consultationId, isCollaborative, modelProvider, modelName, prompt } = await req.json();
 
-    console.log(`Generating medical response for ${specialty} specialist`);
+    console.log(`Generating medical response for ${specialty} specialist using ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
     
     // Build the prompt based on whether this is a collaborative consultation
-    let prompt = `You are a medical AI assistant specializing in ${specialty}.`;
+    let promptText = `You are a medical AI assistant specializing in ${specialty}.`;
     
     if (isCollaborative) {
-      prompt += ` You are participating in a collaborative consultation with other AI specialists. 
+      promptText += ` You are participating in a collaborative consultation with other AI specialists. 
       Based on your expertise in ${specialty}, analyze the following patient symptoms and provide:
       1. A diagnosis with explanation
       2. A confidence percentage (70-99%)
@@ -31,10 +32,10 @@ serve(async (req) => {
       
       Be precise and focused on your area of expertise. Your analysis will be combined with other specialists.`;
     } else {
-      prompt += ` Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
+      promptText += ` Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
     }
     
-    prompt += `\n\nPatient symptoms: ${symptoms}`;
+    promptText += `\n\nPatient symptoms: ${symptoms || prompt}`;
 
     // Call Gemini API
     const geminiResponse = await fetch(
@@ -46,7 +47,7 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           contents: [{
-            parts: [{ text: prompt }]
+            parts: [{ text: promptText }]
           }]
         }),
       }
@@ -99,6 +100,7 @@ serve(async (req) => {
     // Create response object
     const result = {
       fullResponse: responseText,
+      response: responseText,
       diagnosis,
       confidence,
       recommendation,
@@ -115,7 +117,10 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error in generate-medical-response function:", error);
     
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      response: "I apologize, but I'm having trouble analyzing your symptoms. Please try again or consult with a healthcare professional."
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

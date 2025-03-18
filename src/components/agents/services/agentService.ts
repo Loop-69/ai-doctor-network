@@ -1,5 +1,6 @@
 
 import { Agent } from "../types/agentTypes";
+import { GEMINI_API_KEY } from "@/integrations/supabase/client";
 
 export const generateAIResponse = async (prompt: string, agent: Agent): Promise<string> => {
   try {
@@ -12,6 +13,8 @@ export const generateAIResponse = async (prompt: string, agent: Agent): Promise<
         prompt,
         agentName: agent.name,
         specialty: agent.specialty,
+        modelProvider: "gemini",
+        modelName: "gemini-2.0-flash"
       }),
     });
     
@@ -37,6 +40,8 @@ export const generateFollowUpQuestions = async (condition: string, specialty?: s
       body: JSON.stringify({
         condition,
         specialty,
+        modelProvider: "gemini",
+        modelName: "gemini-2.0-flash"
       }),
     });
     

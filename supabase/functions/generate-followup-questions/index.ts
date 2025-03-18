@@ -6,7 +6,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const GEMINI_API_KEY = 'AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI';
+// Use environment variable first, fall back to hardcoded key if not available
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI';
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -15,13 +16,14 @@ serve(async (req) => {
   }
 
   try {
-    const { condition, specialty } = await req.json();
+    const { condition, specialty, modelProvider, modelName } = await req.json();
 
     if (!condition) {
       throw new Error("Medical condition is required");
     }
 
     console.log(`Generating follow-up questions for condition: ${condition}`);
+    console.log(`Using model: ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
     
     // Build the prompt for the Gemini API
     const prompt = `
