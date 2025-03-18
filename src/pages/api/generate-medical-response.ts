@@ -1,13 +1,12 @@
 
-// Create a standard API endpoint using Web API standards
+import { supabase } from '@/integrations/supabase/client';
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     console.log("API route: Calling generate-medical-response with:", JSON.stringify(body).substring(0, 200));
     
-    // Import supabase from the correct path
-    const { supabase } = await import('@/integrations/supabase/client');
-
+    // Call the Supabase edge function
     const { data, error } = await supabase.functions.invoke('generate-medical-response', {
       body: body
     });
