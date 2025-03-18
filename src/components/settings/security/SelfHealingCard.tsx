@@ -11,7 +11,6 @@ import { FormLabel } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { SheetTrigger } from "@/components/ui/sheet";
 import { Shield, Activity, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -127,12 +126,10 @@ export const SelfHealingCard = ({ onSecurityEvent }: SelfHealingCardProps) => {
             <span>{isSecurityScanRunning ? "Scanning..." : "Run Security Scan Now"}</span>
           </Button>
           
-          <SheetTrigger asChild>
-            <Button variant="outline">
-              <Activity className="mr-2 h-4 w-4" />
-              View Security Logs
-            </Button>
-          </SheetTrigger>
+          <Button variant="outline">
+            <Activity className="mr-2 h-4 w-4" />
+            View System Logs
+          </Button>
         </div>
         
         {selfHealingEnabled && (
