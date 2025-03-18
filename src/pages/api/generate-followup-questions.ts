@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    console.log("API route: Calling generate-followup-questions with:", JSON.stringify(body).substring(0, 200));
     
     const { data, error } = await supabase.functions.invoke('generate-followup-questions', {
       body: body
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
     }
 
     return new Response(JSON.stringify(data), {
+      status: 200,
       headers: {
         'Content-Type': 'application/json'
       }
