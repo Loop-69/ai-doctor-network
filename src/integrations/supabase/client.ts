@@ -5,6 +5,6 @@ import type { Database } from './types';
 
 const SUPABASE_URL = "https://quljyygvzixraubpdome.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1bGp5eWd2eml4cmF1YnBkb21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE2OTY0MzUsImV4cCI6MjA1NzI3MjQzNX0.dUtac1xsR0TClOY_NuLAy4aCz_klgBrjteDxgEfFlcY";
-export const GEMINI_API_KEY = "AIzaSyA4J0M8aEyn6SZtDcWYi6m1VhsmMmPs-0Q";
+export const GEMINI_API_KEY = "AIzaSyBBXVIaqFnVmbT7cjp_f1Ow0sWcHGt9teI";
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
