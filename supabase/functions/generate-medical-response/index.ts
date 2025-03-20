@@ -35,22 +35,23 @@ serve(async (req) => {
     if (isCollaborative) {
       promptText += `. You are participating in a collaborative consultation with other AI specialists. 
       Based on your expertise${specialty ? ` in ${specialty}` : ''}, analyze the following patient symptoms and provide:
-      1. A diagnosis with explanation
-      2. A confidence percentage (70-99%)
-      3. Treatment recommendations from your specialty's perspective
       
       IMPORTANT GUIDELINES:
+      - Respond in a conversational, personable manner as if speaking directly to the doctor. Use phrases like "I believe", "In my opinion", or "From my perspective as a ${specialty} specialist".
+      - Speak in first person and address the doctor directly with phrases like "I notice that" or "I would recommend".
       - You are the expert in ${specialty}. While you should consider what other specialists have said, your primary focus should be on analyzing the case from your specialty's unique perspective.
       - Do not simply agree with other specialists unless their assessment aligns with your expert opinion.
       - If you disagree with another specialist's assessment, politely explain why from your specialty's perspective.
       - Stay firmly within your specialty area and avoid making general statements that would be better addressed by other specialists.
-      - Format your response in plain text without markdown.
-      - Provide a concise diagnosis and recommendation focused specifically on your area of expertise.
+      - Format your response in a conversational tone but make sure to include:
+        • A clear diagnosis with your confidence level (70-99%)
+        • Your reasoning behind the diagnosis
+        • Treatment recommendations specific to your specialty
       - Be precise and focused. Your expertise is valuable precisely because it is specialized.
       
       Remember: You were selected for this consultation specifically for your expertise in ${specialty}, so emphasize that perspective.`;
     } else {
-      promptText += `. Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
+      promptText += `. Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan in a conversational, personable manner. Speak directly to the doctor, using first person language and a friendly, professional tone.`;
     }
     
     // Add conversation context if available
@@ -116,7 +117,10 @@ serve(async (req) => {
     const diagnosisMatch = responseText.match(/diagnosis:?\s*([^.\n]+)/i) || 
                           responseText.match(/diagnosed with:?\s*([^.\n]+)/i) ||
                           responseText.match(/condition:?\s*([^.\n]+)/i) ||
-                          responseText.match(/suffering from:?\s*([^.\n]+)/i);
+                          responseText.match(/suffering from:?\s*([^.\n]+)/i) ||
+                          responseText.match(/I believe\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i) ||
+                          responseText.match(/In my opinion,?\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i) ||
+                          responseText.match(/I think\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i);
     
     if (diagnosisMatch && diagnosisMatch[1]) {
       diagnosis = diagnosisMatch[1].trim().replace(/\*\*/g, '');
@@ -124,7 +128,9 @@ serve(async (req) => {
     
     // Try to extract confidence
     const confidenceMatch = responseText.match(/confidence:?\s*(\d+)%/i) ||
-                           responseText.match(/(\d+)%\s*confidence/i);
+                           responseText.match(/(\d+)%\s*confidence/i) ||
+                           responseText.match(/(\d+)%\s*certain/i) ||
+                           responseText.match(/certainty of\s*(\d+)%/i);
     
     if (confidenceMatch && confidenceMatch[1]) {
       const parsedConfidence = parseInt(confidenceMatch[1]);
@@ -136,7 +142,9 @@ serve(async (req) => {
     // Try to extract recommendation
     const recommendationMatch = responseText.match(/recommendation:?\s*(.*?)(?:\n\n|$)/is) ||
                                responseText.match(/recommend:?\s*(.*?)(?:\n\n|$)/is) ||
-                               responseText.match(/treatment:?\s*(.*?)(?:\n\n|$)/is);
+                               responseText.match(/treatment:?\s*(.*?)(?:\n\n|$)/is) ||
+                               responseText.match(/I (?:would |)recommend:?\s*(.*?)(?:\n\n|$)/is) ||
+                               responseText.match(/I suggest:?\s*(.*?)(?:\n\n|$)/is);
     
     if (recommendationMatch && recommendationMatch[1]) {
       recommendation = recommendationMatch[1].trim().replace(/\*\*/g, '');
