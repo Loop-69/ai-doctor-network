@@ -39,6 +39,7 @@ serve(async (req) => {
       2. A confidence percentage (70-99%)
       3. Treatment recommendations from your specialty's perspective
       
+      Format your response in plain text without markdown. Provide a concise diagnosis and recommendation.
       Be precise and focused on your area of expertise. Your analysis will be combined with other specialists.`;
     } else {
       promptText += `. Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
@@ -85,14 +86,14 @@ serve(async (req) => {
     let confidence = Math.floor(Math.random() * 30) + 70; // Default random confidence 70-99%
     let recommendation = "Please consult with a human doctor for proper diagnosis and treatment.";
     
-    // Try to extract a diagnosis
-    const diagnosisMatch = responseText.match(/diagnosis:?\s*(.*?)(?:\n|$)/i) || 
-                          responseText.match(/diagnosed with:?\s*(.*?)(?:\n|$)/i) ||
-                          responseText.match(/condition:?\s*(.*?)(?:\n|$)/i) ||
-                          responseText.match(/suffering from:?\s*(.*?)(?:\n|$)/i);
+    // Try to extract a diagnosis - improved regex patterns
+    const diagnosisMatch = responseText.match(/diagnosis:?\s*([^.\n]+)/i) || 
+                          responseText.match(/diagnosed with:?\s*([^.\n]+)/i) ||
+                          responseText.match(/condition:?\s*([^.\n]+)/i) ||
+                          responseText.match(/suffering from:?\s*([^.\n]+)/i);
     
     if (diagnosisMatch && diagnosisMatch[1]) {
-      diagnosis = diagnosisMatch[1].trim();
+      diagnosis = diagnosisMatch[1].trim().replace(/\*\*/g, '');
     }
     
     // Try to extract confidence
@@ -112,7 +113,7 @@ serve(async (req) => {
                                responseText.match(/treatment:?\s*(.*?)(?:\n\n|$)/is);
     
     if (recommendationMatch && recommendationMatch[1]) {
-      recommendation = recommendationMatch[1].trim();
+      recommendation = recommendationMatch[1].trim().replace(/\*\*/g, '');
     }
     
     // Create response object

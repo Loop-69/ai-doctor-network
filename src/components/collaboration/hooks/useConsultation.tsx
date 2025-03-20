@@ -117,12 +117,18 @@ export function useConsultation() {
       // Call the Supabase edge function to generate a response
       const { diagnosis, recommendation, confidence } = await generateAgentResponse(consultId, agent, symptoms);
       
-      // Add the AI response to the messages
+      // Format the diagnosis message properly - removing markdown asterisks and formatting
+      let formattedDiagnosis = diagnosis;
+      if (diagnosis.includes('**')) {
+        formattedDiagnosis = diagnosis.replace(/\*\*/g, '');
+      }
+      
+      // Create a nicely formatted response message
       const agentResponse: Message = {
         id: Date.now().toString() + `-${agent.id}-response`,
         sender: agent.name,
         senderId: agent.id,
-        content: `Based on the symptoms described, I believe the patient may be suffering from ${diagnosis}. ${recommendation} (Confidence: ${confidence}%)`,
+        content: `Based on the symptoms described, I believe the patient may be suffering from ${formattedDiagnosis}. ${recommendation} (Confidence: ${confidence}%)`,
         timestamp: new Date()
       };
       
@@ -133,7 +139,7 @@ export function useConsultation() {
         agentId: agent.id,
         agentName: agent.name,
         specialty: agent.specialty,
-        diagnosis,
+        diagnosis: formattedDiagnosis,
         confidence,
         recommendation
       }]);
