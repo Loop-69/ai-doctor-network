@@ -7,49 +7,48 @@ import {
   CardHeader, 
   CardTitle,
 } from "@/components/ui/card";
-import { FormLabel } from "@/components/ui/form";
+import { 
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type PasswordCardProps = {
   onPasswordChange: (log: { message: string, level: string }) => void;
 };
 
+const passwordSchema = z.object({
+  current: z.string().min(1, "Current password is required"),
+  new: z.string().min(8, "Password must be at least 8 characters"),
+  confirm: z.string().min(1, "Please confirm your password"),
+}).refine((data) => data.new === data.confirm, {
+  message: "Passwords don't match",
+  path: ["confirm"],
+});
+
+type PasswordFormValues = z.infer<typeof passwordSchema>;
+
 export const PasswordCard = ({ onPasswordChange }: PasswordCardProps) => {
   const { toast } = useToast();
-  const [passwordForm, setPasswordForm] = useState({
-    current: "",
-    new: "",
-    confirm: ""
+  
+  const form = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      current: "",
+      new: "",
+      confirm: "",
+    },
   });
   
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordForm({
-      ...passwordForm,
-      [e.target.id]: e.target.value
-    });
-  };
-  
-  const handleUpdatePassword = () => {
-    if (passwordForm.new !== passwordForm.confirm) {
-      toast({
-        title: "Passwords don't match",
-        description: "Your new password and confirmation don't match.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (passwordForm.new.length < 8) {
-      toast({
-        title: "Password too short",
-        description: "Password must be at least 8 characters long.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
+  const handleUpdatePassword = (values: PasswordFormValues) => {
     toast({
       title: "Password updated",
       description: "Your password has been successfully updated."
@@ -60,11 +59,7 @@ export const PasswordCard = ({ onPasswordChange }: PasswordCardProps) => {
       level: "info"
     });
     
-    setPasswordForm({
-      current: "",
-      new: "",
-      confirm: ""
-    });
+    form.reset();
   };
   
   return (
@@ -76,37 +71,47 @@ export const PasswordCard = ({ onPasswordChange }: PasswordCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-4">
-          <div className="grid gap-2">
-            <FormLabel htmlFor="current">Current Password</FormLabel>
-            <Input 
-              id="current" 
-              type="password" 
-              value={passwordForm.current}
-              onChange={handlePasswordChange}
-            />
-          </div>
-          <div className="grid gap-2">
-            <FormLabel htmlFor="new">New Password</FormLabel>
-            <Input 
-              id="new" 
-              type="password" 
-              value={passwordForm.new}
-              onChange={handlePasswordChange}
-            />
-          </div>
-          <div className="grid gap-2">
-            <FormLabel htmlFor="confirm">Confirm New Password</FormLabel>
-            <Input 
-              id="confirm" 
-              type="password" 
-              value={passwordForm.confirm}
-              onChange={handlePasswordChange}
-            />
-          </div>
-        </div>
-        
-        <Button onClick={handleUpdatePassword}>Update Password</Button>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleUpdatePassword)} className="space-y-4">
+            <FormItem>
+              <FormLabel htmlFor="current">Current Password</FormLabel>
+              <FormControl>
+                <Input
+                  id="current"
+                  type="password"
+                  {...form.register("current")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+            
+            <FormItem>
+              <FormLabel htmlFor="new">New Password</FormLabel>
+              <FormControl>
+                <Input
+                  id="new"
+                  type="password"
+                  {...form.register("new")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+            
+            <FormItem>
+              <FormLabel htmlFor="confirm">Confirm New Password</FormLabel>
+              <FormControl>
+                <Input
+                  id="confirm"
+                  type="password"
+                  {...form.register("confirm")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+            
+            <Button type="submit">Update Password</Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );
