@@ -1,26 +1,34 @@
 
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { CalendarClock, Play } from "lucide-react";
 
 import { ScheduleFormValues } from "../types/scheduleTypes";
 import { useQuestionGenerator } from "../hooks/useQuestionGenerator";
+import { useActiveCallContext } from "../context/ActiveCallContext";
+import { getPatientNameById, getAgentNameById } from "../utils/mockData";
 import PatientAgentSelect from "../components/PatientAgentSelect";
 import DateTimeSelect from "../components/DateTimeSelect";
 import PurposeConditionInputs from "../components/PurposeConditionInputs";
 import QuestionsTextarea from "../components/QuestionsTextarea";
+import SimulateCallDialog from "../components/SimulateCallDialog";
 
 const ScheduleTab = () => {
   const { toast } = useToast();
+  const { activeCall } = useActiveCallContext();
+  const [showSimulateDialog, setShowSimulateDialog] = useState(false);
   
   const form = useForm<ScheduleFormValues>({
     defaultValues: {
@@ -50,6 +58,26 @@ const ScheduleTab = () => {
     form.reset();
   };
 
+  const handleSimulateCall = () => {
+    const data = form.getValues();
+    
+    // Basic validation
+    if (!data.patientId || !data.agentId || !data.condition) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in patient, agent, and condition fields to simulate a call.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setShowSimulateDialog(true);
+  };
+
+  const canSimulate = !activeCall && form.getValues().patientId && form.getValues().agentId;
+  const patientName = getPatientNameById(form.watch("patientId"));
+  const agentName = getAgentNameById(form.watch("agentId"));
+
   return (
     <Card>
       <CardHeader>
@@ -68,12 +96,37 @@ const ScheduleTab = () => {
               form={form} 
               isGeneratingQuestions={isGeneratingQuestions} 
             />
-            <Button type="submit" className="w-full md:w-auto">
-              Schedule Follow-up
-            </Button>
           </form>
         </Form>
       </CardContent>
+      <CardFooter className="flex flex-col sm:flex-row gap-3 pt-0">
+        <Button
+          type="button"
+          variant="outline"
+          className="flex-1 sm:flex-none"
+          onClick={handleSimulateCall}
+          disabled={!canSimulate}
+        >
+          <Play className="mr-2 h-4 w-4" />
+          Simulate Now
+        </Button>
+        <Button 
+          type="button"
+          className="flex-1 sm:flex-none"
+          onClick={form.handleSubmit(onSubmit)}
+        >
+          <CalendarClock className="mr-2 h-4 w-4" />
+          Schedule Follow-up
+        </Button>
+      </CardFooter>
+      
+      <SimulateCallDialog
+        open={showSimulateDialog}
+        onOpenChange={setShowSimulateDialog}
+        formData={form.getValues()}
+        patientName={patientName}
+        agentName={agentName}
+      />
     </Card>
   );
 };

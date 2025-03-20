@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { Bell, Heart, Calendar, MessageSquare, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Bell, Heart, Calendar, MessageSquare, X, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -43,11 +43,52 @@ const initialNotifications = [
   },
 ];
 
+// Event bus for real-time notifications
+export const notificationEvents = {
+  listeners: new Set<(notification: any) => void>(),
+  
+  subscribe(callback: (notification: any) => void) {
+    this.listeners.add(callback);
+    return () => this.listeners.delete(callback);
+  },
+  
+  publish(notification: any) {
+    this.listeners.forEach(callback => callback(notification));
+  }
+};
+
+// Function to add a new follow-up call notification
+export const addFollowUpNotification = (data: {
+  title: string;
+  description: string;
+  icon?: JSX.Element;
+}) => {
+  const notification = {
+    id: Date.now(),
+    title: data.title,
+    description: data.description,
+    time: "Just now",
+    unread: true,
+    icon: data.icon || <Phone className="h-4 w-4 text-blue-500" />,
+  };
+  
+  notificationEvents.publish(notification);
+};
+
 export const NotificationsList = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [userNotifications, setUserNotifications] = useState(initialNotifications);
   const unreadCount = userNotifications.filter(n => n.unread).length;
+
+  // Subscribe to notification events
+  useEffect(() => {
+    const unsubscribe = notificationEvents.subscribe((notification) => {
+      setUserNotifications(prev => [notification, ...prev]);
+    });
+    
+    return unsubscribe;
+  }, []);
 
   const markAsRead = (id: number) => {
     setUserNotifications(userNotifications.map(notification => 

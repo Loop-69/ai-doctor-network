@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { ScheduleFormValues } from "../types/scheduleTypes";
-import { patients, agents } from "../utils/mockData";
+import { mockPatients, mockAgents } from "../utils/mockData";
 
 interface PatientAgentSelectProps {
   form: UseFormReturn<ScheduleFormValues>;
@@ -39,15 +39,15 @@ const PatientAgentSelect: React.FC<PatientAgentSelectProps> = ({ form }) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {patients.map((patient) => (
+                {mockPatients.map((patient) => (
                   <SelectItem key={patient.id} value={patient.id}>
-                    {patient.name}
+                    {patient.name} ({patient.age}, {patient.gender})
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <FormDescription>
-              Select the patient to follow up with
+              Select the patient for the follow-up call
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -63,19 +63,19 @@ const PatientAgentSelect: React.FC<PatientAgentSelectProps> = ({ form }) => {
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an agent" />
+                  <SelectValue placeholder="Select an AI agent" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {agents.map((agent) => (
+                {mockAgents.map((agent) => (
                   <SelectItem key={agent.id} value={agent.id}>
-                    {agent.name}
+                    {agent.name} ({agent.specialty})
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <FormDescription>
-              Select the AI agent to make the follow-up call
+              Select the AI agent to conduct the follow-up
             </FormDescription>
             <FormMessage />
           </FormItem>
