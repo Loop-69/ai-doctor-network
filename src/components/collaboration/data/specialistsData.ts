@@ -1,5 +1,5 @@
 
-import { Heart, Brain, Stethoscope, Microscope, Lungs, Pill, Bone, Eye, UserCog } from "lucide-react";
+import { Heart, Brain, Stethoscope, Microscope, Activity, Pill, Bone, Eye, UserCog } from "lucide-react";
 import { Agent } from "../types/consultationTypes";
 
 export const specialists: Agent[] = [
@@ -48,7 +48,7 @@ export const specialists: Agent[] = [
     name: "Dr. Avery Pulmonology",
     specialty: "Pulmonology",
     description: "Expert in respiratory system and lung conditions",
-    icon: Lungs,
+    icon: Activity,
     color: "text-sky-500",
     availability: true,
     rating: 4.6
