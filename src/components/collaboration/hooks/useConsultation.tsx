@@ -96,7 +96,8 @@ export function useConsultation() {
         setMessages(prev => [...prev, agentMessage]);
         
         // Call the medical response function with the agent's specialty
-        await processAgentResponse(consultId, agent, patientSymptoms);
+        // Pass an empty array of messages since this is the first interaction
+        await processAgentResponse(consultId, agent, patientSymptoms, [userMessage]);
       }));
 
       setConsultationStarted(true);
@@ -112,10 +113,18 @@ export function useConsultation() {
     }
   };
 
-  const processAgentResponse = async (consultId: string, agent: Agent, symptoms: string) => {
+  const processAgentResponse = async (consultId: string, agent: Agent, symptoms: string, contextMessages: Message[] = []) => {
     try {
+      // Gather all previous messages as context
+      const relevantMessages = messages.length > 0 ? messages : contextMessages;
+      
       // Call the Supabase edge function to generate a response
-      const { diagnosis, recommendation, confidence } = await generateAgentResponse(consultId, agent, symptoms);
+      const { diagnosis, recommendation, confidence } = await generateAgentResponse(
+        consultId, 
+        agent, 
+        symptoms,
+        relevantMessages
+      );
       
       // Format the diagnosis message properly - removing markdown asterisks and formatting
       let formattedDiagnosis = diagnosis;
@@ -186,7 +195,7 @@ export function useConsultation() {
     await Promise.all(selectedAgents.map(async (agent, index) => {
       // Add slight delay between responses
       await new Promise(resolve => setTimeout(resolve, 800 * index));
-      await processAgentResponse(consultationId, agent, followUpMessage);
+      await processAgentResponse(consultationId, agent, followUpMessage, messages.concat(userMessage));
     }));
   };
 

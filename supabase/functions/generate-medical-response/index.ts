@@ -21,7 +21,7 @@ serve(async (req) => {
 
   try {
     console.log("Received request to generate medical response");
-    const { symptoms, specialty, agentId, agentName, consultationId, isCollaborative, modelProvider, modelName, prompt } = await req.json();
+    const { symptoms, specialty, agentId, agentName, consultationId, isCollaborative, modelProvider, modelName, prompt, previousMessages } = await req.json();
 
     console.log(`Generating medical response for ${specialty || 'general'} specialist using ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
     console.log(`Input: ${prompt || symptoms || 'No input provided'}`);
@@ -43,6 +43,24 @@ serve(async (req) => {
       Be precise and focused on your area of expertise. Your analysis will be combined with other specialists.`;
     } else {
       promptText += `. Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
+    }
+    
+    // Add conversation context if available
+    if (previousMessages && previousMessages.length > 0) {
+      promptText += `\n\nHere is the previous conversation history for context:`;
+      
+      previousMessages.forEach((msg, index) => {
+        // Format depends on the message sender
+        if (msg.isDoctor) {
+          promptText += `\nDoctor: ${msg.content}`;
+        } else if (msg.sender === agentName) {
+          promptText += `\nYou (${specialty} specialist): ${msg.content}`;
+        } else {
+          promptText += `\n${msg.sender}: ${msg.content}`;
+        }
+      });
+      
+      promptText += `\n\nRemember your role as a ${specialty} specialist and maintain consistency with your previous responses.`;
     }
     
     promptText += `\n\nPatient symptoms: ${symptoms || prompt || 'No symptoms provided'}`;

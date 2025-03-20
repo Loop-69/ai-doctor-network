@@ -91,7 +91,8 @@ export async function updateConsultationStatus(consultationId: string, status: '
 export async function generateAgentResponse(
   consultationId: string, 
   agent: Agent, 
-  symptoms: string
+  symptoms: string,
+  previousMessages: Message[] = []
 ): Promise<{
   diagnosis: string;
   recommendation: string;
@@ -107,7 +108,8 @@ export async function generateAgentResponse(
         agentId: agent.id,
         agentName: agent.name,
         consultationId: consultationId,
-        isCollaborative: true
+        isCollaborative: true,
+        previousMessages: previousMessages.slice(-10) // Send last 10 messages for context
       }
     });
 
