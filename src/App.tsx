@@ -23,6 +23,9 @@ import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import Notifications from "./pages/Notifications";
 
+// Import the new page for security logs if needed
+// import SecurityLogs from "./pages/SecurityLogs";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -81,7 +84,7 @@ const App = () => (
                 } 
               />
               <Route 
-                path="/settings" 
+                path="/settings/*" 
                 element={
                   <ProtectedRoute>
                     <Settings />
@@ -104,6 +107,15 @@ const App = () => (
                   </ProtectedRoute>
                 } 
               />
+              {/* If needed, add a dedicated route for security logs */}
+              {/* <Route 
+                path="/settings/security/logs" 
+                element={
+                  <ProtectedRoute>
+                    <SecurityLogs />
+                  </ProtectedRoute>
+                } 
+              /> */}
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

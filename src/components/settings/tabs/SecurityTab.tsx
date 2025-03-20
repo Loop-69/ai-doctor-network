@@ -8,6 +8,7 @@ import { TwoFactorCard } from "../security/TwoFactorCard";
 import { SelfHealingCard } from "../security/SelfHealingCard";
 import { LoginSessionsCard } from "../security/LoginSessionsCard";
 import { SecurityLogsSheet } from "../security/SecurityLogsSheet";
+import { useNavigate, useLocation } from "react-router-dom";
 
 type ActivityLog = {
   id: number;
@@ -25,6 +26,9 @@ const SecurityTab = () => {
       level: "info"
     }
   ]);
+  
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const addLogEntry = (logData: { message: string, level: string }) => {
     const newLog = {
@@ -34,6 +38,11 @@ const SecurityTab = () => {
       level: logData.level as "info" | "warning" | "error"
     };
     setActivityLogs([newLog, ...activityLogs]);
+  };
+
+  const navigateToLogsHistory = () => {
+    // Instead of using the Sheet directly, you can navigate to a dedicated logs page
+    navigate('/settings/security/logs', { state: { logs: activityLogs } });
   };
 
   return (
