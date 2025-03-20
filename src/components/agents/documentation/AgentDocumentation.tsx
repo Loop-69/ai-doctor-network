@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FileText, Bookmark, ChevronRight } from "lucide-react";
+import { FileText, Bookmark, ChevronRight, Edit, PlusCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AgentDocument, getAgentDocumentation } from "../services/documentationService";
+import EditDocumentationDialog from "./EditDocumentationDialog";
 import { Agent } from "../types/agentTypes";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,8 @@ const AgentDocumentation = ({ agent, onScheduleConsultation }: AgentDocumentatio
   const [selectedDocument, setSelectedDocument] = useState<AgentDocument | null>(null);
   const [isDocumentOpen, setIsDocumentOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("clinical");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [documentToEdit, setDocumentToEdit] = useState<AgentDocument | null>(null);
   
   const categoryTabs = {
     "clinical": ["Clinical Guidelines", "Assessment Protocols"],
@@ -28,19 +31,19 @@ const AgentDocumentation = ({ agent, onScheduleConsultation }: AgentDocumentatio
     "treatment": ["Treatment Resources", "Medication Resources", "Prevention Resources"]
   };
 
+  const fetchDocuments = async () => {
+    setIsLoading(true);
+    try {
+      const docs = await getAgentDocumentation(agent.id);
+      setDocuments(docs);
+    } catch (error) {
+      console.error("Error fetching documentation:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchDocuments = async () => {
-      setIsLoading(true);
-      try {
-        const docs = await getAgentDocumentation(agent.id);
-        setDocuments(docs);
-      } catch (error) {
-        console.error("Error fetching documentation:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
     fetchDocuments();
   }, [agent.id]);
   
@@ -53,6 +56,29 @@ const AgentDocumentation = ({ agent, onScheduleConsultation }: AgentDocumentatio
     return documents.filter(doc => categories.includes(doc.category));
   };
 
+  const handleEditDocument = (doc: AgentDocument) => {
+    setDocumentToEdit(doc);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleAddNewDocument = () => {
+    const newDocument: AgentDocument = {
+      id: "",
+      agent_id: agent.id,
+      title: "",
+      content: "",
+      category: Object.values(categoryTabs)[
+        Object.keys(categoryTabs).indexOf(activeTab)
+      ][0]
+    };
+    setDocumentToEdit(newDocument);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDocumentSaved = (savedDoc: AgentDocument) => {
+    fetchDocuments();
+  };
+
   return (
     <div className="space-y-4">
       <Card>
@@ -62,13 +88,23 @@ const AgentDocumentation = ({ agent, onScheduleConsultation }: AgentDocumentatio
               <CardTitle>{agent.name} Documentation</CardTitle>
               <CardDescription>Reference materials and guidelines</CardDescription>
             </div>
-            <div
-              className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center",
-                `bg-${agent.color}/10 text-${agent.color}`
-              )}
-            >
-              <agent.icon className="w-5 h-5" />
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddNewDocument}
+              >
+                <PlusCircle className="h-4 w-4 mr-1" />
+                Add Document
+              </Button>
+              <div
+                className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center",
+                  `bg-${agent.color}/10 text-${agent.color}`
+                )}
+              >
+                <agent.icon className="w-5 h-5" />
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -96,18 +132,30 @@ const AgentDocumentation = ({ agent, onScheduleConsultation }: AgentDocumentatio
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <div 
-                            className="flex items-center justify-between p-3 border rounded-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
-                            onClick={() => openDocument(doc)}
-                          >
-                            <div className="flex items-center space-x-3">
+                          <div className="flex items-center justify-between p-3 border rounded-md hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                            <div 
+                              className="flex items-center space-x-3 cursor-pointer flex-1"
+                              onClick={() => openDocument(doc)}
+                            >
                               <FileText className="h-5 w-5 text-aida-500" />
                               <div>
                                 <p className="font-medium">{doc.title}</p>
                                 <p className="text-xs text-muted-foreground">{doc.category}</p>
                               </div>
                             </div>
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditDocument(doc);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            </div>
                           </div>
                         </motion.div>
                       ))
@@ -152,13 +200,29 @@ const AgentDocumentation = ({ agent, onScheduleConsultation }: AgentDocumentatio
             >
               Close
             </Button>
-            <Button>
+            <Button onClick={() => {
+              setIsDocumentOpen(false);
+              if (selectedDocument) {
+                handleEditDocument(selectedDocument);
+              }
+            }}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </Button>
+            <Button className="ml-2">
               <Bookmark className="mr-2 h-4 w-4" />
               Save Reference
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      <EditDocumentationDialog
+        document={documentToEdit}
+        isOpen={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        onSaved={handleDocumentSaved}
+      />
     </div>
   );
 };

@@ -54,3 +54,48 @@ export async function getDocumentById(documentId: string): Promise<AgentDocument
     return null;
   }
 }
+
+export async function saveDocument(document: AgentDocument): Promise<AgentDocument | null> {
+  try {
+    let response;
+    
+    if (document.id) {
+      // Update existing document
+      response = await supabase
+        .from('agent_documentation' as any)
+        .update({
+          title: document.title,
+          content: document.content,
+          category: document.category,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', document.id)
+        .select('*')
+        .single();
+    } else {
+      // Create new document
+      response = await supabase
+        .from('agent_documentation' as any)
+        .insert({
+          agent_id: document.agent_id,
+          title: document.title,
+          content: document.content,
+          category: document.category
+        })
+        .select('*')
+        .single();
+    }
+
+    const { data, error } = response;
+
+    if (error) {
+      console.error("Error saving document:", error);
+      throw error;
+    }
+
+    return data as unknown as AgentDocument;
+  } catch (error) {
+    console.error("Failed to save document:", error);
+    return null;
+  }
+}

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { FileText, Plus, Calendar } from "lucide-react";
@@ -6,14 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Agent } from "./types/agentTypes";
 import AgentDocumentation from "./documentation/AgentDocumentation";
+
 interface AgentProfileProps {
   agent: Agent;
 }
+
 const AgentProfile = ({
   agent
 }: AgentProfileProps) => {
   const [activeTab, setActiveTab] = useState("profile");
-  return <Card>
+  
+  return (
+    <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -43,24 +48,30 @@ const AgentProfile = ({
             <div className="space-y-2">
               <p className="text-sm font-medium">Capabilities:</p>
               <ul className="text-sm text-muted-foreground space-y-1">
-                {agent.capabilities.map((capability, i) => <li key={i} className="flex items-center">
+                {agent.capabilities.map((capability, i) => (
+                  <li key={i} className="flex items-center">
                     <span className="h-1 w-1 rounded-full bg-aida-500 mr-2" />
                     {capability}
-                  </li>)}
+                  </li>
+                ))}
               </ul>
             </div>
           </TabsContent>
           
           <TabsContent value="documentation" className="mt-4">
-            <AgentDocumentation agent={agent} onScheduleConsultation={() => console.log("Schedule consultation with", agent.name)} />
+            <AgentDocumentation 
+              agent={agent} 
+              onScheduleConsultation={() => console.log("Schedule consultation with", agent.name)}
+            />
           </TabsContent>
         </Tabs>
       </CardContent>
       
       <CardFooter className="flex-col space-y-2">
         
-        
       </CardFooter>
-    </Card>;
+    </Card>
+  );
 };
+
 export default AgentProfile;
