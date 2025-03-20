@@ -1,5 +1,5 @@
-
 import { ReactNode } from "react";
+import { AgentDocument } from "../../agents/services/documentationService";
 
 export interface Agent {
   id: string;
@@ -11,16 +11,6 @@ export interface Agent {
   availability?: boolean;
   rating?: number;
   documentation?: AgentDocument[];
-}
-
-export interface AgentDocument {
-  id: string;
-  agent_id: string;
-  title: string;
-  content: string;
-  category: string;
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface Diagnosis {
