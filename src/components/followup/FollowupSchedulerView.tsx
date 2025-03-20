@@ -1,8 +1,10 @@
 
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, FileText } from "lucide-react";
+import { Calendar, Clock, FileText, Headphones } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import { ActiveCallProvider } from "./context/ActiveCallContext";
 import { useActiveCallContext } from "./context/ActiveCallContext";
@@ -29,19 +31,31 @@ const ActiveCallManager = () => {
 
 const FollowupSchedulerView = () => {
   const [activeTab, setActiveTab] = useState("schedule");
+  const { activeCall } = useActiveCallContext();
   
   return (
     <ActiveCallProvider>
       <div className="space-y-6">
         <header className="space-y-2">
-          <motion.h1 
-            className="h1"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            Patient Follow-up Scheduler
-          </motion.h1>
+          <div className="flex justify-between items-center">
+            <motion.h1 
+              className="h1"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              Patient Follow-up Scheduler
+            </motion.h1>
+            
+            {activeCall && (
+              <Link to="/followup-monitoring">
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Headphones className="h-4 w-4" />
+                  Monitor Active Call
+                </Button>
+              </Link>
+            )}
+          </div>
           <motion.p 
             className="text-muted-foreground"
             initial={{ opacity: 0, y: -10 }}

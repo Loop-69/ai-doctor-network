@@ -18,6 +18,7 @@ import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import FollowupScheduler from "./pages/FollowupScheduler";
+import FollowupMonitoring from "./pages/FollowupMonitoring";
 import Features from "./pages/Features";
 import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
@@ -98,6 +99,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <FollowupScheduler />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/followup-monitoring" 
+                element={
+                  <ProtectedRoute>
+                    <FollowupMonitoring />
                   </ProtectedRoute>
                 } 
               />
