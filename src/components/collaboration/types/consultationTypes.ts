@@ -64,3 +64,12 @@ export interface Consultation {
   metadata?: Record<string, any>;
   references?: AgentDocument[];
 }
+
+export interface AIVerdict {
+  fullText: string;
+  consensusDiagnosis: string;
+  agreementAnalysis: string;
+  recommendations: string;
+  nextSteps: string;
+  timestamp: string;
+}

@@ -1,98 +1,170 @@
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { Diagnosis } from "../types/consultationTypes";
+import { AlertCircle, CheckCircle2, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Diagnosis, Message } from "../types/consultationTypes";
+import { Skeleton } from "@/components/ui/skeleton";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DiagnosisVerdictProps {
   diagnoses: Diagnosis[];
+  messages: Message[];
+  patientSymptoms: string;
+  refreshVerdict: () => void;
+  isRefreshing: boolean;
 }
 
-interface Consensus {
-  diagnosis: string;
-  agreementCount: number;
-  totalSpecialists: number;
-  agreementPercentage: number;
-  avgConfidence: number;
+interface AIVerdict {
+  fullText: string;
+  consensusDiagnosis: string;
+  agreementAnalysis: string;
+  recommendations: string;
+  nextSteps: string;
+  timestamp: string;
 }
 
-const DiagnosisVerdict = ({ diagnoses }: DiagnosisVerdictProps) => {
-  const getConsensus = (): Consensus | null => {
-    if (diagnoses.length === 0) return null;
-    
-    // Group diagnoses by their diagnosis text
-    const diagnosisGroups: Record<string, Diagnosis[]> = {};
-    
-    diagnoses.forEach(d => {
-      if (!diagnosisGroups[d.diagnosis]) {
-        diagnosisGroups[d.diagnosis] = [];
+const DiagnosisVerdict = ({ diagnoses, messages, patientSymptoms, refreshVerdict, isRefreshing }: DiagnosisVerdictProps) => {
+  const [loading, setLoading] = useState(false);
+  const [aiVerdict, setAiVerdict] = useState<AIVerdict | null>(null);
+  
+  // Track unique specialists by ID
+  const uniqueSpecialists = [...new Set(diagnoses.map(d => d.agentId))];
+  
+  // Group diagnoses by specialist to show most recent opinion per specialist
+  const specialistLatestDiagnoses = uniqueSpecialists.map(specialistId => {
+    const specialistDiagnoses = diagnoses.filter(d => d.agentId === specialistId);
+    return specialistDiagnoses[specialistDiagnoses.length - 1]; // Get most recent
+  });
+  
+  // Generate AI verdict when diagnoses change
+  useEffect(() => {
+    const generateVerdict = async () => {
+      if (diagnoses.length === 0 || loading) return;
+      
+      setLoading(true);
+      
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-consultation-verdict', {
+          body: {
+            diagnoses: specialistLatestDiagnoses,
+            messages,
+            symptoms: patientSymptoms
+          }
+        });
+        
+        if (error) throw error;
+        
+        setAiVerdict(data);
+      } catch (error) {
+        console.error("Error generating AI verdict:", error);
+      } finally {
+        setLoading(false);
       }
-      diagnosisGroups[d.diagnosis].push(d);
-    });
-    
-    // Find the diagnosis with the most agreement
-    let consensusDiagnosis = "";
-    let maxCount = 0;
-    let avgConfidence = 0;
-    
-    for (const [diagnosis, diagnosisArray] of Object.entries(diagnosisGroups)) {
-      if (diagnosisArray.length > maxCount) {
-        maxCount = diagnosisArray.length;
-        consensusDiagnosis = diagnosis;
-        avgConfidence = diagnosisArray.reduce((sum, d) => sum + d.confidence, 0) / diagnosisArray.length;
-      }
-    }
-    
-    const agreementPercentage = (maxCount / diagnoses.length) * 100;
-    
-    return {
-      diagnosis: consensusDiagnosis,
-      agreementCount: maxCount,
-      totalSpecialists: diagnoses.length,
-      agreementPercentage,
-      avgConfidence
     };
+    
+    generateVerdict();
+  }, [diagnoses.length, messages.length]);
+  
+  // Handler for manual refresh
+  const handleRefreshVerdict = () => {
+    refreshVerdict();
+    setLoading(true);
+    
+    // Re-generate verdict
+    supabase.functions.invoke('generate-consultation-verdict', {
+      body: {
+        diagnoses: specialistLatestDiagnoses,
+        messages,
+        symptoms: patientSymptoms
+      }
+    }).then(({ data, error }) => {
+      if (error) {
+        console.error("Error refreshing verdict:", error);
+      } else {
+        setAiVerdict(data);
+      }
+      setLoading(false);
+    });
   };
-
-  const consensus = getConsensus();
-
+  
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <AlertCircle className="h-5 w-5" />
-          Collaborative Diagnosis
-        </CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5" />
+            Collaborative Diagnosis
+          </CardTitle>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleRefreshVerdict}
+            disabled={loading || isRefreshing || diagnoses.length === 0}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading || isRefreshing ? 'animate-spin' : ''}`} />
+            Refresh Verdict
+          </Button>
+        </div>
         <CardDescription>
-          Diagnostic conclusions from {diagnoses.length} specialist{diagnoses.length > 1 ? 's' : ''}
+          Integrated diagnosis from {uniqueSpecialists.length} specialist{uniqueSpecialists.length !== 1 ? 's' : ''}
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        {consensus && (
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-6">
+      <CardContent className="space-y-6">
+        {/* AI Verdict Section */}
+        {(loading || isRefreshing) ? (
+          <Card className="bg-slate-50 dark:bg-slate-900">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Consensus Diagnosis</CardTitle>
+              <CardTitle className="text-lg">
+                <Skeleton className="h-6 w-48" />
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-medical-green" />
-                  <span className="font-medium">{consensus.diagnosis}</span>
-                </div>
-                <div className="text-sm">
-                  <span className="font-medium">Agreement:</span> {consensus.agreementCount} of {consensus.totalSpecialists} specialists ({Math.round(consensus.agreementPercentage)}%)
-                </div>
-                <div className="text-sm">
-                  <span className="font-medium">Average Confidence:</span> {Math.round(consensus.avgConfidence)}%
-                </div>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </CardContent>
+          </Card>
+        ) : aiVerdict ? (
+          <Card className="bg-slate-50 dark:bg-slate-900">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">AI-Synthesized Verdict</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-base mb-1">Consensus Diagnosis</h3>
+                <p className="text-sm">{aiVerdict.consensusDiagnosis}</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-base mb-1">Agreement Analysis</h3>
+                <p className="text-sm">{aiVerdict.agreementAnalysis}</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-base mb-1">Integrated Recommendations</h3>
+                <p className="text-sm">{aiVerdict.recommendations}</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-base mb-1">Suggested Next Steps</h3>
+                <p className="text-sm">{aiVerdict.nextSteps}</p>
               </div>
             </CardContent>
           </Card>
-        )}
+        ) : diagnoses.length > 0 ? (
+          <Card className="bg-slate-50 dark:bg-slate-900">
+            <CardContent className="py-6 text-center">
+              <p>Loading AI verdict...</p>
+            </CardContent>
+          </Card>
+        ) : null}
         
-        <h3 className="font-medium text-lg mb-4">Individual Diagnoses</h3>
+        {/* Individual Specialist Opinions */}
+        <h3 className="font-medium text-lg mt-6 mb-4">Individual Specialist Opinions</h3>
         <div className="space-y-4">
-          {diagnoses.map((diagnosis, index) => (
+          {specialistLatestDiagnoses.map((diagnosis, index) => (
             <Card key={`${diagnosis.agentId}-${index}`} className="bg-slate-50 dark:bg-slate-800">
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-center">

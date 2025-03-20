@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Agent, Diagnosis, Message, Consultation } from "../types/consultationTypes";
+import { Agent, Diagnosis, Message, Consultation, AIVerdict } from "../types/consultationTypes";
 
 export async function createConsultation() {
   try {
@@ -127,6 +127,36 @@ export async function generateAgentResponse(
   } catch (error) {
     console.error(`Error in generateAgentResponse for ${agent.name}:`, error);
     throw error;
+  }
+}
+
+export async function generateConsultationVerdict(
+  consultationId: string,
+  diagnoses: Diagnosis[],
+  messages: Message[],
+  symptoms: string
+): Promise<AIVerdict> {
+  try {
+    console.log("Generating consultation verdict");
+    
+    const { data, error } = await supabase.functions.invoke('generate-consultation-verdict', {
+      body: {
+        diagnoses,
+        messages,
+        symptoms
+      }
+    });
+
+    if (error) {
+      console.error("Error generating consultation verdict:", error);
+      throw error;
+    }
+
+    console.log("Verdict generated successfully");
+    return data;
+  } catch (error) {
+    console.error("Error in generateConsultationVerdict:", error);
+    throw new Error("Failed to generate verdict");
   }
 }
 

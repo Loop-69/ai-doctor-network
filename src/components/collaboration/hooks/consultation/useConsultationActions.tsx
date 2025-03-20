@@ -9,11 +9,12 @@ export function useConsultationActions(
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
   setIsLoading: (loading: boolean) => void,
   messages: Message[],
-  setDiagnoses: React.Dispatch<React.SetStateAction<any[]>>
+  setDiagnoses: React.Dispatch<React.SetStateAction<any[]>>,
+  setCurrentTurn: React.Dispatch<React.SetStateAction<string | null>>
 ) {
   const { processAgentResponse } = useAgentResponse();
 
-  const startConsultation = async (selectedAgents: Agent[], patientSymptoms: string) => {
+  const startConsultation = async (selectedAgents: Agent[], patientSymptoms: string, isTurnBased: boolean = false) => {
     setIsLoading(true);
     
     try {
@@ -47,32 +48,50 @@ export function useConsultationActions(
 
       setMessages(prev => [...prev, systemMessage]);
 
-      // Generate responses from each selected agent
-      await Promise.all(selectedAgents.map(async (agent, index) => {
-        // Simulate some delay between agent responses
-        await new Promise(resolve => setTimeout(resolve, 1000 * index));
+      if (isTurnBased) {
+        // In turn-based mode, only start with the first agent
+        const firstAgent = selectedAgents[0];
+        setCurrentTurn(firstAgent.id);
         
-        const agentMessage: Message = {
-          id: Date.now().toString() + `-${agent.id}`,
-          sender: agent.name,
-          senderId: agent.id,
-          content: `Analyzing the patient's symptoms from a ${agent.specialty} perspective...`,
-          timestamp: new Date()
-        };
-        
-        setMessages(prev => [...prev, agentMessage]);
-        
-        // Call the medical response function with the agent's specialty
-        // Pass the user message since this is the first interaction
         await processAgentResponse(
           consultId, 
-          agent, 
+          firstAgent, 
           patientSymptoms, 
           [userMessage], 
           setMessages, 
           setDiagnoses
         );
-      }));
+        
+        // Set turn back to doctor after first agent responds
+        setCurrentTurn("doctor");
+      } else {
+        // In parallel mode, all agents respond at once
+        await Promise.all(selectedAgents.map(async (agent, index) => {
+          // Simulate some delay between agent responses
+          await new Promise(resolve => setTimeout(resolve, 1000 * index));
+          
+          const agentMessage: Message = {
+            id: Date.now().toString() + `-${agent.id}`,
+            sender: agent.name,
+            senderId: agent.id,
+            content: `Analyzing the patient's symptoms from a ${agent.specialty} perspective...`,
+            timestamp: new Date()
+          };
+          
+          setMessages(prev => [...prev, agentMessage]);
+          
+          // Call the medical response function with the agent's specialty
+          // Pass the user message since this is the first interaction
+          await processAgentResponse(
+            consultId, 
+            agent, 
+            patientSymptoms, 
+            [userMessage], 
+            setMessages, 
+            setDiagnoses
+          );
+        }));
+      }
 
       setConsultationStarted(true);
     } catch (error) {
@@ -83,7 +102,12 @@ export function useConsultationActions(
     }
   };
 
-  const sendMessage = async (consultationId: string, selectedAgents: Agent[], newMessage: string) => {
+  const sendMessage = async (
+    consultationId: string, 
+    selectedAgents: Agent[], 
+    newMessage: string, 
+    isTurnBased: boolean = false
+  ) => {
     if (!newMessage.trim() || !consultationId) return;
     
     const userMessage: Message = {
@@ -103,18 +127,53 @@ export function useConsultationActions(
     // Generate responses from specialists to the new message
     const followUpMessage = `The doctor adds: ${newMessage}`;
     
-    await Promise.all(selectedAgents.map(async (agent, index) => {
-      // Add slight delay between responses
-      await new Promise(resolve => setTimeout(resolve, 800 * index));
+    if (isTurnBased) {
+      // In turn-based mode, select the next specialist in the rotation
+      const lastMessage = messages[messages.length - 1];
+      if (!lastMessage) return;
+      
+      // Find the current turn
+      let currentAgentIndex = 0;
+      if (lastMessage.senderId !== "doctor" && lastMessage.senderId !== "system") {
+        currentAgentIndex = selectedAgents.findIndex(a => a.id === lastMessage.senderId);
+        // If found, move to the next agent in the list
+        if (currentAgentIndex !== -1) {
+          currentAgentIndex = (currentAgentIndex + 1) % selectedAgents.length;
+        } else {
+          // If not found, start from the beginning
+          currentAgentIndex = 0;
+        }
+      }
+      
+      const nextAgent = selectedAgents[currentAgentIndex];
+      setCurrentTurn(nextAgent.id);
+      
       await processAgentResponse(
         consultationId, 
-        agent, 
+        nextAgent, 
         followUpMessage, 
         messages.concat(userMessage), 
         setMessages, 
         setDiagnoses
       );
-    }));
+      
+      // Set turn back to doctor
+      setCurrentTurn("doctor");
+    } else {
+      // In parallel mode, all agents respond
+      await Promise.all(selectedAgents.map(async (agent, index) => {
+        // Add slight delay between responses
+        await new Promise(resolve => setTimeout(resolve, 800 * index));
+        await processAgentResponse(
+          consultationId, 
+          agent, 
+          followUpMessage, 
+          messages.concat(userMessage), 
+          setMessages, 
+          setDiagnoses
+        );
+      }));
+    }
   };
 
   return {

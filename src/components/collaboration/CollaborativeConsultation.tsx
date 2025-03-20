@@ -15,11 +15,16 @@ const CollaborativeConsultation = () => {
     isLoading,
     diagnoses,
     activeTab,
+    isTurnBasedMode,
+    currentTurn,
+    isRefreshingVerdict,
     handleAgentSelect,
     handleSymptomsChange,
     startConsultation,
     sendMessage,
-    setActiveTab
+    setActiveTab,
+    toggleTurnBasedMode,
+    refreshVerdict
   } = useConsultation();
 
   return (
@@ -32,6 +37,8 @@ const CollaborativeConsultation = () => {
           onAgentSelect={handleAgentSelect}
           onSymptomsChange={handleSymptomsChange}
           onStartConsultation={startConsultation}
+          isTurnBasedMode={isTurnBasedMode}
+          onToggleTurnBasedMode={toggleTurnBasedMode}
         />
       ) : (
         <motion.div 
@@ -48,12 +55,23 @@ const CollaborativeConsultation = () => {
             <TabsContent value="conversation" className="space-y-4 mt-4">
               <ConsultationChat
                 messages={messages}
+                agents={selectedAgents}
                 onSendMessage={sendMessage}
+                currentTurn={currentTurn}
+                isTurnBasedMode={isTurnBasedMode}
+                onToggleTurnBasedMode={toggleTurnBasedMode}
+                isProcessing={isLoading}
               />
             </TabsContent>
             
             <TabsContent value="verdict" className="space-y-4 mt-4">
-              <DiagnosisVerdict diagnoses={diagnoses} />
+              <DiagnosisVerdict 
+                diagnoses={diagnoses} 
+                messages={messages}
+                patientSymptoms={patientSymptoms}
+                refreshVerdict={refreshVerdict}
+                isRefreshing={isRefreshingVerdict}
+              />
             </TabsContent>
           </Tabs>
         </motion.div>
