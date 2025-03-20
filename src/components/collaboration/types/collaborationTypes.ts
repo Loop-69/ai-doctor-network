@@ -6,6 +6,7 @@ export interface Colleague {
   hospital: string;
   status: string;
   avatar: string | null;
+  availability?: boolean; // Added this property to fix the error
 }
 
 export interface Meeting {

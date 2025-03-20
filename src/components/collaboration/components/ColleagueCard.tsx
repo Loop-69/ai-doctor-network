@@ -14,9 +14,11 @@ import { Colleague } from "../types/collaborationTypes";
 interface ColleagueCardProps {
   colleague: Colleague;
   delay?: number;
+  onClick?: () => void;
+  isSelected?: boolean;
 }
 
-const ColleagueCard = ({ colleague, delay = 0 }: ColleagueCardProps) => {
+const ColleagueCard = ({ colleague, delay = 0, onClick, isSelected }: ColleagueCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "available":
@@ -35,8 +37,9 @@ const ColleagueCard = ({ colleague, delay = 0 }: ColleagueCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay }}
+      onClick={onClick}
     >
-      <Card className="hover:shadow-md transition-shadow">
+      <Card className={`hover:shadow-md transition-shadow ${isSelected ? "border-medical-green" : ""}`}>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
