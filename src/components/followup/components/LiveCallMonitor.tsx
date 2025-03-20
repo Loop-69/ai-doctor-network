@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Clock, Mic, MicOff, PhoneOff, Send, PencilLine, Undo, Headphones } from "lucide-react";
+import { Clock, Mic, MicOff, PhoneOff, Send, PencilLine, Undo, Headphones, Phone } from "lucide-react";
 import { 
   Card, 
   CardContent, 
@@ -196,7 +196,7 @@ const LiveCallMonitor = () => {
           <div className="flex justify-between items-center">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <PhoneCall className="h-5 w-5 text-amber-600" />
+                <Phone className="h-5 w-5 text-amber-600" />
                 Live Call: {activeCall.patientName}
               </CardTitle>
               <CardDescription>
