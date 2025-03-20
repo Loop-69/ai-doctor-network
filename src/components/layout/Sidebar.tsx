@@ -16,12 +16,15 @@ import {
   Microscope,
   Phone,
   Bell,
+  Monitor,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { SidebarLiveCallIndicator } from "@/components/followup/components/SidebarLiveCallIndicator";
+import { ActiveCallProvider } from "@/components/followup/context/ActiveCallContext";
 
 type SidebarProps = {
   className?: string;
@@ -115,6 +118,12 @@ const Sidebar = ({ className }: SidebarProps) => {
             collapsed={collapsed}
           />
           <NavItem
+            to="/followup-monitoring"
+            icon={Monitor}
+            label="Call Monitoring"
+            collapsed={collapsed}
+          />
+          <NavItem
             to="/collaboration"
             icon={Users}
             label="Collaboration"
@@ -127,6 +136,12 @@ const Sidebar = ({ className }: SidebarProps) => {
             collapsed={collapsed}
           />
         </nav>
+      </div>
+
+      <div className={collapsed ? "hidden" : "block"}>
+        <ActiveCallProvider>
+          <SidebarLiveCallIndicator />
+        </ActiveCallProvider>
       </div>
 
       <div className="p-4 border-t border-border">

@@ -1,38 +1,35 @@
 
-import React from "react";
-import { Outlet } from "react-router-dom";
+import { ReactNode } from "react";
+import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-import { useAuth } from "@/contexts/AuthContext";
+import { ActiveCallProvider } from "@/components/followup/context/ActiveCallContext";
 
-type AppLayoutProps = {
-  children?: React.ReactNode;
-  forcePublic?: boolean;
-};
+interface AppLayoutProps {
+  children: ReactNode;
+}
 
-const AppLayout = ({ children, forcePublic = false }: AppLayoutProps) => {
-  const { user } = useAuth();
-  const isAuthenticated = !!user;
-  
-  // If user is not authenticated and this is not a public page, render without sidebar
-  if (!isAuthenticated && !forcePublic) {
-    return (
-      <div className="min-h-screen bg-[#f0f5fa]">
-        {children || <Outlet />}
-      </div>
-    );
-  }
-
+const AppLayout = ({ children }: AppLayoutProps) => {
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f0f5fa]">
-      {isAuthenticated && <Sidebar />}
-      <div className={`flex-1 flex flex-col overflow-hidden ${!isAuthenticated ? 'min-h-screen' : ''}`}>
-        {isAuthenticated && <Navbar />}
-        <main className={`flex-1 overflow-y-auto ${isAuthenticated ? 'p-4 sm:p-6' : ''}`}>
-          {children || <Outlet />}
-        </main>
+    <ActiveCallProvider>
+      <div className="flex h-screen bg-background">
+        <Sidebar />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Navbar />
+          <main className="flex-1 overflow-y-auto p-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="container mx-auto max-w-6xl"
+            >
+              {children}
+            </motion.div>
+          </main>
+        </div>
       </div>
-    </div>
+    </ActiveCallProvider>
   );
 };
 
