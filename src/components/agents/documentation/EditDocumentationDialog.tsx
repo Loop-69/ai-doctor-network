@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Edit, Save } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,8 @@ const CATEGORIES = [
   "Diagnostic Resources",
   "Treatment Resources",
   "Medication Resources",
-  "Prevention Resources"
+  "Prevention Resources",
+  "General"
 ];
 
 const EditDocumentationDialog = ({ 
@@ -38,7 +39,7 @@ const EditDocumentationDialog = ({
   const [isLoading, setIsLoading] = useState(false);
 
   // Reset form when document changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (document) {
       setTitle(document.title);
       setContent(document.content);
@@ -80,7 +81,6 @@ const EditDocumentationDialog = ({
       if (updatedDoc) {
         toast.success(`Document ${document?.id ? "updated" : "created"} successfully`);
         onSaved(updatedDoc);
-        onClose();
       } else {
         toast.error("Failed to save document");
       }

@@ -31,10 +31,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   getAgentDocumentation, 
   AgentDocument, 
-  saveDocument 
+  saveDocument,
+  getDocumentById
 } from "@/components/agents/services/documentationService";
 import { ArrowLeft, Plus, Trash2, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import EditDocumentationDialog from "@/components/agents/documentation/EditDocumentationDialog";
 
 const expertFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -53,6 +55,8 @@ const EditAIExpert = () => {
   const [activeTab, setActiveTab] = useState<string>("general");
   const [documentation, setDocumentation] = useState<AgentDocument[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isEditDocDialogOpen, setIsEditDocDialogOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<AgentDocument | null>(null);
 
   // Find the agent
   const agent = agents.find(a => a.id === id);
@@ -136,22 +140,35 @@ const EditAIExpert = () => {
       category: "General"
     };
     
-    saveDocument(newDoc).then(doc => {
-      if (doc) {
-        setDocumentation([...documentation, doc]);
-        toast({
-          title: "Document Created",
-          description: "A new document has been created."
-        });
+    setSelectedDocument(newDoc);
+    setIsEditDocDialogOpen(true);
+  };
+
+  const handleEditDocument = (docId: string) => {
+    const document = documentation.find(doc => doc.id === docId);
+    if (document) {
+      setSelectedDocument(document);
+      setIsEditDocDialogOpen(true);
+    }
+  };
+
+  const handleDocumentSaved = (document: AgentDocument) => {
+    // Update the documentation list
+    setDocumentation(prevDocs => {
+      const index = prevDocs.findIndex(doc => doc.id === document.id);
+      if (index >= 0) {
+        // Update existing document
+        const newDocs = [...prevDocs];
+        newDocs[index] = document;
+        return newDocs;
+      } else {
+        // Add new document
+        return [...prevDocs, document];
       }
-    }).catch(error => {
-      console.error("Failed to create document:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create document.",
-        variant: "destructive"
-      });
     });
+
+    setIsEditDocDialogOpen(false);
+    setSelectedDocument(null);
   };
 
   return (
@@ -321,7 +338,11 @@ const EditAIExpert = () => {
                             <Badge variant="outline" className="mt-1">{doc.category}</Badge>
                           </div>
                           <div>
-                            <Button variant="ghost" size="sm">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => handleEditDocument(doc.id)}
+                            >
                               <Edit className="h-4 w-4 mr-1" /> Edit
                             </Button>
                           </div>
@@ -349,6 +370,17 @@ const EditAIExpert = () => {
           Save Expert
         </Button>
       </div>
+
+      {/* Document Edit Dialog */}
+      <EditDocumentationDialog
+        document={selectedDocument}
+        isOpen={isEditDocDialogOpen}
+        onClose={() => {
+          setIsEditDocDialogOpen(false);
+          setSelectedDocument(null);
+        }}
+        onSaved={handleDocumentSaved}
+      />
     </div>
   );
 };
