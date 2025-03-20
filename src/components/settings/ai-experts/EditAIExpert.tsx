@@ -33,7 +33,7 @@ import {
   AgentDocument, 
   saveDocument 
 } from "@/components/agents/services/documentationService";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const expertFormSchema = z.object({
