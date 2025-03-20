@@ -4,12 +4,21 @@ import { Agent } from "../types/consultationTypes";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Plus } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import ColleagueCard from "./ColleagueCard";
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { specialists } from "../data/specialistsData";
 
 interface ConsultationSetupProps {
   selectedAgents: Agent[];
@@ -33,6 +42,7 @@ const ConsultationSetup = ({
   onToggleTurnBasedMode
 }: ConsultationSetupProps) => {
   const [showAlert, setShowAlert] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const handleStartConsultation = () => {
     if (selectedAgents.length === 0 || !patientSymptoms.trim()) {
@@ -119,34 +129,89 @@ const ConsultationSetup = ({
       
       <div className="md:col-span-1">
         <Card className="h-full">
-          <CardHeader>
-            <CardTitle>Select Specialists</CardTitle>
-            <CardDescription>
-              Choose which medical specialists to consult
-            </CardDescription>
+          <CardHeader className="flex flex-row items-start justify-between">
+            <div>
+              <CardTitle>Selected Specialists</CardTitle>
+              <CardDescription>
+                {selectedAgents.length === 0 
+                  ? "Choose which medical specialists to consult" 
+                  : `${selectedAgents.length} specialist${selectedAgents.length > 1 ? 's' : ''} selected`}
+              </CardDescription>
+            </div>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" variant="outline" className="ml-2">
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add Specialist
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Select Medical Specialists</DialogTitle>
+                </DialogHeader>
+                <ScrollArea className="max-h-[60vh] mt-4 overflow-y-auto pr-4">
+                  <div className="grid grid-cols-1 gap-4">
+                    {specialists.map((specialist) => {
+                      const isSelected = selectedAgents.some(agent => agent.id === specialist.id);
+                      return (
+                        <ColleagueCard
+                          key={specialist.id}
+                          colleague={{
+                            id: specialist.id,
+                            name: specialist.name,
+                            specialty: specialist.specialty,
+                            hospital: "AI Medical Center",
+                            status: specialist.availability ? "Available" : "Away",
+                            avatar: null,
+                            availability: specialist.availability
+                          }}
+                          onClick={() => {
+                            onAgentSelect(specialist);
+                            // Don't auto-close the dialog so users can select multiple specialists
+                          }}
+                          isSelected={isSelected}
+                        />
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+                <div className="flex justify-end mt-4">
+                  <Button onClick={() => setIsDialogOpen(false)}>
+                    Done
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4">
-              <motion.div layout>
-                {selectedAgents.map((agent) => (
-                  <div key={agent.id} className="mb-3">
-                    <ColleagueCard
-                      colleague={{
-                        id: agent.id,
-                        name: agent.name,
-                        specialty: agent.specialty,
-                        hospital: "Medical Center",
-                        status: agent.availability ? "Available" : "Away",
-                        avatar: null,
-                        availability: agent.availability
-                      }}
-                      onClick={() => onAgentSelect(agent)}
-                      isSelected={true}
-                    />
-                  </div>
-                ))}
-              </motion.div>
-            </div>
+            {selectedAgents.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No specialists selected yet</p>
+                <p className="text-sm mt-2">Click "Add Specialist" to select medical experts for this case</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                <motion.div layout>
+                  {selectedAgents.map((agent) => (
+                    <div key={agent.id} className="mb-3">
+                      <ColleagueCard
+                        colleague={{
+                          id: agent.id,
+                          name: agent.name,
+                          specialty: agent.specialty,
+                          hospital: "Medical Center",
+                          status: agent.availability ? "Available" : "Away",
+                          avatar: null,
+                          availability: agent.availability
+                        }}
+                        onClick={() => onAgentSelect(agent)}
+                        isSelected={true}
+                      />
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
