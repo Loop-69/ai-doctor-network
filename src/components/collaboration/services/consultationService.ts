@@ -3,55 +3,89 @@ import { supabase } from "@/integrations/supabase/client";
 import { Agent, Diagnosis, Message, Consultation } from "../types/consultationTypes";
 
 export async function createConsultation() {
-  const { data, error } = await supabase
-    .from('ai_consultations')
-    .insert({
-      status: 'in_progress',
-      started_at: new Date().toISOString(),
-    })
-    .select()
-    .single();
+  try {
+    console.log("Creating new consultation");
+    const { data, error } = await supabase
+      .from('ai_consultations')
+      .insert({
+        status: 'in_progress',
+        started_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
 
-  if (error) throw error;
-  return data.id;
+    if (error) {
+      console.error("Error creating consultation:", error);
+      throw error;
+    }
+    console.log("Consultation created successfully:", data);
+    return data.id;
+  } catch (error) {
+    console.error("Error in createConsultation:", error);
+    throw error;
+  }
 }
 
 export async function addConsultationMessage(consultationId: string, content: string, role: 'doctor' | 'assistant') {
-  const { data, error } = await supabase
-    .from('ai_consultation_messages')
-    .insert({
-      consultation_id: consultationId,
-      content,
-      role
-    });
+  try {
+    const { data, error } = await supabase
+      .from('ai_consultation_messages')
+      .insert({
+        consultation_id: consultationId,
+        content,
+        role
+      });
 
-  if (error) throw error;
-  return data;
+    if (error) {
+      console.error("Error adding consultation message:", error);
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error("Error in addConsultationMessage:", error);
+    throw error;
+  }
 }
 
 export async function getConsultationMessages(consultationId: string) {
-  const { data, error } = await supabase
-    .from('ai_consultation_messages')
-    .select('*')
-    .eq('consultation_id', consultationId)
-    .order('created_at', { ascending: true });
+  try {
+    const { data, error } = await supabase
+      .from('ai_consultation_messages')
+      .select('*')
+      .eq('consultation_id', consultationId)
+      .order('created_at', { ascending: true });
 
-  if (error) throw error;
-  return data;
+    if (error) {
+      console.error("Error fetching consultation messages:", error);
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error("Error in getConsultationMessages:", error);
+    throw error;
+  }
 }
 
 export async function updateConsultationStatus(consultationId: string, status: 'in_progress' | 'completed' | 'cancelled') {
-  const { data, error } = await supabase
-    .from('ai_consultations')
-    .update({ 
-      status,
-      ended_at: status !== 'in_progress' ? new Date().toISOString() : null
-    })
-    .eq('id', consultationId)
-    .select();
+  try {
+    const { data, error } = await supabase
+      .from('ai_consultations')
+      .update({ 
+        status,
+        ended_at: status !== 'in_progress' ? new Date().toISOString() : null
+      })
+      .eq('id', consultationId)
+      .select();
 
-  if (error) throw error;
-  return data;
+    if (error) {
+      console.error("Error updating consultation status:", error);
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error("Error in updateConsultationStatus:", error);
+    throw error;
+  }
 }
 
 export async function generateAgentResponse(
@@ -63,51 +97,93 @@ export async function generateAgentResponse(
   recommendation: string;
   confidence: number;
 }> {
-  const { data, error } = await supabase.functions.invoke('generate-medical-response', {
-    body: {
-      symptoms,
-      specialty: agent.specialty,
-      agentId: agent.id,
-      agentName: agent.name,
-      consultationId: consultationId,
-      isCollaborative: true
+  try {
+    console.log(`Generating response for ${agent.name} (${agent.specialty})`);
+    
+    const { data, error } = await supabase.functions.invoke('generate-medical-response', {
+      body: {
+        symptoms,
+        specialty: agent.specialty,
+        agentId: agent.id,
+        agentName: agent.name,
+        consultationId: consultationId,
+        isCollaborative: true
+      }
+    });
+
+    if (error) {
+      console.error("Error generating agent response:", error);
+      throw error;
     }
-  });
 
-  if (error) throw error;
-
-  return {
-    diagnosis: data.diagnosis,
-    recommendation: data.recommendation,
-    confidence: data.confidence || Math.floor(Math.random() * 30) + 70 // Fallback to random 70-99%
-  };
+    console.log("Response generated successfully:", data);
+    return {
+      diagnosis: data.diagnosis,
+      recommendation: data.recommendation,
+      confidence: data.confidence || Math.floor(Math.random() * 30) + 70 // Fallback to random 70-99%
+    };
+  } catch (error) {
+    console.error(`Error in generateAgentResponse for ${agent.name}:`, error);
+    throw error;
+  }
 }
 
 export async function saveDiagnosis(
   consultationId: string,
   diagnosis: Diagnosis
 ) {
-  const { data, error } = await supabase
-    .from('ai_consultations')
-    .update({
-      recommendation: diagnosis.recommendation,
-      summary: diagnosis.diagnosis,
-      severity: diagnosis.confidence > 90 ? 'high' : diagnosis.confidence > 75 ? 'medium' : 'low'
-    })
-    .eq('id', consultationId)
-    .select();
+  try {
+    const { data, error } = await supabase
+      .from('ai_consultations')
+      .update({
+        recommendation: diagnosis.recommendation,
+        summary: diagnosis.diagnosis,
+        severity: diagnosis.confidence > 90 ? 'high' : diagnosis.confidence > 75 ? 'medium' : 'low'
+      })
+      .eq('id', consultationId)
+      .select();
 
-  if (error) throw error;
-  return data;
+    if (error) {
+      console.error("Error saving diagnosis:", error);
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error("Error in saveDiagnosis:", error);
+    throw error;
+  }
 }
 
 export async function getConsultationById(consultationId: string) {
-  const { data, error } = await supabase
-    .from('ai_consultations')
-    .select('*')
-    .eq('id', consultationId)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('ai_consultations')
+      .select('*')
+      .eq('id', consultationId)
+      .single();
 
-  if (error) throw error;
-  return data;
+    if (error) {
+      console.error("Error fetching consultation:", error);
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error("Error in getConsultationById:", error);
+    throw error;
+  }
+}
+
+export async function getAllConsultations() {
+  try {
+    const { data, error } = await supabase
+      .from('ai_consultations')
+      .select('*')
+      .order('started_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error fetching all consultations:", error);
+    throw error;
+  }
 }

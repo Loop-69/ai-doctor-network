@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Calendar } from "lucide-react";
 import { 
   Card, 
   CardContent, 
@@ -17,10 +17,11 @@ import { Agent } from "./types/agentTypes";
 interface AgentCardProps {
   agent: Agent;
   onSelect: () => void;
+  onConsultation?: () => void;
   delay?: number;
 }
 
-const AgentCard = ({ agent, onSelect, delay = 0 }: AgentCardProps) => {
+const AgentCard = ({ agent, onSelect, onConsultation, delay = 0 }: AgentCardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -33,7 +34,6 @@ const AgentCard = ({ agent, onSelect, delay = 0 }: AgentCardProps) => {
     >
       <Card
         className="cursor-pointer transition-all hover:shadow-md hover:border-aida-200"
-        onClick={onSelect}
       >
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
@@ -70,10 +70,14 @@ const AgentCard = ({ agent, onSelect, delay = 0 }: AgentCardProps) => {
             </ul>
           </div>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full" onClick={onSelect}>
+        <CardFooter className="flex gap-2">
+          <Button className="flex-1" onClick={onSelect}>
             <MessageSquare className="mr-2 h-4 w-4" />
-            Chat with {agent.name}
+            Chat
+          </Button>
+          <Button variant="outline" className="flex-1" onClick={onConsultation}>
+            <Calendar className="mr-2 h-4 w-4" />
+            Consult
           </Button>
         </CardFooter>
       </Card>

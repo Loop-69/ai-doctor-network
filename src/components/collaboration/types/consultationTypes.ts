@@ -1,4 +1,6 @@
 
+import { ReactNode } from "react";
+
 export interface Agent {
   id: string;
   name: string;
@@ -8,6 +10,17 @@ export interface Agent {
   color: string;
   availability?: boolean;
   rating?: number;
+  documentation?: AgentDocument[];
+}
+
+export interface AgentDocument {
+  id: string;
+  agent_id: string;
+  title: string;
+  content: string;
+  category: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Diagnosis {
@@ -21,6 +34,7 @@ export interface Diagnosis {
   patientId?: string;
   consultationId?: string;
   severity?: 'low' | 'medium' | 'high';
+  referencedDocuments?: string[]; // IDs of referenced documents
 }
 
 export interface Message {
@@ -34,6 +48,7 @@ export interface Message {
   attachments?: Attachment[];
   status?: 'sending' | 'sent' | 'delivered' | 'read' | 'error';
   metadata?: Record<string, any>;
+  referencedDocuments?: AgentDocument[]; // Referenced documents in the message
 }
 
 export interface Attachment {
@@ -56,4 +71,5 @@ export interface Consultation {
   endTime?: Date;
   status: 'in_progress' | 'completed' | 'cancelled';
   metadata?: Record<string, any>;
+  references?: AgentDocument[];
 }
