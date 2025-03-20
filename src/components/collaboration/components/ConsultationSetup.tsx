@@ -127,9 +127,6 @@ const ConsultationSetup = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
-              {/* Use ColleagueCard components from data source */}
-              {/* This should be populated from your agent data */}
-              {/* For now I'll use a placeholder to show the structure */}
               <motion.div layout>
                 {selectedAgents.map((agent) => (
                   <div key={agent.id} className="mb-3">
@@ -138,7 +135,10 @@ const ConsultationSetup = ({
                         id: agent.id,
                         name: agent.name,
                         specialty: agent.specialty,
-                        availability: true,
+                        hospital: "Medical Center",
+                        status: agent.availability ? "Available" : "Away",
+                        avatar: null,
+                        availability: agent.availability
                       }}
                       onClick={() => onAgentSelect(agent)}
                       isSelected={true}
