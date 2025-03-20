@@ -106,6 +106,12 @@ const Sidebar = ({ className }: SidebarProps) => {
             collapsed={collapsed}
           />
           <NavItem
+            to="/settings/ai-experts"
+            icon={Microscope}
+            label="AI Experts"
+            collapsed={collapsed}
+          />
+          <NavItem
             to="/patients"
             icon={FileText}
             label="Patient Records"

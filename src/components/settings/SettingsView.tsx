@@ -6,8 +6,6 @@ import AccountTab from "./tabs/AccountTab";
 import AppearanceTab from "./tabs/AppearanceTab";
 import NotificationsTab from "./tabs/NotificationsTab";
 import SecurityTab from "./tabs/SecurityTab";
-import { Brain } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const SettingsView = () => {
   const navigate = useNavigate();
@@ -60,25 +58,6 @@ const SettingsView = () => {
             <SecurityTab />
           </TabsContent>
         </Tabs>
-      </div>
-      
-      <div className="border rounded-md p-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-md bg-aida-50">
-              <Brain className="h-5 w-5 text-aida-600" />
-            </div>
-            <div>
-              <h3 className="font-medium">AI Experts Settings</h3>
-              <p className="text-sm text-muted-foreground">
-                Configure and manage the AI experts in your system
-              </p>
-            </div>
-          </div>
-          <Button onClick={() => navigate("/settings/ai-experts")}>
-            Manage Experts
-          </Button>
-        </div>
       </div>
     </div>
   );
