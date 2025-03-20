@@ -6,7 +6,9 @@ import { ActiveCallProvider } from "@/components/followup/context/ActiveCallCont
 const FollowupScheduler = () => {
   return (
     <AppLayout>
-      <FollowupSchedulerView />
+      <ActiveCallProvider>
+        <FollowupSchedulerView />
+      </ActiveCallProvider>
     </AppLayout>
   );
 };

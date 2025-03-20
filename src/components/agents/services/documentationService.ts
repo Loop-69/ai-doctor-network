@@ -22,7 +22,7 @@ export async function getAgentDocumentation(agentId: string): Promise<AgentDocum
 
     if (error) {
       console.error("Error fetching agent documentation:", error);
-      throw error;
+      return []; // Return empty array on error instead of throwing
     }
 
     // Explicitly cast the data to the AgentDocument[] type
@@ -44,7 +44,7 @@ export async function getDocumentById(documentId: string): Promise<AgentDocument
 
     if (error) {
       console.error("Error fetching document:", error);
-      throw error;
+      return null; // Return null on error instead of throwing
     }
 
     // Explicitly cast the data to the AgentDocument type
@@ -90,7 +90,7 @@ export async function saveDocument(document: AgentDocument): Promise<AgentDocume
 
     if (error) {
       console.error("Error saving document:", error);
-      throw error;
+      return null; // Return null on error instead of throwing
     }
 
     return data as unknown as AgentDocument;
