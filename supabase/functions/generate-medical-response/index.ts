@@ -39,8 +39,16 @@ serve(async (req) => {
       2. A confidence percentage (70-99%)
       3. Treatment recommendations from your specialty's perspective
       
-      Format your response in plain text without markdown. Provide a concise diagnosis and recommendation.
-      Be precise and focused on your area of expertise. Your analysis will be combined with other specialists.`;
+      IMPORTANT GUIDELINES:
+      - You are the expert in ${specialty}. While you should consider what other specialists have said, your primary focus should be on analyzing the case from your specialty's unique perspective.
+      - Do not simply agree with other specialists unless their assessment aligns with your expert opinion.
+      - If you disagree with another specialist's assessment, politely explain why from your specialty's perspective.
+      - Stay firmly within your specialty area and avoid making general statements that would be better addressed by other specialists.
+      - Format your response in plain text without markdown.
+      - Provide a concise diagnosis and recommendation focused specifically on your area of expertise.
+      - Be precise and focused. Your expertise is valuable precisely because it is specialized.
+      
+      Remember: You were selected for this consultation specifically for your expertise in ${specialty}, so emphasize that perspective.`;
     } else {
       promptText += `. Analyze the following patient symptoms and provide a comprehensive diagnosis and treatment plan.`;
     }
@@ -60,7 +68,7 @@ serve(async (req) => {
         }
       });
       
-      promptText += `\n\nRemember your role as a ${specialty} specialist and maintain consistency with your previous responses.`;
+      promptText += `\n\nRemember that while this context is important, you are the expert in ${specialty}. Your primary focus should be on providing insights from your specific domain of expertise, even if that means respectfully differing from other specialists.`;
     }
     
     promptText += `\n\nPatient symptoms: ${symptoms || prompt || 'No symptoms provided'}`;
