@@ -24,7 +24,7 @@ export async function getAgentDocumentation(agentId: string): Promise<AgentDocum
       throw error;
     }
 
-    return data || [];
+    return data as AgentDocument[] || [];
   } catch (error) {
     console.error("Failed to get agent documentation:", error);
     return [];
@@ -44,7 +44,7 @@ export async function getDocumentById(documentId: string): Promise<AgentDocument
       throw error;
     }
 
-    return data;
+    return data as AgentDocument;
   } catch (error) {
     console.error("Failed to get document:", error);
     return null;
