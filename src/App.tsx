@@ -22,6 +22,8 @@ import Features from "./pages/Features";
 import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import Notifications from "./pages/Notifications";
+import AIExpertsSettings from "./pages/AIExpertsSettings";
+import EditAIExpert from "./pages/EditAIExpert";
 
 // Import the new page for security logs if needed
 // import SecurityLogs from "./pages/SecurityLogs";
@@ -107,15 +109,23 @@ const App = () => (
                   </ProtectedRoute>
                 } 
               />
-              {/* If needed, add a dedicated route for security logs */}
-              {/* <Route 
-                path="/settings/security/logs" 
+              {/* New routes for AI Experts Settings */}
+              <Route 
+                path="/settings/ai-experts" 
                 element={
                   <ProtectedRoute>
-                    <SecurityLogs />
+                    <AIExpertsSettings />
                   </ProtectedRoute>
                 } 
-              /> */}
+              />
+              <Route 
+                path="/settings/ai-experts/edit/:id" 
+                element={
+                  <ProtectedRoute>
+                    <EditAIExpert />
+                  </ProtectedRoute>
+                } 
+              />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
