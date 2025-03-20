@@ -1,3 +1,4 @@
+
 // Mock data for patients and agents
 // In a real app, these would be fetched from a backend
 
@@ -14,12 +15,6 @@ export const agents = [
   { id: "gen", name: "GeneralMD", specialty: "General Practice" },
   { id: "path", name: "PathInsight", specialty: "Pathology" },
 ];
-
-// Helper function to get specialty based on agent ID
-export const getSpecialtyForAgent = (agentId: string): string | undefined => {
-  const agent = agents.find(a => a.id === agentId);
-  return agent?.specialty;
-};
 
 // Mock patient data for the follow-up scheduler
 export const mockPatients = [
@@ -41,7 +36,12 @@ export const mockAgents = [
 
 // Helper function to get the specialty for an agent ID
 export const getSpecialtyForAgent = (agentId: string): string => {
-  const agent = mockAgents.find(a => a.id === agentId);
+  // First check in mockAgents (which has more entries)
+  const mockAgent = mockAgents.find(a => a.id === agentId);
+  if (mockAgent) return mockAgent.specialty;
+  
+  // Fallback to checking in the original agents array
+  const agent = agents.find(a => a.id === agentId);
   return agent?.specialty || "";
 };
 
