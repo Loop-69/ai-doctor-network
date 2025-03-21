@@ -30,7 +30,10 @@ const LiveCallMonitor = () => {
     saveEditedQuestion,
     cancelEditing,
     formatTime
-  } = useConversationState(activeCall);
+  } = useConversationState({
+    patientName: activeCall?.patient.name || "",
+    agentName: activeCall?.agentName || ""
+  });
 
   // Calculate duration of the call
   const getCallDuration = () => {
@@ -97,7 +100,13 @@ const LiveCallMonitor = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <ConversationPanel 
-          activeCall={activeCall}
+          activeCall={{
+            id: activeCall.id,
+            patientName: activeCall.patient.name,
+            agentName: activeCall.agentName || "",
+            startTime: activeCall.startTime,
+            duration: activeCall.duration || 5
+          }}
           conversation={conversation}
           message={message}
           setMessage={setMessage}

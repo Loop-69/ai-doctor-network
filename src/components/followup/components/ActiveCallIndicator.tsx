@@ -4,22 +4,17 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useState, useEffect } from 'react';
+import { Call } from '../types/callTypes';
 
 interface ActiveCallIndicatorProps {
-  call: {
-    id: string;
-    patientName: string;
-    agentName: string;
-    startTime: Date;
-    duration: number;
-  };
+  call: Call;
   onEndCall: () => void;
 }
 
 const ActiveCallIndicator = ({ call, onEndCall }: ActiveCallIndicatorProps) => {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [progress, setProgress] = useState(0);
-  const totalSeconds = call.duration * 60;
+  const totalSeconds = (call.duration || 5) * 60; // Use default of 5 minutes if not specified
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -59,7 +54,7 @@ const ActiveCallIndicator = ({ call, onEndCall }: ActiveCallIndicatorProps) => {
           </div>
           <div>
             <h3 className="font-medium text-sm">Active Follow-up Call</h3>
-            <p className="text-xs text-muted-foreground">{call.patientName}</p>
+            <p className="text-xs text-muted-foreground">{call.patient.name}</p>
           </div>
         </div>
         <Button variant="ghost" size="sm" onClick={onEndCall}>

@@ -33,7 +33,7 @@ export const SidebarLiveCallIndicator = () => {
     navigate("/followup-monitoring");
     toast({
       title: "Monitoring live call",
-      description: `Now monitoring call with ${activeCall.patientName}`
+      description: `Now monitoring call with ${activeCall.patient.name}`
     });
   };
   
@@ -48,7 +48,7 @@ export const SidebarLiveCallIndicator = () => {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs font-medium truncate">
-          Live call: {activeCall.patientName}
+          Live call: {activeCall.patient.name}
         </p>
         <div className="flex items-center text-xs">
           <Badge variant="outline" className="h-4 text-[10px] bg-transparent border-amber-300 dark:border-amber-700">

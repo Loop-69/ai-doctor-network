@@ -34,7 +34,8 @@ export const useActiveCall = () => {
       startTime: new Date(),
       purpose: callData.purpose || "Follow-up call",
       conditions: callData.conditions || [],
-      agentName: callData.agentName
+      agentName: callData.agentName,
+      duration: callData.duration || 5 // Default to 5 minutes if not specified
     };
     
     setActiveCall(newActiveCall);

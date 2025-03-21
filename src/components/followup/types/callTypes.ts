@@ -1,10 +1,12 @@
 
 export interface ActiveCall {
   id: string;
-  patientName: string;
+  patient: Patient;
   agentName: string;
   startTime: Date;
   duration: number;
+  purpose: string;
+  conditions: string[];
 }
 
 export interface ConversationMessage {
@@ -15,7 +17,6 @@ export interface ConversationMessage {
   isEdited?: boolean;
 }
 
-// Adding missing Patient and Call interfaces
 export interface Patient {
   id: string;
   name: string;
@@ -31,4 +32,5 @@ export interface Call {
   purpose: string;
   conditions: string[];
   agentName?: string;
+  duration?: number;
 }
