@@ -1,13 +1,6 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { agents } from "@/components/agents/data/agentsData";
 import { Button } from "@/components/ui/button";
 import { Agent } from "@/components/agents/types/agentTypes";
@@ -15,22 +8,19 @@ import { Plus, Edit, Eye, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AgentDocument } from "@/components/agents/services/documentationService";
-
 const AIExpertsSettings = () => {
   const [activeTab, setActiveTab] = useState<string>("experts");
   const navigate = useNavigate();
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleEditAgent = (agentId: string) => {
     navigate(`/settings/ai-experts/edit/${agentId}`);
   };
-
   const handleViewDocumentation = (agentId: string) => {
     navigate(`/agents?agent=${agentId}&tab=documentation`);
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold tracking-tight">AI Experts Settings</h2>
         <Button>
@@ -46,14 +36,7 @@ const AIExpertsSettings = () => {
         
         <TabsContent value="experts" className="space-y-4 mt-4">
           <div className="grid grid-cols-1 gap-4">
-            {agents.map((agent) => (
-              <AgentSettingsCard 
-                key={agent.id} 
-                agent={agent} 
-                onEdit={() => handleEditAgent(agent.id)}
-                onViewDocumentation={() => handleViewDocumentation(agent.id)} 
-              />
-            ))}
+            {agents.map(agent => <AgentSettingsCard key={agent.id} agent={agent} onEdit={() => handleEditAgent(agent.id)} onViewDocumentation={() => handleViewDocumentation(agent.id)} />)}
           </div>
         </TabsContent>
         
@@ -90,19 +73,19 @@ const AIExpertsSettings = () => {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
-  );
+    </div>;
 };
-
 interface AgentSettingsCardProps {
   agent: Agent;
   onEdit: () => void;
   onViewDocumentation: () => void;
 }
-
-const AgentSettingsCard = ({ agent, onEdit, onViewDocumentation }: AgentSettingsCardProps) => {
-  return (
-    <Card>
+const AgentSettingsCard = ({
+  agent,
+  onEdit,
+  onViewDocumentation
+}: AgentSettingsCardProps) => {
+  return <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -115,9 +98,7 @@ const AgentSettingsCard = ({ agent, onEdit, onViewDocumentation }: AgentSettings
             </div>
           </div>
           <div className="flex space-x-2">
-            <Button variant="outline" size="sm" onClick={onViewDocumentation}>
-              <Eye className="h-4 w-4 mr-1" /> Documentation
-            </Button>
+            
             <Button variant="outline" size="sm" onClick={onEdit}>
               <Edit className="h-4 w-4 mr-1" /> Edit
             </Button>
@@ -129,17 +110,13 @@ const AgentSettingsCard = ({ agent, onEdit, onViewDocumentation }: AgentSettings
         <div className="mt-3">
           <p className="text-sm font-medium mb-1">Capabilities:</p>
           <ul className="text-sm text-muted-foreground space-y-1">
-            {agent.capabilities.map((capability, i) => (
-              <li key={i} className="flex items-center">
+            {agent.capabilities.map((capability, i) => <li key={i} className="flex items-center">
                 <span className="h-1 w-1 rounded-full bg-aida-500 mr-2" />
                 {capability}
-              </li>
-            ))}
+              </li>)}
           </ul>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default AIExpertsSettings;
