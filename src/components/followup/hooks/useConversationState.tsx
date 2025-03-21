@@ -1,13 +1,13 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ConversationMessage } from "../types/callTypes";
 
 // This hook handles all the conversation state management logic
-export const useConversationState = ({ patientName, agentName }: {
+export const useConversationState = (activeCall: {
   patientName: string;
   agentName: string;
-}) => {
+} | null) => {
   const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [isListening, setIsListening] = useState(true);
@@ -15,35 +15,39 @@ export const useConversationState = ({ patientName, agentName }: {
   const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
   const [modifiedQuestion, setModifiedQuestion] = useState("");
 
-  // Initial conversation for when a call starts
-  const initialConversation: ConversationMessage[] = [
+  // Mock conversation for demo purposes
+  const [conversation, setConversation] = useState<ConversationMessage[]>([
     {
       id: "1",
       sender: "agent",
-      content: `Hello ${patientName || "there"}! This is ${agentName || "AI Assistant"} checking in for your follow-up. How have you been feeling since our last appointment?`,
-      timestamp: new Date()
+      content: `Hello ${activeCall?.patientName || "there"}! This is ${activeCall?.agentName || "AI Assistant"} checking in for your follow-up. How have you been feeling since our last appointment?`,
+      timestamp: new Date(Date.now() - 120000)
+    },
+    {
+      id: "2",
+      sender: "patient",
+      content: "I've been feeling better, but I still have some concerns about the medication side effects.",
+      timestamp: new Date(Date.now() - 90000)
+    },
+    {
+      id: "3",
+      sender: "agent",
+      content: "I understand your concerns. Can you tell me more specifically what side effects you're experiencing?",
+      timestamp: new Date(Date.now() - 60000)
+    },
+    {
+      id: "4",
+      sender: "patient",
+      content: "I've been having mild headaches and sometimes feel a bit dizzy in the morning after taking the medication.",
+      timestamp: new Date(Date.now() - 30000)
+    },
+    {
+      id: "5",
+      sender: "agent",
+      content: "Thank you for sharing that. Those can indeed be side effects of the medication. Let me ask some follow-up questions to better understand your situation.",
+      timestamp: new Date(Date.now() - 15000)
     }
-  ];
-
-  // Conversation state
-  const [conversation, setConversation] = useState<ConversationMessage[]>(initialConversation);
-
-  // Reset the conversation when a new call starts
-  useEffect(() => {
-    if (patientName && agentName) {
-      setConversation([{
-        id: "1",
-        sender: "agent",
-        content: `Hello ${patientName}! This is ${agentName} checking in for your follow-up. How have you been feeling since our last appointment?`,
-        timestamp: new Date()
-      }]);
-    }
-  }, [patientName, agentName]);
-
-  // Function to add a message from the simulation
-  const addSimulatedMessage = (message: ConversationMessage) => {
-    setConversation(prev => [...prev, message]);
-  };
+  ]);
 
   // Format time (HH:MM)
   const formatTime = (date: Date) => {
@@ -145,7 +149,6 @@ export const useConversationState = ({ patientName, agentName }: {
     startEditQuestion,
     saveEditedQuestion,
     cancelEditing,
-    formatTime,
-    addSimulatedMessage
+    formatTime
   };
 };

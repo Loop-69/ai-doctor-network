@@ -2,60 +2,30 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export async function POST(req: Request) {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 200,
-      headers: { 
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
-    });
-  }
-
   try {
     const body = await req.json();
     
     const { data, error } = await supabase.functions.invoke('generate-medical-response', {
-      body: body,
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      body: body
     });
 
     if (error) {
       console.error('Error invoking Edge Function:', error);
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
+        headers: { 'Content-Type': 'application/json' }
       });
     }
 
     return new Response(JSON.stringify(data), {
       status: 200,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
+      headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
     console.error('API route error:', error);
     return new Response(JSON.stringify({ error: 'Failed to process request' }), {
       status: 500,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 }

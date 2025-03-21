@@ -7,7 +7,6 @@ import ConsultationChat from "./components/ConsultationChat";
 import DiagnosisVerdict from "./components/DiagnosisVerdict";
 import { useConsultation } from "./hooks/useConsultation";
 import { Agent } from "./types/consultationTypes";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CollaborativeConsultationProps {
   initialConsultationId?: string;
@@ -39,8 +38,6 @@ const CollaborativeConsultation = ({
     setConsultationId,
     setConsultationStarted
   } = useConsultation();
-
-  const isMobile = useIsMobile();
 
   // Handle initialConsultationId and preSelectedAgent if provided
   // Add proper dependency array to prevent infinite renders
@@ -83,7 +80,7 @@ const CollaborativeConsultation = ({
           className="space-y-4"
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className={`grid grid-cols-2 ${isMobile ? 'w-full' : 'w-[400px]'}`}>
+            <TabsList className="grid grid-cols-2 w-[400px]">
               <TabsTrigger value="conversation">Conversation</TabsTrigger>
               <TabsTrigger value="verdict">Verdict</TabsTrigger>
             </TabsList>

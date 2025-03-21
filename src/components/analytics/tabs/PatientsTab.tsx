@@ -6,29 +6,23 @@ import {
   Heart,
 } from "lucide-react";
 import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle,
+} from "@/components/ui/card";
+import { 
   BarChart, 
   Bar, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  Legend,
+  Legend, 
+  ResponsiveContainer,
 } from "recharts";
 import StatsCard from "../StatsCard";
-import ChartsWrapper from "../components/ChartsWrapper";
-
-const patientsDemographicData = [
-  { age: '0-18', male: 65, female: 85 },
-  { age: '19-35', male: 125, female: 168 },
-  { age: '36-50', male: 187, female: 205 },
-  { age: '51-65', male: 156, female: 148 },
-  { age: '66+', male: 95, female: 107 }
-];
-
-const chartConfig = {
-  male: { color: "#3b82f6", label: "Male" },
-  female: { color: "#ec4899", label: "Female" },
-};
 
 const PatientsTab = () => {
   return (
@@ -57,21 +51,31 @@ const PatientsTab = () => {
         />
       </div>
       
-      <ChartsWrapper 
-        title="Patient Demographics" 
-        description="Age distribution of patients"
-        config={chartConfig}
-      >
-        <BarChart data={patientsDemographicData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="age" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="male" name="Male" fill="#3b82f6" />
-          <Bar dataKey="female" name="Female" fill="#ec4899" />
-        </BarChart>
-      </ChartsWrapper>
+      <Card>
+        <CardHeader>
+          <CardTitle>Patient Demographics</CardTitle>
+          <CardDescription>Age distribution of patients</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={[
+              { age: '0-18', male: 65, female: 85 },
+              { age: '19-35', male: 125, female: 168 },
+              { age: '36-50', male: 187, female: 205 },
+              { age: '51-65', male: 156, female: 148 },
+              { age: '66+', male: 95, female: 107 }
+            ]}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="age" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="male" name="Male" fill="#3b82f6" />
+              <Bar dataKey="female" name="Female" fill="#ec4899" />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -110,9 +110,6 @@ export async function generateAgentResponse(
         consultationId: consultationId,
         isCollaborative: true,
         previousMessages: previousMessages.slice(-10) // Send last 10 messages for context
-      },
-      headers: {
-        'Content-Type': 'application/json'
       }
     });
 
@@ -147,9 +144,6 @@ export async function generateConsultationVerdict(
         diagnoses,
         messages,
         symptoms
-      },
-      headers: {
-        'Content-Type': 'application/json'
       }
     });
 

@@ -37,6 +37,3 @@ verify_jwt = false
 
 [functions.generate-followup-questions]
 verify_jwt = false
-
-[functions.generate-consultation-verdict]
-verify_jwt = false

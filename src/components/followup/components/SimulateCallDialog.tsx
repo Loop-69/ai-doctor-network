@@ -1,11 +1,8 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useActiveCallContext } from "../context/ActiveCallContext";
 import { ScheduleFormValues } from "../types/scheduleTypes";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 
 interface SimulateCallDialogProps {
   open: boolean;
@@ -24,45 +21,24 @@ const SimulateCallDialog = ({
 }: SimulateCallDialogProps) => {
   const { startCall } = useActiveCallContext();
   const [isStarting, setIsStarting] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
   
   const handleStartSimulation = () => {
     setIsStarting(true);
     
-    // Start the call immediately
-    const callId = `sim-${Date.now()}`;
-    
-    // Create patient object
-    const patient = {
-      id: `patient-${Date.now()}`,
-      name: patientName,
-      age: 45,  // Default age
-      gender: "unknown", // Default gender
-      conditions: formData.condition ? [formData.condition] : ["General health check"]
-    };
-    
-    // Call startCall with the expected properties format
-    startCall({
-      id: callId,
-      patientName: patientName,
-      agentName: agentName,
-      purpose: formData.purpose || "Follow-up check",
-      conditions: formData.condition ? [formData.condition] : ["General health check"],
-      duration: 5, // 5 minutes simulation
-      autoAdvance: true // Flag to indicate this is an automated simulation
-    });
-    
-    // Wait a brief moment then navigate to the monitoring page
+    // Simulate a brief delay before starting
     setTimeout(() => {
+      startCall({
+        id: `sim-${Date.now()}`,
+        patientName,
+        agentName,
+        purpose: formData.purpose,
+        conditions: formData.condition ? [formData.condition] : [],
+        duration: 5 // 5 minutes simulation
+      });
+      
       setIsStarting(false);
       onOpenChange(false);
-      toast({
-        title: "Simulation started",
-        description: "Redirecting to call monitoring page..."
-      });
-      navigate("/followup-monitoring");
-    }, 500);
+    }, 1500);
   };
   
   return (
@@ -80,12 +56,12 @@ const SimulateCallDialog = ({
             <h4 className="font-medium mb-2">Call Details</h4>
             <p className="text-sm mb-1"><strong>Patient:</strong> {patientName}</p>
             <p className="text-sm mb-1"><strong>Agent:</strong> {agentName}</p>
-            <p className="text-sm mb-1"><strong>Purpose:</strong> {formData.purpose || "Follow-up check"}</p>
-            <p className="text-sm"><strong>Condition:</strong> {formData.condition || "General health check"}</p>
+            <p className="text-sm mb-1"><strong>Purpose:</strong> {formData.purpose}</p>
+            <p className="text-sm"><strong>Condition:</strong> {formData.condition}</p>
           </div>
           
           <div className="text-sm text-muted-foreground">
-            <p>This simulation will run automatically and generate a conversation between the patient and AI agent.</p>
+            <p>This simulation will run for approximately 5 minutes and generate a follow-up report.</p>
           </div>
         </div>
         

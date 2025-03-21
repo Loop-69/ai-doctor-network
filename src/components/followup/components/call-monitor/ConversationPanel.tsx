@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import MessageBubble from "./MessageBubble";
 import { ConversationMessage, ActiveCall } from "../../types/callTypes";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ConversationPanelProps {
   activeCall: ActiveCall;
@@ -51,7 +50,6 @@ const ConversationPanel = ({
 }: ConversationPanelProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const isMobile = useIsMobile();
 
   // Auto-scroll to bottom when messages update
   useEffect(() => {
@@ -60,9 +58,9 @@ const ConversationPanel = ({
 
   return (
     <Card className="lg:col-span-3">
-      <CardHeader className={isMobile ? "pb-2 px-3" : "pb-3"}>
-        <div className="flex justify-between items-center flex-wrap gap-2">
-          <CardTitle className="text-lg">Conversation</CardTitle>
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-center">
+          <CardTitle>Conversation</CardTitle>
           <Button
             variant={isTakingOver ? "default" : "outline"}
             size="sm"
@@ -72,27 +70,27 @@ const ConversationPanel = ({
           >
             {isTakingOver ? (
               <>
-                <Undo className="h-4 w-4 mr-1 sm:mr-2" />
-                <span className="hidden xs:inline">Return to AI</span>
+                <Undo className="h-4 w-4 mr-2" />
+                Return to AI
               </>
             ) : (
               <>
-                <Headphones className="h-4 w-4 mr-1 sm:mr-2" />
-                <span className="hidden xs:inline">Take Over</span>
+                <Headphones className="h-4 w-4 mr-2" />
+                Take Over
               </>
             )}
           </Button>
         </div>
-        <CardDescription className="text-xs sm:text-sm">
+        <CardDescription>
           {isTakingOver ? 
             "You are directly communicating with the patient" : 
             "The AI agent is handling the conversation"
           }
         </CardDescription>
       </CardHeader>
-      <CardContent className={isMobile ? "px-3" : ""}>
-        <ScrollArea className="h-[300px] sm:h-[350px] md:h-[400px] pr-2 sm:pr-4">
-          <div className="space-y-3 sm:space-y-4">
+      <CardContent>
+        <ScrollArea className="h-[400px] pr-4">
+          <div className="space-y-4">
             {conversation.map((msg) => (
               <MessageBubble
                 key={msg.id}
@@ -112,18 +110,18 @@ const ConversationPanel = ({
           </div>
         </ScrollArea>
       </CardContent>
-      <CardFooter className={`pt-3 sm:pt-4 border-t ${isMobile ? "px-3" : ""}`}>
+      <CardFooter className="pt-4 border-t">
         <div className="flex w-full gap-2">
           <Textarea
             ref={textareaRef}
             placeholder={
-              isMobile
-                ? isTakingOver ? "Message patient..." : "Suggest response..."
-                : isTakingOver ? "Type a message to the patient..." : "Suggest a response for the AI agent..."
+              isTakingOver 
+                ? "Type a message to the patient..." 
+                : "Suggest a response for the AI agent..."
             }
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="flex-1 min-h-[60px] sm:min-h-[80px]"
+            className="flex-1"
             id="conversation-message-input"
             aria-label={isTakingOver ? "Message to patient" : "Suggestion for AI agent"}
             onKeyDown={(e) => {
@@ -136,10 +134,9 @@ const ConversationPanel = ({
           <Button 
             onClick={sendMessage}
             aria-label="Send message"
-            className="h-auto"
           >
-            <Send className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Send</span>
+            <Send className="h-4 w-4 mr-2" />
+            Send
           </Button>
         </div>
       </CardFooter>

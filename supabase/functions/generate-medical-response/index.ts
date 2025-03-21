@@ -21,29 +21,10 @@ serve(async (req) => {
 
   try {
     console.log("Received request to generate medical response");
-    
-    // Parse the request body
-    let requestBody;
-    try {
-      requestBody = await req.json();
-    } catch (parseError) {
-      console.error("Error parsing request JSON:", parseError);
-      return new Response(JSON.stringify({ 
-        error: "Invalid JSON in request body",
-        response: "I apologize, but there was an error processing your request. Please try again with valid input."
-      }), {
-        status: 200, // Always return 200 to prevent cascading failures
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-    
-    const { symptoms, specialty, agentId, agentName, consultationId, isCollaborative, modelProvider, modelName, prompt, previousMessages } = requestBody;
+    const { symptoms, specialty, agentId, agentName, consultationId, isCollaborative, modelProvider, modelName, prompt, previousMessages } = await req.json();
 
-    console.log(`Generating medical response using ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
+    console.log(`Generating medical response for ${specialty || 'general'} specialist using ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
     console.log(`Input: ${prompt || symptoms || 'No input provided'}`);
-    
-    // Always provide a fallback if both prompt and symptoms are missing
-    let userInput = prompt || symptoms || "General health inquiry";
     
     // Build the prompt based on whether this is a collaborative consultation
     let promptText = `You are a medical AI assistant`;
@@ -77,145 +58,124 @@ serve(async (req) => {
     if (previousMessages && previousMessages.length > 0) {
       promptText += `\n\nHere is the previous conversation history for context:`;
       
-      for (const msg of previousMessages) {
+      previousMessages.forEach((msg, index) => {
         // Format depends on the message sender
         if (msg.isDoctor) {
           promptText += `\nDoctor: ${msg.content}`;
         } else if (msg.sender === agentName) {
-          promptText += `\nYou (${specialty || 'medical'} specialist): ${msg.content}`;
+          promptText += `\nYou (${specialty} specialist): ${msg.content}`;
         } else {
-          promptText += `\n${msg.sender || 'Other'}: ${msg.content}`;
+          promptText += `\n${msg.sender}: ${msg.content}`;
         }
-      }
+      });
       
-      if (specialty) {
-        promptText += `\n\nRemember that while this context is important, you are the expert in ${specialty}. Your primary focus should be on providing insights from your specific domain of expertise, even if that means respectfully differing from other specialists.`;
-      }
+      promptText += `\n\nRemember that while this context is important, you are the expert in ${specialty}. Your primary focus should be on providing insights from your specific domain of expertise, even if that means respectfully differing from other specialists.`;
     }
     
-    promptText += `\n\nPatient symptoms: ${userInput}`;
+    promptText += `\n\nPatient symptoms: ${symptoms || prompt || 'No symptoms provided'}`;
 
     console.log("Calling Gemini API with prompt");
     
-    try {
-      // Call Gemini API with the format specified in the curl example
-      const geminiResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{ text: promptText }]
-            }]
-          }),
-        }
-      );
-      
-      if (!geminiResponse.ok) {
-        const errorData = await geminiResponse.text();
-        console.error("Error response from Gemini API:", errorData);
-        throw new Error(`Gemini API error (${geminiResponse.status}): ${errorData}`);
+    // Call Gemini API with the format specified in the curl example
+    const geminiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{ text: promptText }]
+          }]
+        }),
       }
-
-      const geminiData = await geminiResponse.json();
-      console.log("Gemini API response received");
-
-      if (!geminiData.candidates || geminiData.candidates.length === 0) {
-        console.error("No response from Gemini API:", geminiData);
-        throw new Error("No response from Gemini API");
-      }
-
-      const responseText = geminiData.candidates[0].content.parts[0].text;
-      
-      // Extract diagnosis, confidence, and recommendations from the response text
-      let diagnosis = "Unknown condition";
-      let confidence = Math.floor(Math.random() * 30) + 70; // Default random confidence 70-99%
-      let recommendation = "Please consult with a human doctor for proper diagnosis and treatment.";
-      
-      // Try to extract a diagnosis - improved regex patterns
-      const diagnosisMatch = responseText.match(/diagnosis:?\s*([^.\n]+)/i) || 
-                           responseText.match(/diagnosed with:?\s*([^.\n]+)/i) ||
-                           responseText.match(/condition:?\s*([^.\n]+)/i) ||
-                           responseText.match(/suffering from:?\s*([^.\n]+)/i) ||
-                           responseText.match(/I believe\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i) ||
-                           responseText.match(/In my opinion,?\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i) ||
-                           responseText.match(/I think\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i);
-      
-      if (diagnosisMatch && diagnosisMatch[1]) {
-        diagnosis = diagnosisMatch[1].trim().replace(/\*\*/g, '');
-      }
-      
-      // Try to extract confidence
-      const confidenceMatch = responseText.match(/confidence:?\s*(\d+)%/i) ||
-                            responseText.match(/(\d+)%\s*confidence/i) ||
-                            responseText.match(/(\d+)%\s*certain/i) ||
-                            responseText.match(/certainty of\s*(\d+)%/i);
-      
-      if (confidenceMatch && confidenceMatch[1]) {
-        const parsedConfidence = parseInt(confidenceMatch[1]);
-        if (!isNaN(parsedConfidence) && parsedConfidence >= 1 && parsedConfidence <= 100) {
-          confidence = parsedConfidence;
-        }
-      }
-      
-      // Try to extract recommendation
-      const recommendationMatch = responseText.match(/recommendation:?\s*(.*?)(?:\n\n|$)/is) ||
-                                responseText.match(/recommend:?\s*(.*?)(?:\n\n|$)/is) ||
-                                responseText.match(/treatment:?\s*(.*?)(?:\n\n|$)/is) ||
-                                responseText.match(/I (?:would |)recommend:?\s*(.*?)(?:\n\n|$)/is) ||
-                                responseText.match(/I suggest:?\s*(.*?)(?:\n\n|$)/is);
-      
-      if (recommendationMatch && recommendationMatch[1]) {
-        recommendation = recommendationMatch[1].trim().replace(/\*\*/g, '');
-      }
-      
-      // Create response object
-      const result = {
-        fullResponse: responseText,
-        response: responseText,
-        diagnosis,
-        confidence,
-        recommendation,
-        specialty: specialty || 'general medicine',
-        agentId: agentId || 'default-agent',
-        agentName: agentName || 'Medical Assistant'
-      };
-
-      console.log(`Response generated for ${specialty || 'general'} specialist`);
-      
-      return new Response(JSON.stringify(result), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    } catch (geminiError) {
-      console.error("Error calling Gemini API:", geminiError);
-      
-      // Return a fallback response
-      return new Response(JSON.stringify({ 
-        error: geminiError.message,
-        response: "I apologize, but I'm having trouble analyzing your symptoms right now. Please try again or consult with a healthcare professional.",
-        diagnosis: "Unable to determine at this time",
-        confidence: 70,
-        recommendation: "Please consult with a healthcare professional for proper evaluation.",
-        specialty: specialty || 'general medicine',
-        agentId: agentId || 'default-agent',
-        agentName: agentName || 'Medical Assistant'
-      }), {
-        status: 200, // Return 200 even for API errors to prevent cascading failures
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    );
+    
+    if (!geminiResponse.ok) {
+      const errorData = await geminiResponse.text();
+      console.error("Error response from Gemini API:", errorData);
+      throw new Error(`Gemini API error (${geminiResponse.status}): ${errorData}`);
     }
+
+    const geminiData = await geminiResponse.json();
+    console.log("Gemini API response received");
+
+    if (!geminiData.candidates || geminiData.candidates.length === 0) {
+      console.error("No response from Gemini API:", geminiData);
+      throw new Error("No response from Gemini API");
+    }
+
+    const responseText = geminiData.candidates[0].content.parts[0].text;
+    
+    // Extract diagnosis, confidence, and recommendations from the response text
+    let diagnosis = "Unknown condition";
+    let confidence = Math.floor(Math.random() * 30) + 70; // Default random confidence 70-99%
+    let recommendation = "Please consult with a human doctor for proper diagnosis and treatment.";
+    
+    // Try to extract a diagnosis - improved regex patterns
+    const diagnosisMatch = responseText.match(/diagnosis:?\s*([^.\n]+)/i) || 
+                          responseText.match(/diagnosed with:?\s*([^.\n]+)/i) ||
+                          responseText.match(/condition:?\s*([^.\n]+)/i) ||
+                          responseText.match(/suffering from:?\s*([^.\n]+)/i) ||
+                          responseText.match(/I believe\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i) ||
+                          responseText.match(/In my opinion,?\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i) ||
+                          responseText.match(/I think\s+(?:the patient (?:has|is suffering from|is experiencing))?\s*([^.\n]+)/i);
+    
+    if (diagnosisMatch && diagnosisMatch[1]) {
+      diagnosis = diagnosisMatch[1].trim().replace(/\*\*/g, '');
+    }
+    
+    // Try to extract confidence
+    const confidenceMatch = responseText.match(/confidence:?\s*(\d+)%/i) ||
+                           responseText.match(/(\d+)%\s*confidence/i) ||
+                           responseText.match(/(\d+)%\s*certain/i) ||
+                           responseText.match(/certainty of\s*(\d+)%/i);
+    
+    if (confidenceMatch && confidenceMatch[1]) {
+      const parsedConfidence = parseInt(confidenceMatch[1]);
+      if (!isNaN(parsedConfidence) && parsedConfidence >= 1 && parsedConfidence <= 100) {
+        confidence = parsedConfidence;
+      }
+    }
+    
+    // Try to extract recommendation
+    const recommendationMatch = responseText.match(/recommendation:?\s*(.*?)(?:\n\n|$)/is) ||
+                               responseText.match(/recommend:?\s*(.*?)(?:\n\n|$)/is) ||
+                               responseText.match(/treatment:?\s*(.*?)(?:\n\n|$)/is) ||
+                               responseText.match(/I (?:would |)recommend:?\s*(.*?)(?:\n\n|$)/is) ||
+                               responseText.match(/I suggest:?\s*(.*?)(?:\n\n|$)/is);
+    
+    if (recommendationMatch && recommendationMatch[1]) {
+      recommendation = recommendationMatch[1].trim().replace(/\*\*/g, '');
+    }
+    
+    // Create response object
+    const result = {
+      fullResponse: responseText,
+      response: responseText,
+      diagnosis,
+      confidence,
+      recommendation,
+      specialty,
+      agentId,
+      agentName
+    };
+
+    console.log(`Response generated for ${specialty || 'general'} specialist`);
+    
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    console.error("Unhandled error in generate-medical-response function:", error);
+    console.error("Error in generate-medical-response function:", error);
     
     return new Response(JSON.stringify({ 
-      error: error.message || "Unknown error",
-      response: "I apologize, but I'm having trouble processing your request. Please try again or consult with a healthcare professional."
+      error: error.message,
+      response: "I apologize, but I'm having trouble analyzing your symptoms. Please try again or consult with a healthcare professional."
     }), {
-      status: 200, // Return 200 even for unhandled errors to prevent cascading failures
+      status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

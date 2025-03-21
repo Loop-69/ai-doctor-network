@@ -14,18 +14,26 @@ const LiveCallMonitor = () => {
   const [isRecording, setIsRecording] = useState(true);
   
   // Use our custom hook for conversation state management
-  const conversationState = useConversationState({
+  const {
+    message,
+    setMessage,
+    isListening,
+    isTakingOver,
+    conversation,
+    editingQuestion,
+    modifiedQuestion,
+    setModifiedQuestion,
+    sendMessage,
+    toggleListening,
+    toggleTakeover,
+    startEditQuestion,
+    saveEditedQuestion,
+    cancelEditing,
+    formatTime
+  } = useConversationState({
     patientName: activeCall?.patient.name || "",
     agentName: activeCall?.agentName || ""
   });
-
-  // Connect the simulation to the conversation state
-  useEffect(() => {
-    if (activeCall?.autoAdvance && activeCall.onConversationUpdate) {
-      // Set the onConversationUpdate callback to add messages to our state
-      activeCall.onConversationUpdate = conversationState.addSimulatedMessage;
-    }
-  }, [activeCall]);
 
   // Calculate duration of the call
   const getCallDuration = () => {
@@ -82,8 +90,8 @@ const LiveCallMonitor = () => {
     >
       <CallHeader 
         activeCall={activeCall}
-        isListening={conversationState.isListening}
-        toggleListening={conversationState.toggleListening}
+        isListening={isListening}
+        toggleListening={toggleListening}
         handleEndCall={handleEndCall}
         getCallDuration={getCallDuration}
         isRecording={isRecording}
@@ -93,27 +101,27 @@ const LiveCallMonitor = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <ConversationPanel 
           activeCall={activeCall}
-          conversation={conversationState.conversation}
-          message={conversationState.message}
-          setMessage={conversationState.setMessage}
-          isTakingOver={conversationState.isTakingOver}
-          toggleTakeover={conversationState.toggleTakeover}
-          sendMessage={conversationState.sendMessage}
-          editingQuestion={conversationState.editingQuestion}
-          modifiedQuestion={conversationState.modifiedQuestion}
-          setModifiedQuestion={conversationState.setModifiedQuestion}
-          startEditQuestion={conversationState.startEditQuestion}
-          saveEditedQuestion={conversationState.saveEditedQuestion}
-          cancelEditing={conversationState.cancelEditing}
-          formatTime={conversationState.formatTime}
+          conversation={conversation}
+          message={message}
+          setMessage={setMessage}
+          isTakingOver={isTakingOver}
+          toggleTakeover={toggleTakeover}
+          sendMessage={sendMessage}
+          editingQuestion={editingQuestion}
+          modifiedQuestion={modifiedQuestion}
+          setModifiedQuestion={setModifiedQuestion}
+          startEditQuestion={startEditQuestion}
+          saveEditedQuestion={saveEditedQuestion}
+          cancelEditing={cancelEditing}
+          formatTime={formatTime}
         />
 
         <CallInfoPanel 
           activeCall={activeCall}
-          isListening={conversationState.isListening}
-          isTakingOver={conversationState.isTakingOver}
-          toggleListening={conversationState.toggleListening}
-          toggleTakeover={conversationState.toggleTakeover}
+          isListening={isListening}
+          isTakingOver={isTakingOver}
+          toggleListening={toggleListening}
+          toggleTakeover={toggleTakeover}
           handleEndCall={handleEndCall}
           isRecording={isRecording}
           toggleRecording={toggleRecording}

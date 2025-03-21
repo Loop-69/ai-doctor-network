@@ -6,23 +6,24 @@ import {
   FileBarChart,
 } from "lucide-react";
 import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle,
+} from "@/components/ui/card";
+import { 
   LineChart, 
   Line, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  Legend,
+  Legend, 
+  ResponsiveContainer,
 } from "recharts";
 import StatsCard from "../StatsCard";
 import { conditionData } from "../data/analyticsData";
-import ChartsWrapper from "../components/ChartsWrapper";
-
-const chartConfig = {
-  hypertension: { color: "#8884d8", label: "Hypertension" },
-  diabetes: { color: "#82ca9d", label: "Diabetes" },
-  arthritis: { color: "#ffc658", label: "Arthritis" },
-};
 
 const ConditionsTab = () => {
   return (
@@ -51,22 +52,26 @@ const ConditionsTab = () => {
         />
       </div>
       
-      <ChartsWrapper 
-        title="Condition Trends" 
-        description="Most common conditions over time"
-        config={chartConfig}
-      >
-        <LineChart data={conditionData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="hypertension" stroke="#8884d8" activeDot={{ r: 8 }} />
-          <Line type="monotone" dataKey="diabetes" stroke="#82ca9d" />
-          <Line type="monotone" dataKey="arthritis" stroke="#ffc658" />
-        </LineChart>
-      </ChartsWrapper>
+      <Card>
+        <CardHeader>
+          <CardTitle>Condition Trends</CardTitle>
+          <CardDescription>Most common conditions over time</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={conditionData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="hypertension" stroke="#8884d8" activeDot={{ r: 8 }} />
+              <Line type="monotone" dataKey="diabetes" stroke="#82ca9d" />
+              <Line type="monotone" dataKey="arthritis" stroke="#ffc658" />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 };
