@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ActiveCallProvider } from "@/components/followup/context/ActiveCallContext";
 import SidebarHeader from "./SidebarHeader";
 import NavItems from "./NavItems";
 import UserProfile from "./UserProfile";
@@ -31,9 +30,7 @@ const SidebarContainer = ({ className }: SidebarContainerProps) => {
       </div>
 
       <div className={collapsed ? "hidden" : "block"}>
-        <ActiveCallProvider>
-          <SidebarLiveCallIndicator />
-        </ActiveCallProvider>
+        <SidebarLiveCallIndicator />
       </div>
 
       <UserProfile collapsed={collapsed} />

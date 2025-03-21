@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, FileText, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { ActiveCallProvider } from "./context/ActiveCallContext";
 import { useActiveCallContext } from "./context/ActiveCallContext";
 import ActiveCallIndicator from "./components/ActiveCallIndicator";
 import ScheduleTab from "./tabs/ScheduleTab";
@@ -34,81 +33,79 @@ const FollowupSchedulerView = () => {
   const { activeCall } = useActiveCallContext();
   
   return (
-    <ActiveCallProvider>
-      <div className="space-y-6">
-        <header className="space-y-2">
-          <div className="flex justify-between items-center">
-            <motion.h1 
-              className="h1"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              Patient Follow-up Scheduler
-            </motion.h1>
-            
-            {activeCall && (
-              <Link to="/followup-monitoring">
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Headphones className="h-4 w-4" />
-                  Monitor Active Call
-                </Button>
-              </Link>
-            )}
-          </div>
-          <motion.p 
-            className="text-muted-foreground"
+    <div className="space-y-6">
+      <header className="space-y-2">
+        <div className="flex justify-between items-center">
+          <motion.h1 
+            className="h1"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
+            transition={{ duration: 0.3 }}
           >
-            Schedule AI agent follow-up calls with patients and generate comprehensive reports
-          </motion.p>
-        </header>
-
-        <Tabs 
-          defaultValue="schedule" 
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="space-y-4"
+            Patient Follow-up Scheduler
+          </motion.h1>
+          
+          {activeCall && (
+            <Link to="/followup-monitoring">
+              <Button variant="outline" className="flex items-center gap-2">
+                <Headphones className="h-4 w-4" />
+                Monitor Active Call
+              </Button>
+            </Link>
+          )}
+        </div>
+        <motion.p 
+          className="text-muted-foreground"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-          >
-            <TabsList className="grid grid-cols-3 md:w-[600px]">
-              <TabsTrigger value="schedule">
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule New Follow-up
-              </TabsTrigger>
-              <TabsTrigger value="upcoming">
-                <Clock className="mr-2 h-4 w-4" />
-                Upcoming Calls
-              </TabsTrigger>
-              <TabsTrigger value="reports">
-                <FileText className="mr-2 h-4 w-4" />
-                Follow-up Reports
-              </TabsTrigger>
-            </TabsList>
-          </motion.div>
+          Schedule AI agent follow-up calls with patients and generate comprehensive reports
+        </motion.p>
+      </header>
 
-          <TabsContent value="schedule" className="space-y-4">
-            <ScheduleTab />
-          </TabsContent>
-          
-          <TabsContent value="upcoming" className="space-y-4">
-            <UpcomingTab />
-          </TabsContent>
-          
-          <TabsContent value="reports" className="space-y-4">
-            <ReportsTab />
-          </TabsContent>
-        </Tabs>
+      <Tabs 
+        defaultValue="schedule" 
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-4"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+        >
+          <TabsList className="grid grid-cols-3 md:w-[600px]">
+            <TabsTrigger value="schedule">
+              <Calendar className="mr-2 h-4 w-4" />
+              Schedule New Follow-up
+            </TabsTrigger>
+            <TabsTrigger value="upcoming">
+              <Clock className="mr-2 h-4 w-4" />
+              Upcoming Calls
+            </TabsTrigger>
+            <TabsTrigger value="reports">
+              <FileText className="mr-2 h-4 w-4" />
+              Follow-up Reports
+            </TabsTrigger>
+          </TabsList>
+        </motion.div>
+
+        <TabsContent value="schedule" className="space-y-4">
+          <ScheduleTab />
+        </TabsContent>
         
-        <ActiveCallManager />
-      </div>
-    </ActiveCallProvider>
+        <TabsContent value="upcoming" className="space-y-4">
+          <UpcomingTab />
+        </TabsContent>
+        
+        <TabsContent value="reports" className="space-y-4">
+          <ReportsTab />
+        </TabsContent>
+      </Tabs>
+      
+      <ActiveCallManager />
+    </div>
   );
 };
 
