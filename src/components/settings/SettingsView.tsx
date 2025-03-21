@@ -6,6 +6,7 @@ import AccountTab from "./tabs/AccountTab";
 import AppearanceTab from "./tabs/AppearanceTab";
 import NotificationsTab from "./tabs/NotificationsTab";
 import SecurityTab from "./tabs/SecurityTab";
+import CallMonitoringTab from "./tabs/CallMonitoringTab";
 
 const SettingsView = () => {
   const navigate = useNavigate();
@@ -35,10 +36,11 @@ const SettingsView = () => {
       
       <div className="flex justify-between items-center">
         <Tabs defaultValue="account" value={activeTab} onValueChange={handleTabChange}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            <TabsTrigger value="callmonitoring">Call Monitoring</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
           </TabsList>
           
@@ -52,6 +54,10 @@ const SettingsView = () => {
           
           <TabsContent value="notifications">
             <NotificationsTab />
+          </TabsContent>
+          
+          <TabsContent value="callmonitoring">
+            <CallMonitoringTab />
           </TabsContent>
           
           <TabsContent value="security">

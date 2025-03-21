@@ -11,6 +11,7 @@ import { useConversationState } from "../hooks/useConversationState";
 const LiveCallMonitor = () => {
   const { activeCall, endCall } = useActiveCallContext();
   const { toast } = useToast();
+  const [isRecording, setIsRecording] = useState(true);
   
   // Use our custom hook for conversation state management
   const {
@@ -42,6 +43,29 @@ const LiveCallMonitor = () => {
     return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
+  // Load monitoring settings
+  useEffect(() => {
+    // This would typically be loaded from an API or state management
+    // For now we're using default values that match the settings form
+    const loadSettings = () => {
+      // Default to true for now - in a real app this would be loaded from storage/API
+      setIsRecording(true);
+    };
+    
+    loadSettings();
+  }, []);
+
+  // Toggle call recording
+  const toggleRecording = () => {
+    setIsRecording(!isRecording);
+    toast({
+      title: isRecording ? "Recording paused" : "Recording resumed",
+      description: isRecording 
+        ? "Call recording has been paused" 
+        : "Call recording has been resumed",
+    });
+  };
+
   // End the call
   const handleEndCall = () => {
     if (window.confirm("Are you sure you want to end this call?")) {
@@ -67,6 +91,8 @@ const LiveCallMonitor = () => {
         toggleListening={toggleListening}
         handleEndCall={handleEndCall}
         getCallDuration={getCallDuration}
+        isRecording={isRecording}
+        toggleRecording={toggleRecording}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
@@ -94,6 +120,8 @@ const LiveCallMonitor = () => {
           toggleListening={toggleListening}
           toggleTakeover={toggleTakeover}
           handleEndCall={handleEndCall}
+          isRecording={isRecording}
+          toggleRecording={toggleRecording}
         />
       </div>
     </motion.div>
