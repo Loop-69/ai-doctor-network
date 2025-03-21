@@ -34,12 +34,9 @@ enable_signup = true
 [functions]
 [functions.generate-medical-response]
 verify_jwt = false
-port = 54327
 
 [functions.generate-followup-questions]
 verify_jwt = false
-port = 54328
 
 [functions.generate-consultation-verdict]
 verify_jwt = false
-port = 54329
