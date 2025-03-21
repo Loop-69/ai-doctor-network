@@ -1,5 +1,5 @@
 
-import { PencilLine } from "lucide-react";
+import { Edit2, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ConversationMessage } from "../../types/callTypes";
@@ -29,74 +29,73 @@ const MessageBubble = ({
   cancelEditing,
   formatTime
 }: MessageBubbleProps) => {
-  const getSenderName = (sender: string) => {
-    if (sender === 'patient') return activeCallPatientName;
-    if (sender === 'doctor') return 'You (Doctor)';
-    return activeCallAgentName;
+  const isAgent = message.sender === 'agent';
+  const isPatient = message.sender === 'patient';
+  const isDoctor = message.sender === 'doctor';
+  const isEditing = editingQuestion === message.id;
+  
+  // Determine name to display
+  const getSenderName = () => {
+    if (isAgent) return activeCallAgentName || 'AI Agent';
+    if (isPatient) return activeCallPatientName || 'Patient';
+    return 'Doctor';
   };
-
+  
   return (
-    <div 
-      className={`flex ${message.sender === 'patient' ? 'justify-end' : 'justify-start'}`}
-    >
+    <div className={`flex flex-col ${isDoctor ? 'items-end' : 'items-start'}`}>
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-xs font-medium">{getSenderName()}</span>
+        <span className="text-xs text-muted-foreground">{formatTime(message.timestamp)}</span>
+        {message.isEdited && <span className="text-xs text-muted-foreground italic">(edited)</span>}
+      </div>
+      
       <div 
-        className={`max-w-[80%] px-4 py-3 rounded-lg ${
-          message.sender === 'patient' 
-            ? 'bg-muted ml-auto rounded-tr-none' 
-            : message.sender === 'doctor'
-              ? 'bg-blue-100 dark:bg-blue-950 rounded-tl-none'
-              : 'bg-aida-500 text-white rounded-tl-none'
+        className={`max-w-[80%] rounded-lg px-4 py-2 ${
+          isAgent 
+            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-100' 
+            : isPatient 
+              ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-100'
+              : 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-100'
         }`}
       >
-        <div className="flex justify-between items-center mb-1">
-          <span className="text-xs font-medium">
-            {getSenderName(message.sender)}
-          </span>
-          <span className="text-xs opacity-70">
-            {formatTime(message.timestamp)}
-          </span>
-        </div>
-        
-        {editingQuestion === message.id ? (
+        {isEditing ? (
           <div className="space-y-2">
-            <Textarea 
-              value={modifiedQuestion} 
+            <Textarea
+              value={modifiedQuestion}
               onChange={(e) => setModifiedQuestion(e.target.value)}
-              className="min-h-[80px] mt-2"
+              className="min-h-[100px]"
             />
             <div className="flex justify-end gap-2">
-              <Button size="sm" variant="ghost" onClick={cancelEditing}>
-                Cancel
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={cancelEditing}
+              >
+                <X className="h-4 w-4 mr-1" /> Cancel
               </Button>
-              <Button size="sm" onClick={saveEditedQuestion}>
-                Save
+              <Button 
+                size="sm" 
+                onClick={saveEditedQuestion}
+              >
+                <Check className="h-4 w-4 mr-1" /> Save
               </Button>
             </div>
           </div>
         ) : (
-          <>
-            <p className={`text-sm ${message.sender === 'agent' && !message.isEdited ? 'text-white' : ''}`}>
-              {message.content}
-            </p>
+          <div className="relative group">
+            <p className="whitespace-pre-wrap">{message.content}</p>
             
-            {message.sender === 'agent' && (
-              <div className="flex justify-between items-center mt-2">
-                {message.isEdited && (
-                  <span className="text-xs italic opacity-70">
-                    (modified by doctor)
-                  </span>
-                )}
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="ml-auto p-0 h-6"
-                  onClick={() => startEditQuestion(message.id)}
-                >
-                  <PencilLine className="h-3 w-3" />
-                </Button>
-              </div>
+            {isAgent && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="absolute -top-3 -right-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => startEditQuestion(message.id)}
+              >
+                <Edit2 className="h-3 w-3" />
+              </Button>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
