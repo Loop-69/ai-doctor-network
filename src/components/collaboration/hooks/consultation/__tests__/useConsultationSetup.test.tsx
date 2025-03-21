@@ -2,16 +2,18 @@
 import { renderHook, act } from "@/utils/test-utils";
 import { useConsultationSetup } from "../useConsultationSetup";
 import { useToast } from "@/hooks/use-toast";
+import { vi } from "vitest";
 
 // Mock useToast
-jest.mock("@/hooks/use-toast", () => ({
-  useToast: jest.fn()
+vi.mock("@/hooks/use-toast", () => ({
+  useToast: vi.fn()
 }));
 
 describe("useConsultationSetup", () => {
   beforeEach(() => {
-    (useToast as jest.Mock).mockReturnValue({
-      toast: jest.fn()
+    vi.clearAllMocks();
+    (useToast as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      toast: vi.fn()
     });
   });
 
@@ -30,7 +32,7 @@ describe("useConsultationSetup", () => {
       name: "Dr. Smith",
       specialty: "Cardiology",
       description: "Cardiologist",
-      icon: jest.fn(),
+      icon: vi.fn(),
       color: "text-red-500",
       capabilities: []
     };
@@ -50,7 +52,7 @@ describe("useConsultationSetup", () => {
       name: "Dr. Smith",
       specialty: "Cardiology",
       description: "Cardiologist",
-      icon: jest.fn(),
+      icon: vi.fn(),
       color: "text-red-500",
       capabilities: []
     };
@@ -79,8 +81,8 @@ describe("useConsultationSetup", () => {
   });
 
   it("should validate consultation correctly", () => {
-    const mockToast = jest.fn();
-    (useToast as jest.Mock).mockReturnValue({
+    const mockToast = vi.fn();
+    (useToast as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       toast: mockToast
     });
     
@@ -108,7 +110,7 @@ describe("useConsultationSetup", () => {
         name: "Dr. Smith",
         specialty: "Cardiology",
         description: "Cardiologist",
-        icon: jest.fn(),
+        icon: vi.fn(),
         color: "text-red-500",
         capabilities: []
       };
