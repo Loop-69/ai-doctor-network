@@ -49,6 +49,7 @@ const ConversationPanel = ({
   formatTime
 }: ConversationPanelProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-scroll to bottom when messages update
   useEffect(() => {
@@ -64,6 +65,8 @@ const ConversationPanel = ({
             variant={isTakingOver ? "default" : "outline"}
             size="sm"
             onClick={toggleTakeover}
+            aria-pressed={isTakingOver}
+            aria-label={isTakingOver ? "Return control to AI" : "Take over conversation"}
           >
             {isTakingOver ? (
               <>
@@ -110,6 +113,7 @@ const ConversationPanel = ({
       <CardFooter className="pt-4 border-t">
         <div className="flex w-full gap-2">
           <Textarea
+            ref={textareaRef}
             placeholder={
               isTakingOver 
                 ? "Type a message to the patient..." 
@@ -118,6 +122,8 @@ const ConversationPanel = ({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             className="flex-1"
+            id="conversation-message-input"
+            aria-label={isTakingOver ? "Message to patient" : "Suggestion for AI agent"}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -125,7 +131,10 @@ const ConversationPanel = ({
               }
             }}
           />
-          <Button onClick={sendMessage}>
+          <Button 
+            onClick={sendMessage}
+            aria-label="Send message"
+          >
             <Send className="h-4 w-4 mr-2" />
             Send
           </Button>

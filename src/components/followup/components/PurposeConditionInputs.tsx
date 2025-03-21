@@ -30,10 +30,11 @@ const PurposeConditionInputs: React.FC<PurposeConditionInputsProps> = ({ form })
                 id="followup-purpose"
                 placeholder="E.g., Medication check, post-surgery follow-up" 
                 autoComplete="off"
+                aria-describedby="purpose-description"
                 {...field} 
               />
             </FormControl>
-            <FormDescription>
+            <FormDescription id="purpose-description">
               Briefly describe the purpose of this follow-up call
             </FormDescription>
             <FormMessage />
@@ -52,10 +53,11 @@ const PurposeConditionInputs: React.FC<PurposeConditionInputsProps> = ({ form })
                 id="patient-condition"
                 placeholder="E.g., Hypertension, Post-operative recovery, Diabetes" 
                 autoComplete="off"
+                aria-describedby="condition-description"
                 {...field} 
               />
             </FormControl>
-            <FormDescription>
+            <FormDescription id="condition-description">
               Enter the patient's condition to generate relevant follow-up questions
             </FormDescription>
             <FormMessage />

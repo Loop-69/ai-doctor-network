@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Send } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ interface ChatInputProps {
 
 const ChatInput = ({ onSendMessage, isLoading, agentName }: ChatInputProps) => {
   const [chatInput, setChatInput] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = () => {
     if (!chatInput.trim()) return;
@@ -41,10 +42,14 @@ const ChatInput = ({ onSendMessage, isLoading, agentName }: ChatInputProps) => {
   return (
     <div className="flex w-full items-center space-x-2">
       <Textarea
+        ref={textareaRef}
         placeholder={`Ask ${agentName} a question...`}
         value={chatInput}
         onChange={(e) => setChatInput(e.target.value)}
         className="flex-1"
+        id="chat-input-textarea"
+        aria-label={`Message to ${agentName}`}
+        tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -55,6 +60,7 @@ const ChatInput = ({ onSendMessage, isLoading, agentName }: ChatInputProps) => {
       <Button 
         onClick={handleSendMessage} 
         disabled={!chatInput.trim() || isLoading}
+        aria-label="Send message"
       >
         <Send className="h-4 w-4" />
         <span className="sr-only">Send</span>
