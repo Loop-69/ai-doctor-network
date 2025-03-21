@@ -16,7 +16,7 @@ export const useConversationState = ({ patientName, agentName }: {
   const [modifiedQuestion, setModifiedQuestion] = useState("");
 
   // Initial conversation for when a call starts
-  const initialConversation = [
+  const initialConversation: ConversationMessage[] = [
     {
       id: "1",
       sender: "agent",
