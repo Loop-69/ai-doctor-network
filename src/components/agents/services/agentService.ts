@@ -39,6 +39,9 @@ export const generateAIResponse = async (prompt: string, agent: Agent): Promise<
         modelProvider: "gemini",
         modelName: "gemini-2.0-flash",
         previousMessages: previousMessages
+      },
+      headers: {
+        'Content-Type': 'application/json'
       }
     });
     
@@ -70,6 +73,9 @@ export const generateFollowUpQuestions = async (condition: string, specialty?: s
         specialty,
         modelProvider: "gemini",
         modelName: "gemini-2.0-flash"
+      },
+      headers: {
+        'Content-Type': 'application/json'
       }
     });
     
