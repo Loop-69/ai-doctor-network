@@ -14,3 +14,21 @@ export interface ConversationMessage {
   timestamp: Date;
   isEdited?: boolean;
 }
+
+// Adding missing Patient and Call interfaces
+export interface Patient {
+  id: string;
+  name: string;
+  age: number;
+  gender: string;
+  conditions: string[];
+}
+
+export interface Call {
+  id: string;
+  patient: Patient;
+  startTime: Date;
+  purpose: string;
+  conditions: string[];
+  agentName?: string;
+}

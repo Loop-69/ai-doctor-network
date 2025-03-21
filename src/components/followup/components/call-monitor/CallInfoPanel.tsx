@@ -11,8 +11,8 @@ import {
   Volume2, 
   VolumeX, 
   Keyboard,
-  Record,
-  RecordOff,
+  Mic,
+  MicOff,
   FileDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -123,7 +123,7 @@ const CallInfoPanel = ({
                   className={`justify-start ${isRecording ? "bg-red-500 hover:bg-red-600" : ""}`}
                   onClick={toggleRecording}
                 >
-                  {isRecording ? <RecordOff className="h-4 w-4 mr-2" /> : <Record className="h-4 w-4 mr-2" />}
+                  {isRecording ? <MicOff className="h-4 w-4 mr-2" /> : <Mic className="h-4 w-4 mr-2" />}
                   {isRecording ? "Stop Recording" : "Start Recording"}
                 </Button>
               )}

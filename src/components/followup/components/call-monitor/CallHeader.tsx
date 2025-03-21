@@ -7,8 +7,8 @@ import {
   PhoneOff, 
   Volume2, 
   VolumeX,
-  Record,
-  RecordOff
+  Mic,
+  MicOff
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -81,7 +81,7 @@ const CallHeader = ({
                 onClick={toggleRecording}
                 title={isRecording ? "Pause recording" : "Resume recording"}
               >
-                {isRecording ? <RecordOff size={16} /> : <Record size={16} />}
+                {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
                 <span className="ml-2 hidden md:inline">
                   {isRecording ? "Pause Recording" : "Record Call"}
                 </span>
