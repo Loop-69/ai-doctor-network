@@ -1,8 +1,8 @@
 
-import { renderHook, act } from "@/utils/test-utils";
+import { renderHook, act, vi, expect } from "@/utils/test-utils";
 import { useConsultationSetup } from "../useConsultationSetup";
 import { useToast } from "@/hooks/use-toast";
-import { vi } from "vitest";
+import "@testing-library/jest-dom";
 
 // Mock useToast
 vi.mock("@/hooks/use-toast", () => ({

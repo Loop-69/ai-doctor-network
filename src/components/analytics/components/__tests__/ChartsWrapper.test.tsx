@@ -1,8 +1,9 @@
 
 import React from "react";
-import { render, screen } from "@/utils/test-utils";
+import { render, screen, vi, expect } from "@/utils/test-utils";
 import ChartsWrapper from "../ChartsWrapper";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
+import "@testing-library/jest-dom";
 
 const mockData = [
   { name: "Group A", value: 400 },
@@ -68,7 +69,10 @@ describe("ChartsWrapper", () => {
       </ChartsWrapper>
     );
     
-    const container = screen.getByText("Test Chart Title").closest(".card")?.querySelector(".card-content > div");
+    const container = screen.getByText("Test Chart Title")
+      .closest(".card")
+      ?.querySelector(".card-content > div");
+      
     expect(container).toHaveStyle("height: 500px");
   });
 });

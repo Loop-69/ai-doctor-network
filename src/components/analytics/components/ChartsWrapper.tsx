@@ -33,7 +33,7 @@ const ChartsWrapper = ({
       <CardContent>
         <div style={{ height: `${height}px` }}>
           <ChartContainer config={config} className="h-full">
-            {children}
+            {children as ReactElement}
           </ChartContainer>
         </div>
       </CardContent>

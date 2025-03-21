@@ -5,6 +5,8 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { renderHook as originalRenderHook, act } from "@testing-library/react";
+import { vi, expect } from "vitest";
+import "@testing-library/jest-dom";
 
 // Create a custom render function that includes all providers needed for components
 const customRender = (
@@ -72,4 +74,4 @@ export function mockMatchMedia() {
 
 // re-export everything
 export * from "@testing-library/react";
-export { customRender as render, renderHook, act };
+export { customRender as render, renderHook, act, vi, expect };
