@@ -29,7 +29,7 @@ const QuestionsTextarea: React.FC<QuestionsTextareaProps> = ({
       render={({ field }) => (
         <FormItem>
           <div className="flex items-center justify-between">
-            <FormLabel>Follow-up Questions</FormLabel>
+            <FormLabel htmlFor="followup-questions">Follow-up Questions</FormLabel>
             {isGeneratingQuestions && (
               <div className="flex items-center text-sm text-muted-foreground">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -39,8 +39,10 @@ const QuestionsTextarea: React.FC<QuestionsTextareaProps> = ({
           </div>
           <FormControl>
             <Textarea
+              id="followup-questions"
               placeholder="Questions will be auto-generated when you enter a condition, or you can type custom questions here"
               className="min-h-[180px]"
+              autoComplete="off"
               {...field}
             />
           </FormControl>

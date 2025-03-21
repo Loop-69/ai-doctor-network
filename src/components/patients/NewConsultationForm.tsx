@@ -49,15 +49,20 @@ const NewConsultationForm = ({ onSubmit, onCancel }: NewConsultationFormProps) =
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" id="consultation-form">
         <FormField
           control={form.control}
           name="date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date</FormLabel>
+              <FormLabel htmlFor="consultation-date">Date</FormLabel>
               <FormControl>
-                <Input type="date" {...field} />
+                <Input 
+                  id="consultation-date" 
+                  type="date"
+                  autoComplete="off"
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -69,9 +74,14 @@ const NewConsultationForm = ({ onSubmit, onCancel }: NewConsultationFormProps) =
           name="time"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Time</FormLabel>
+              <FormLabel htmlFor="consultation-time">Time</FormLabel>
               <FormControl>
-                <Input type="time" {...field} />
+                <Input 
+                  id="consultation-time" 
+                  type="time" 
+                  autoComplete="off"
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,13 +93,13 @@ const NewConsultationForm = ({ onSubmit, onCancel }: NewConsultationFormProps) =
           name="consultationType"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Consultation Type</FormLabel>
+              <FormLabel htmlFor="consultation-type">Consultation Type</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger id="consultation-type">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                 </FormControl>
@@ -109,10 +119,12 @@ const NewConsultationForm = ({ onSubmit, onCancel }: NewConsultationFormProps) =
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Notes</FormLabel>
+              <FormLabel htmlFor="consultation-notes">Notes</FormLabel>
               <FormControl>
                 <Textarea 
+                  id="consultation-notes"
                   placeholder="Any specifics about the consultation"
+                  autoComplete="off"
                   {...field}
                 />
               </FormControl>
@@ -122,10 +134,20 @@ const NewConsultationForm = ({ onSubmit, onCancel }: NewConsultationFormProps) =
         />
         
         <DialogFooter>
-          <Button variant="outline" type="button" onClick={onCancel}>
+          <Button 
+            variant="outline" 
+            type="button" 
+            onClick={onCancel}
+            id="cancel-consultation"
+          >
             Cancel
           </Button>
-          <Button type="submit">Schedule Consultation</Button>
+          <Button 
+            type="submit"
+            id="schedule-consultation"
+          >
+            Schedule Consultation
+          </Button>
         </DialogFooter>
       </form>
     </Form>

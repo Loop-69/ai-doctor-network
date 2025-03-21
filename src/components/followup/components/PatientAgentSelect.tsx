@@ -31,10 +31,10 @@ const PatientAgentSelect: React.FC<PatientAgentSelectProps> = ({ form }) => {
         name="patientId"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Patient</FormLabel>
+            <FormLabel htmlFor="select-patient">Patient</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger id="select-patient">
                   <SelectValue placeholder="Select a patient" />
                 </SelectTrigger>
               </FormControl>
@@ -59,10 +59,10 @@ const PatientAgentSelect: React.FC<PatientAgentSelectProps> = ({ form }) => {
         name="agentId"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>AI Agent</FormLabel>
+            <FormLabel htmlFor="select-agent">AI Agent</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger id="select-agent">
                   <SelectValue placeholder="Select an AI agent" />
                 </SelectTrigger>
               </FormControl>

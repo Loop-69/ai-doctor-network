@@ -24,9 +24,14 @@ const PurposeConditionInputs: React.FC<PurposeConditionInputsProps> = ({ form })
         name="purpose"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Purpose of Follow-up</FormLabel>
+            <FormLabel htmlFor="followup-purpose">Purpose of Follow-up</FormLabel>
             <FormControl>
-              <Input placeholder="E.g., Medication check, post-surgery follow-up" {...field} />
+              <Input 
+                id="followup-purpose"
+                placeholder="E.g., Medication check, post-surgery follow-up" 
+                autoComplete="off"
+                {...field} 
+              />
             </FormControl>
             <FormDescription>
               Briefly describe the purpose of this follow-up call
@@ -41,10 +46,12 @@ const PurposeConditionInputs: React.FC<PurposeConditionInputsProps> = ({ form })
         name="condition"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Patient Condition</FormLabel>
+            <FormLabel htmlFor="patient-condition">Patient Condition</FormLabel>
             <FormControl>
               <Input 
+                id="patient-condition"
                 placeholder="E.g., Hypertension, Post-operative recovery, Diabetes" 
+                autoComplete="off"
                 {...field} 
               />
             </FormControl>

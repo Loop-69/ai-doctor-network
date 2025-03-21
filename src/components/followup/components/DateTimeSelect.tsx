@@ -36,11 +36,12 @@ const DateTimeSelect: React.FC<DateTimeSelectProps> = ({ form }) => {
         name="date"
         render={({ field }) => (
           <FormItem className="flex flex-col">
-            <FormLabel>Date</FormLabel>
+            <FormLabel htmlFor="followup-date">Date</FormLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
+                    id="followup-date"
                     variant={"outline"}
                     className={cn(
                       "w-full pl-3 text-left font-normal",
@@ -82,12 +83,14 @@ const DateTimeSelect: React.FC<DateTimeSelectProps> = ({ form }) => {
         name="time"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Time</FormLabel>
+            <FormLabel htmlFor="followup-time">Time</FormLabel>
             <div className="relative">
               <FormControl>
                 <Input
+                  id="followup-time"
                   type="time"
                   placeholder="Select a time"
+                  autoComplete="off"
                   {...field}
                   className="pl-10"
                 />

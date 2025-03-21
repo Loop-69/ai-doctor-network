@@ -74,11 +74,12 @@ export const PasswordCard = ({ onPasswordChange }: PasswordCardProps) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleUpdatePassword)} className="space-y-4">
             <FormItem>
-              <FormLabel htmlFor="current">Current Password</FormLabel>
+              <FormLabel htmlFor="current-password">Current Password</FormLabel>
               <FormControl>
                 <Input
-                  id="current"
+                  id="current-password"
                   type="password"
+                  autoComplete="current-password"
                   {...form.register("current")}
                 />
               </FormControl>
@@ -86,11 +87,12 @@ export const PasswordCard = ({ onPasswordChange }: PasswordCardProps) => {
             </FormItem>
             
             <FormItem>
-              <FormLabel htmlFor="new">New Password</FormLabel>
+              <FormLabel htmlFor="new-password">New Password</FormLabel>
               <FormControl>
                 <Input
-                  id="new"
+                  id="new-password"
                   type="password"
+                  autoComplete="new-password"
                   {...form.register("new")}
                 />
               </FormControl>
@@ -98,18 +100,19 @@ export const PasswordCard = ({ onPasswordChange }: PasswordCardProps) => {
             </FormItem>
             
             <FormItem>
-              <FormLabel htmlFor="confirm">Confirm New Password</FormLabel>
+              <FormLabel htmlFor="confirm-password">Confirm New Password</FormLabel>
               <FormControl>
                 <Input
-                  id="confirm"
+                  id="confirm-password"
                   type="password"
+                  autoComplete="new-password"
                   {...form.register("confirm")}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
             
-            <Button type="submit">Update Password</Button>
+            <Button type="submit" id="update-password">Update Password</Button>
           </form>
         </Form>
       </CardContent>
