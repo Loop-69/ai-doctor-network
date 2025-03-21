@@ -28,9 +28,9 @@ export interface Patient {
 export interface Call {
   id: string;
   patient: Patient;
+  agentName: string; // Changed from optional to required
   startTime: Date;
   purpose: string;
   conditions: string[];
-  agentName?: string;
-  duration?: number;
+  duration: number; // Changed from optional to required
 }
