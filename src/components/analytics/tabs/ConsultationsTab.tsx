@@ -6,24 +6,22 @@ import {
   Clock,
 } from "lucide-react";
 import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle,
-} from "@/components/ui/card";
-import { 
   BarChart, 
   Bar, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  Legend, 
-  ResponsiveContainer,
+  Legend,
 } from "recharts";
 import StatsCard from "../StatsCard";
 import { consultationData } from "../data/analyticsData";
+import ChartsWrapper from "../components/ChartsWrapper";
+
+const chartConfig = {
+  inPerson: { color: "#3b82f6", label: "In-Person" },
+  virtual: { color: "#10b981", label: "Virtual" },
+};
 
 const ConsultationsTab = () => {
   return (
@@ -52,25 +50,21 @@ const ConsultationsTab = () => {
         />
       </div>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Weekly Consultations</CardTitle>
-          <CardDescription>In-person vs virtual consultations</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={consultationData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="inPerson" name="In-Person" fill="#3b82f6" />
-              <Bar dataKey="virtual" name="Virtual" fill="#10b981" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      <ChartsWrapper 
+        title="Weekly Consultations" 
+        description="In-person vs virtual consultations"
+        config={chartConfig}
+      >
+        <BarChart data={consultationData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="day" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="inPerson" name="In-Person" fill="#3b82f6" />
+          <Bar dataKey="virtual" name="Virtual" fill="#10b981" />
+        </BarChart>
+      </ChartsWrapper>
     </div>
   );
 };
