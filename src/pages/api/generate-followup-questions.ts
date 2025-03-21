@@ -2,6 +2,18 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export async function POST(req: Request) {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 200,
+      headers: { 
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      }
+    });
+  }
+
   try {
     const body = await req.json();
     

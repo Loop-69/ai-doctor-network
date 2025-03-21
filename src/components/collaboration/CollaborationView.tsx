@@ -23,6 +23,7 @@ import ColleagueCard from "./components/ColleagueCard";
 import MeetingCard from "./components/MeetingCard";
 import SharedCaseCard from "./components/SharedCaseCard";
 import { Agent } from "./types/consultationTypes";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CollaborationViewProps {
   initialConsultationId?: string;
@@ -32,6 +33,7 @@ interface CollaborationViewProps {
 const CollaborationView = ({ initialConsultationId, preSelectedAgent }: CollaborationViewProps = {}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("ai-collaboration");
+  const isMobile = useIsMobile();
 
   // Use the initialConsultationId and preSelectedAgent if provided
   useEffect(() => {
@@ -72,7 +74,7 @@ const CollaborationView = ({ initialConsultationId, preSelectedAgent }: Collabor
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
       >
-        <div className="relative w-full max-w-sm">
+        <div className={`relative ${isMobile ? 'w-full' : 'max-w-sm'}`}>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
             className="pl-10" 
@@ -81,8 +83,8 @@ const CollaborationView = ({ initialConsultationId, preSelectedAgent }: Collabor
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex space-x-2 ml-auto">
-          <Button className="font-medium">
+        <div className={`flex space-x-2 ${isMobile ? 'w-full mt-2' : 'ml-auto'}`}>
+          <Button className={`font-medium ${isMobile ? 'w-full' : ''}`}>
             New Collaboration
           </Button>
         </div>
@@ -99,7 +101,7 @@ const CollaborationView = ({ initialConsultationId, preSelectedAgent }: Collabor
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
         >
-          <TabsList className="grid grid-cols-3 md:w-[500px] mb-6">
+          <TabsList className={`grid grid-cols-3 ${isMobile ? 'w-full' : 'md:w-[500px]'} mb-6`}>
             <TabsTrigger value="ai-collaboration" className="py-3">
               AI Collaboration
             </TabsTrigger>
@@ -122,15 +124,15 @@ const CollaborationView = ({ initialConsultationId, preSelectedAgent }: Collabor
         </TabsContent>
 
         <TabsContent value="colleagues" className="space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-wrap">
             <h2 className="text-xl font-medium">Your Colleagues</h2>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className={isMobile ? "mt-2 w-full" : ""}>
               <Calendar className="mr-2 h-4 w-4" />
               Schedule Meeting
             </Button>
           </div>
           
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {filteredColleagues.map((colleague, index) => (
               <ColleagueCard 
                 key={colleague.id} 
@@ -139,7 +141,7 @@ const CollaborationView = ({ initialConsultationId, preSelectedAgent }: Collabor
               />
             ))}
             {filteredColleagues.length === 0 && (
-              <div className="text-center py-10 col-span-3">
+              <div className="text-center py-10 col-span-1 md:col-span-2 lg:col-span-3">
                 <p className="text-muted-foreground">No colleagues found matching your search criteria.</p>
               </div>
             )}
@@ -166,9 +168,9 @@ const CollaborationView = ({ initialConsultationId, preSelectedAgent }: Collabor
         </TabsContent>
         
         <TabsContent value="shared" className="space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-wrap">
             <h2 className="text-xl font-medium">Shared Patient Cases</h2>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className={isMobile ? "mt-2 w-full" : ""}>
               <Share className="mr-2 h-4 w-4" />
               Share New Case
             </Button>
