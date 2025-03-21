@@ -1,7 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { Agent } from '../types/agentTypes';
-import { Message } from '../hooks/useChatMessages';
+import { Agent, Message } from '../types/agentTypes';
+import { apiClient } from '@/lib/api-client';
 
 export interface MedicalResponse {
   diagnosis: string;
@@ -46,7 +46,7 @@ export async function generateMedicalResponse(
 }
 
 /**
- * Save chat messages to database
+ * Save chat message to database
  */
 export async function saveChatMessage(
   agentId: string,
@@ -55,11 +55,11 @@ export async function saveChatMessage(
 ) {
   try {
     const { data, error } = await supabase
-      .from('ai_agent_messages')
+      .from('ai_consultation_messages')
       .insert({
-        agent_id: agentId,
+        consultation_id: agentId, // Use agentId as the consultation_id
         content,
-        role
+        role: role === 'user' ? 'user' : 'assistant' // Map 'agent' to 'assistant' for DB storage
       });
 
     if (error) {
@@ -77,12 +77,12 @@ export async function saveChatMessage(
 /**
  * Get chat history for an agent
  */
-export async function getChatHistory(agentId: string) {
+export async function getChatHistory(agentId: string): Promise<Message[]> {
   try {
     const { data, error } = await supabase
-      .from('ai_agent_messages')
+      .from('ai_consultation_messages')
       .select('*')
-      .eq('agent_id', agentId)
+      .eq('consultation_id', agentId)
       .order('created_at', { ascending: true });
 
     if (error) {
@@ -90,7 +90,13 @@ export async function getChatHistory(agentId: string) {
       throw error;
     }
 
-    return data;
+    // Convert the database records to Message objects
+    return data.map(record => ({
+      id: record.id,
+      role: record.role === 'user' ? 'user' : 'assistant',
+      content: record.content,
+      timestamp: new Date(record.created_at)
+    }));
   } catch (error) {
     console.error("Error in getChatHistory:", error);
     throw error;
