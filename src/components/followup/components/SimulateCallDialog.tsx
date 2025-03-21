@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -32,6 +31,8 @@ const SimulateCallDialog = ({
         id: `sim-${Date.now()}`,
         patientName,
         agentName,
+        purpose: formData.purpose,
+        conditions: formData.condition ? [formData.condition] : [],
         duration: 5 // 5 minutes simulation
       });
       

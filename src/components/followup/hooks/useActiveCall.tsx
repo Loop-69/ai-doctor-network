@@ -3,28 +3,38 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Phone } from "lucide-react";
 import { addFollowUpNotification } from "@/components/layout/NotificationsList";
+import { Call, Patient } from "../types/callTypes";
 
 // This hook manages the state of an active call
 export const useActiveCall = () => {
-  const [activeCall, setActiveCall] = useState<{
-    id: string;
-    patientName: string;
-    agentName: string;
-    startTime: Date;
-    duration: number;
-  } | null>(null);
+  const [activeCall, setActiveCall] = useState<Call | null>(null);
   const { toast } = useToast();
 
   const startCall = (callData: {
     id: string;
     patientName: string;
     agentName: string;
+    purpose?: string;
+    conditions?: string[];
     duration?: number;
   }) => {
-    const newActiveCall = {
-      ...callData,
+    // Create a patient object from the patient name
+    const patient: Patient = {
+      id: `pat-${Date.now()}`,
+      name: callData.patientName,
+      age: 0, // Default value
+      gender: "", // Default value
+      conditions: callData.conditions || []
+    };
+    
+    // Create a call object that matches the Call interface
+    const newActiveCall: Call = {
+      id: callData.id,
+      patient: patient,
       startTime: new Date(),
-      duration: callData.duration || 5, // Default to 5 minutes if not specified
+      purpose: callData.purpose || "Follow-up call",
+      conditions: callData.conditions || [],
+      agentName: callData.agentName
     };
     
     setActiveCall(newActiveCall);
@@ -50,13 +60,13 @@ export const useActiveCall = () => {
     if (activeCall) {
       toast({
         title: "Call ended",
-        description: `Call with ${activeCall.patientName} has ended`,
+        description: `Call with ${activeCall.patient.name} has ended`,
       });
       
       // Add to notifications
       addFollowUpNotification({
         title: "Follow-up call completed",
-        description: `AI agent ${activeCall.agentName} has completed the follow-up with ${activeCall.patientName}`,
+        description: `AI agent ${activeCall.agentName} has completed the follow-up with ${activeCall.patient.name}`,
         icon: <Phone className="h-4 w-4 text-blue-500" />
       });
       
