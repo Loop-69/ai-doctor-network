@@ -7,34 +7,59 @@ import {
   CardHeader, 
   CardTitle,
 } from "@/components/ui/card";
-import { FormLabel } from "@/components/ui/form";
+import { 
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Shield, Activity, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 type SelfHealingCardProps = {
   onSecurityEvent: (log: { message: string, level: string }) => void;
 };
 
+const securityFormSchema = z.object({
+  selfHealingEnabled: z.boolean().default(true),
+  securityScanFrequency: z.string().default("weekly"),
+});
+
+type SecurityFormValues = z.infer<typeof securityFormSchema>;
+
 export const SelfHealingCard = ({ onSecurityEvent }: SelfHealingCardProps) => {
   const { toast } = useToast();
-  const [selfHealingEnabled, setSelfHealingEnabled] = useState(true);
-  const [securityScanFrequency, setSecurityScanFrequency] = useState("weekly");
   const [isSecurityScanRunning, setIsSecurityScanRunning] = useState(false);
+  
+  const form = useForm<SecurityFormValues>({
+    resolver: zodResolver(securityFormSchema),
+    defaultValues: {
+      selfHealingEnabled: true,
+      securityScanFrequency: "weekly",
+    },
+  });
 
-  const toggleSelfHealing = () => {
-    setSelfHealingEnabled(!selfHealingEnabled);
+  const selfHealingEnabled = form.watch("selfHealingEnabled");
+  const securityScanFrequency = form.watch("securityScanFrequency");
+  
+  const toggleSelfHealing = (value: boolean) => {
+    form.setValue("selfHealingEnabled", value);
     
     toast({
-      title: !selfHealingEnabled ? "Self-healing enabled" : "Self-healing disabled",
-      description: !selfHealingEnabled ? "System will automatically fix detected issues." : "Automatic issue resolution has been turned off."
+      title: value ? "Self-healing enabled" : "Self-healing disabled",
+      description: value ? "System will automatically fix detected issues." : "Automatic issue resolution has been turned off."
     });
     
     onSecurityEvent({
-      message: !selfHealingEnabled ? "Self-healing system enabled" : "Self-healing system disabled",
+      message: value ? "Self-healing system enabled" : "Self-healing system disabled",
       level: "info"
     });
   };
@@ -81,40 +106,52 @@ export const SelfHealingCard = ({ onSecurityEvent }: SelfHealingCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <h3 className="text-base font-medium">Self-Healing Mode</h3>
-            <p className="text-sm text-muted-foreground">
-              When enabled, the system will automatically detect and fix security issues in real-time.
-            </p>
+        <Form {...form}>
+          <div className="space-y-6">
+            <FormItem className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <FormLabel>Self-Healing Mode</FormLabel>
+                <FormDescription>
+                  When enabled, the system will automatically detect and fix security issues in real-time.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch 
+                  checked={selfHealingEnabled} 
+                  onCheckedChange={toggleSelfHealing}
+                />
+              </FormControl>
+            </FormItem>
+            
+            <div className="space-y-2">
+              <h3 className="text-base font-medium">Security Scan Frequency</h3>
+              <RadioGroup 
+                value={securityScanFrequency}
+                onValueChange={(value) => form.setValue("securityScanFrequency", value)}
+                className="flex flex-col space-y-1"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="daily" id="daily" />
+                  <label htmlFor="daily" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Daily
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="weekly" id="weekly" />
+                  <label htmlFor="weekly" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Weekly
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="monthly" id="monthly" />
+                  <label htmlFor="monthly" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Monthly
+                  </label>
+                </div>
+              </RadioGroup>
+            </div>
           </div>
-          <Switch 
-            checked={selfHealingEnabled} 
-            onCheckedChange={toggleSelfHealing}
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <h3 className="text-base font-medium">Security Scan Frequency</h3>
-          <RadioGroup 
-            value={securityScanFrequency}
-            onValueChange={setSecurityScanFrequency}
-            className="flex flex-col space-y-1"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="daily" id="daily" />
-              <FormLabel htmlFor="daily">Daily</FormLabel>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="weekly" id="weekly" />
-              <FormLabel htmlFor="weekly">Weekly</FormLabel>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="monthly" id="monthly" />
-              <FormLabel htmlFor="monthly">Monthly</FormLabel>
-            </div>
-          </RadioGroup>
-        </div>
+        </Form>
         
         <div className="flex items-center space-x-4">
           <Button 
