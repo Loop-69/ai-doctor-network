@@ -7,6 +7,8 @@ export interface ActiveCall {
   duration: number;
   purpose: string;
   conditions: string[];
+  autoAdvance?: boolean;
+  onConversationUpdate?: (message: ConversationMessage) => void;
 }
 
 export interface ConversationMessage {
@@ -28,9 +30,11 @@ export interface Patient {
 export interface Call {
   id: string;
   patient: Patient;
-  agentName: string; // Changed from optional to required
+  agentName: string;
   startTime: Date;
   purpose: string;
   conditions: string[];
-  duration: number; // Changed from optional to required
+  duration: number;
+  autoAdvance?: boolean;
+  onConversationUpdate?: (message: ConversationMessage) => void;
 }
