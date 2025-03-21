@@ -39,6 +39,7 @@ export const generateAIResponse = async (prompt: string, agent: Agent): Promise<
           prompt,
           agentName: agent.name,
           specialty: agent.specialty,
+          agentId: agent.id,
           modelProvider: "gemini",
           modelName: "gemini-2.0-flash",
           previousMessages: previousMessages
@@ -54,14 +55,15 @@ export const generateAIResponse = async (prompt: string, agent: Agent): Promise<
       }
       
       // Add assistant response to history
-      agentChatHistory[agentId].push({ role: 'assistant', content: data.response });
+      const response = data.response || "I apologize, but I couldn't generate a proper response. Please try again.";
+      agentChatHistory[agentId].push({ role: 'assistant', content: response });
       
       // Limit history to last 20 messages to prevent context overflow
       if (agentChatHistory[agentId].length > 20) {
         agentChatHistory[agentId] = agentChatHistory[agentId].slice(-20);
       }
       
-      return data.response;
+      return response;
     } catch (error: any) {
       console.error("Error calling AI edge function:", error);
       

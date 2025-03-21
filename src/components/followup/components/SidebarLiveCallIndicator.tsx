@@ -7,10 +7,21 @@ import { useActiveCallContext } from "../context/ActiveCallContext";
 import { useToast } from "@/hooks/use-toast";
 
 export const SidebarLiveCallIndicator = () => {
-  const { activeCall } = useActiveCallContext();
+  const [callDuration, setCallDuration] = useState("00:00");
+  const [hasError, setHasError] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [callDuration, setCallDuration] = useState("00:00");
+  
+  // Use try/catch to gracefully handle context errors
+  let activeCall;
+  try {
+    const context = useActiveCallContext();
+    activeCall = context.activeCall;
+  } catch (error) {
+    console.error("Error accessing ActiveCallContext:", error);
+    setHasError(true);
+    return null; // Return null early if context can't be accessed
+  }
   
   // Calculate and update call duration
   useEffect(() => {
@@ -32,7 +43,7 @@ export const SidebarLiveCallIndicator = () => {
     return () => clearInterval(interval);
   }, [activeCall]);
   
-  if (!activeCall) return null;
+  if (hasError || !activeCall) return null;
   
   const goToLiveCall = () => {
     navigate("/followup-monitoring");

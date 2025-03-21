@@ -32,7 +32,7 @@ serve(async (req) => {
         error: "Invalid JSON in request body",
         response: "I apologize, but there was an error processing your request. Please try again with valid input."
       }), {
-        status: 400,
+        status: 200, // Always return 200 to prevent cascading failures
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -42,17 +42,8 @@ serve(async (req) => {
     console.log(`Generating medical response using ${modelProvider || 'gemini'}/${modelName || 'gemini-2.0-flash'}`);
     console.log(`Input: ${prompt || symptoms || 'No input provided'}`);
     
-    // Ensure we have at least symptoms or prompt
-    if (!symptoms && !prompt) {
-      console.error("Missing required input: symptoms or prompt");
-      return new Response(JSON.stringify({ 
-        error: "Missing required input: symptoms or prompt",
-        response: "I need some information about symptoms or a medical question to provide a helpful response."
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    // Always provide a fallback if both prompt and symptoms are missing
+    let userInput = prompt || symptoms || "General health inquiry";
     
     // Build the prompt based on whether this is a collaborative consultation
     let promptText = `You are a medical AI assistant`;
@@ -86,21 +77,23 @@ serve(async (req) => {
     if (previousMessages && previousMessages.length > 0) {
       promptText += `\n\nHere is the previous conversation history for context:`;
       
-      previousMessages.forEach((msg, index) => {
+      for (const msg of previousMessages) {
         // Format depends on the message sender
         if (msg.isDoctor) {
           promptText += `\nDoctor: ${msg.content}`;
         } else if (msg.sender === agentName) {
-          promptText += `\nYou (${specialty} specialist): ${msg.content}`;
+          promptText += `\nYou (${specialty || 'medical'} specialist): ${msg.content}`;
         } else {
-          promptText += `\n${msg.sender}: ${msg.content}`;
+          promptText += `\n${msg.sender || 'Other'}: ${msg.content}`;
         }
-      });
+      }
       
-      promptText += `\n\nRemember that while this context is important, you are the expert in ${specialty}. Your primary focus should be on providing insights from your specific domain of expertise, even if that means respectfully differing from other specialists.`;
+      if (specialty) {
+        promptText += `\n\nRemember that while this context is important, you are the expert in ${specialty}. Your primary focus should be on providing insights from your specific domain of expertise, even if that means respectfully differing from other specialists.`;
+      }
     }
     
-    promptText += `\n\nPatient symptoms: ${symptoms || prompt || 'No symptoms provided'}`;
+    promptText += `\n\nPatient symptoms: ${userInput}`;
 
     console.log("Calling Gemini API with prompt");
     
@@ -186,9 +179,9 @@ serve(async (req) => {
         diagnosis,
         confidence,
         recommendation,
-        specialty,
-        agentId,
-        agentName
+        specialty: specialty || 'general medicine',
+        agentId: agentId || 'default-agent',
+        agentName: agentName || 'Medical Assistant'
       };
 
       console.log(`Response generated for ${specialty || 'general'} specialist`);
@@ -207,9 +200,9 @@ serve(async (req) => {
         diagnosis: "Unable to determine at this time",
         confidence: 70,
         recommendation: "Please consult with a healthcare professional for proper evaluation.",
-        specialty,
-        agentId,
-        agentName
+        specialty: specialty || 'general medicine',
+        agentId: agentId || 'default-agent',
+        agentName: agentName || 'Medical Assistant'
       }), {
         status: 200, // Return 200 even for API errors to prevent cascading failures
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -219,7 +212,7 @@ serve(async (req) => {
     console.error("Unhandled error in generate-medical-response function:", error);
     
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error.message || "Unknown error",
       response: "I apologize, but I'm having trouble processing your request. Please try again or consult with a healthcare professional."
     }), {
       status: 200, // Return 200 even for unhandled errors to prevent cascading failures
