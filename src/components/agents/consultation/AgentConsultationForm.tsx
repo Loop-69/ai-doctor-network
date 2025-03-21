@@ -68,11 +68,14 @@ const AgentConsultationForm = ({ agent, isOpen, onClose }: AgentConsultationForm
         description: `Started consultation with ${agent.name}`
       });
       
-      // Navigate to collaboration page
+      // Only pass serializable data to router navigation
+      // Don't include React components or functions in state
       navigate('/collaboration', { 
         state: { 
           consultationId, 
-          preSelectedAgent: collaborationAgent 
+          preSelectedAgentId: collaborationAgent.id,
+          preSelectedAgentName: collaborationAgent.name,
+          preSelectedAgentSpecialty: collaborationAgent.specialty
         } 
       });
       
