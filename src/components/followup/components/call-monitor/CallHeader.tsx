@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CallHeaderProps {
   activeCall: Call;
@@ -34,6 +35,7 @@ const CallHeader = ({
 }: CallHeaderProps) => {
   const [duration, setDuration] = useState("00:00");
   const [blinkStatus, setBlinkStatus] = useState(false);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -51,38 +53,38 @@ const CallHeader = ({
   
   return (
     <Card>
-      <CardContent className="p-4">
+      <CardContent className={`${isMobile ? 'p-3' : 'p-4'}`}>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
           <div className="flex items-center space-x-2">
             <div className="flex flex-col">
-              <h2 className="text-xl font-semibold flex items-center">
+              <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold flex flex-wrap items-center gap-1`}>
                 {activeCall.patient.name}
-                <Badge className="ml-2 bg-green-500 text-white">Active Call</Badge>
+                <Badge className="ml-1 bg-green-500 text-white text-xs">Active</Badge>
                 {isRecording !== undefined && (
                   <Badge 
-                    className={`ml-2 ${isRecording ? 'bg-red-500' : 'bg-gray-400'} text-white ${isRecording && blinkStatus ? 'opacity-100' : 'opacity-80'}`}
+                    className={`ml-1 ${isRecording ? 'bg-red-500' : 'bg-gray-400'} text-white text-xs ${isRecording && blinkStatus ? 'opacity-100' : 'opacity-80'}`}
                   >
                     {isRecording ? 'Recording' : 'Not Recording'}
                   </Badge>
                 )}
               </h2>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">
                 Call Duration: {duration} | Topic: {activeCall.purpose}
               </div>
             </div>
           </div>
           
-          <div className="flex space-x-2">
+          <div className="flex space-x-1 sm:space-x-2 w-full md:w-auto justify-end">
             {toggleRecording && (
               <Button
                 variant="outline"
-                size="sm"
+                size={isMobile ? "icon" : "sm"}
                 className={isRecording ? "text-red-500" : ""}
                 onClick={toggleRecording}
                 title={isRecording ? "Pause recording" : "Resume recording"}
               >
                 {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
-                <span className="ml-2 hidden md:inline">
+                <span className="ml-2 hidden lg:inline">
                   {isRecording ? "Pause Recording" : "Record Call"}
                 </span>
               </Button>
@@ -90,24 +92,24 @@ const CallHeader = ({
 
             <Button
               variant="outline"
-              size="sm"
+              size={isMobile ? "icon" : "sm"}
               onClick={toggleListening}
               title={isListening ? "Mute call" : "Unmute call"}
             >
               {isListening ? <VolumeX size={16} /> : <Volume2 size={16} />}
-              <span className="ml-2 hidden md:inline">
+              <span className="ml-2 hidden lg:inline">
                 {isListening ? "Mute" : "Listen"}
               </span>
             </Button>
             
             <Button
               variant="destructive"
-              size="sm"
+              size={isMobile ? "icon" : "sm"}
               onClick={handleEndCall}
               title="End call"
             >
               <PhoneOff size={16} />
-              <span className="ml-2 hidden md:inline">End Call</span>
+              <span className="ml-2 hidden lg:inline">End Call</span>
             </Button>
           </div>
         </div>
