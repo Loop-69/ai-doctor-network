@@ -136,6 +136,9 @@ export function useConsultation() {
     sendMessage: handleSendMessage,
     setActiveTab,
     toggleTurnBasedMode: handleToggleTurnBasedMode,
-    refreshVerdict
+    refreshVerdict,
+    // Export these state setters for external use
+    setConsultationId,
+    setConsultationStarted
   };
 }

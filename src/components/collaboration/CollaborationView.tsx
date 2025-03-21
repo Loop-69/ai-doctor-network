@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   Card, 
@@ -22,10 +22,23 @@ import { colleagues, meetings, sharedCases } from "./data/collaborationData";
 import ColleagueCard from "./components/ColleagueCard";
 import MeetingCard from "./components/MeetingCard";
 import SharedCaseCard from "./components/SharedCaseCard";
+import { Agent } from "./types/consultationTypes";
 
-const CollaborationView = () => {
+interface CollaborationViewProps {
+  initialConsultationId?: string;
+  preSelectedAgent?: Agent;
+}
+
+const CollaborationView = ({ initialConsultationId, preSelectedAgent }: CollaborationViewProps = {}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("ai-collaboration");
+
+  // Use the initialConsultationId and preSelectedAgent if provided
+  useEffect(() => {
+    if (initialConsultationId || preSelectedAgent) {
+      setActiveTab("ai-collaboration");
+    }
+  }, [initialConsultationId, preSelectedAgent]);
 
   const filteredColleagues = colleagues.filter(colleague => 
     colleague.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -102,7 +115,10 @@ const CollaborationView = () => {
         </motion.div>
 
         <TabsContent value="ai-collaboration" className="space-y-4">
-          <CollaborativeConsultation />
+          <CollaborativeConsultation 
+            initialConsultationId={initialConsultationId}
+            preSelectedAgent={preSelectedAgent}
+          />
         </TabsContent>
 
         <TabsContent value="colleagues" className="space-y-6">

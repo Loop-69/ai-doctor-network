@@ -1,12 +1,22 @@
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ConsultationSetup from "./components/ConsultationSetup";
 import ConsultationChat from "./components/ConsultationChat";
 import DiagnosisVerdict from "./components/DiagnosisVerdict";
 import { useConsultation } from "./hooks/useConsultation";
+import { Agent } from "./types/consultationTypes";
 
-const CollaborativeConsultation = () => {
+interface CollaborativeConsultationProps {
+  initialConsultationId?: string;
+  preSelectedAgent?: Agent;
+}
+
+const CollaborativeConsultation = ({ 
+  initialConsultationId, 
+  preSelectedAgent 
+}: CollaborativeConsultationProps = {}) => {
   const {
     selectedAgents,
     patientSymptoms,
@@ -24,8 +34,22 @@ const CollaborativeConsultation = () => {
     sendMessage,
     setActiveTab,
     toggleTurnBasedMode,
-    refreshVerdict
+    refreshVerdict,
+    setConsultationId,
+    setConsultationStarted
   } = useConsultation();
+
+  // Handle initialConsultationId and preSelectedAgent if provided
+  useEffect(() => {
+    if (initialConsultationId) {
+      setConsultationId(initialConsultationId);
+      setConsultationStarted(true);
+    }
+    
+    if (preSelectedAgent) {
+      handleAgentSelect(preSelectedAgent);
+    }
+  }, [initialConsultationId, preSelectedAgent, setConsultationId, setConsultationStarted, handleAgentSelect]);
 
   return (
     <div className="space-y-6">

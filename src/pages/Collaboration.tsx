@@ -1,10 +1,10 @@
 
-import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import CollaborationView from "@/components/collaboration/CollaborationView";
 import { specialists } from "@/components/collaboration/data/specialistsData";
 import { Agent } from "@/components/collaboration/types/consultationTypes";
+import { MessageSquare } from "lucide-react"; // Import a default icon
 
 interface LocationState {
   consultationId?: string;
@@ -26,13 +26,17 @@ const CollaborationPage = () => {
     
     if (agent) return agent;
     
-    // If not found in specialists data, create a minimal agent object
+    // If not found in specialists data, create a minimal agent object with required properties
     if (state.preSelectedAgentName && state.preSelectedAgentSpecialty) {
       return {
         id: state.preSelectedAgentId,
         name: state.preSelectedAgentName,
         specialty: state.preSelectedAgentSpecialty,
-        availability: true
+        availability: true,
+        // Add required properties that were missing
+        description: `${state.preSelectedAgentSpecialty} specialist`,
+        icon: MessageSquare,
+        color: "text-blue-500" // Default color
       };
     }
     
