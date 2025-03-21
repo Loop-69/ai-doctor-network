@@ -33,7 +33,7 @@ const SimulateCallDialog = ({
     // Start the call immediately
     const callId = `sim-${Date.now()}`;
     
-    // Create patient object from the name
+    // Create patient object
     const patient = {
       id: `patient-${Date.now()}`,
       name: patientName,
@@ -42,11 +42,11 @@ const SimulateCallDialog = ({
       conditions: formData.condition ? [formData.condition] : ["General health check"]
     };
     
+    // Call startCall with the expected properties format
     startCall({
       id: callId,
-      patient: patient,
+      patientName: patientName,
       agentName: agentName,
-      startTime: new Date(),
       purpose: formData.purpose || "Follow-up check",
       conditions: formData.condition ? [formData.condition] : ["General health check"],
       duration: 5, // 5 minutes simulation
