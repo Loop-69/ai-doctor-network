@@ -33,7 +33,6 @@ const CollaborationPage = () => {
         name: state.preSelectedAgentName,
         specialty: state.preSelectedAgentSpecialty,
         availability: true,
-        // Add required properties that were missing
         description: `${state.preSelectedAgentSpecialty} specialist`,
         icon: MessageSquare,
         color: "text-blue-500" // Default color

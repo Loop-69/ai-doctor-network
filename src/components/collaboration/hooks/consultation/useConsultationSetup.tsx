@@ -9,11 +9,12 @@ export function useConsultationSetup() {
   const [patientSymptoms, setPatientSymptoms] = useState("");
   
   const handleAgentSelect = (agent: Agent) => {
-    // Check if agent is already selected
-    if (selectedAgents.some(a => a.id === agent.id)) {
-      setSelectedAgents(selectedAgents.filter(a => a.id !== agent.id));
+    // Check if agent is already selected before adding
+    if (!selectedAgents.some(a => a.id === agent.id)) {
+      setSelectedAgents(prev => [...prev, agent]);
     } else {
-      setSelectedAgents([...selectedAgents, agent]);
+      // Remove the agent if already selected
+      setSelectedAgents(prev => prev.filter(a => a.id !== agent.id));
     }
   };
 

@@ -40,16 +40,25 @@ const CollaborativeConsultation = ({
   } = useConsultation();
 
   // Handle initialConsultationId and preSelectedAgent if provided
+  // Add proper dependency array to prevent infinite renders
   useEffect(() => {
-    if (initialConsultationId) {
+    if (initialConsultationId && !consultationStarted) {
       setConsultationId(initialConsultationId);
       setConsultationStarted(true);
     }
     
-    if (preSelectedAgent) {
+    if (preSelectedAgent && selectedAgents.length === 0) {
       handleAgentSelect(preSelectedAgent);
     }
-  }, [initialConsultationId, preSelectedAgent, setConsultationId, setConsultationStarted, handleAgentSelect]);
+  }, [
+    initialConsultationId, 
+    preSelectedAgent, 
+    setConsultationId, 
+    setConsultationStarted, 
+    handleAgentSelect, 
+    consultationStarted,
+    selectedAgents.length
+  ]);
 
   return (
     <div className="space-y-6">
