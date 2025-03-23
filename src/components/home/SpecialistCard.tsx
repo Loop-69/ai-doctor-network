@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Star } from "lucide-react";
+import { MessageSquare, Star, Clock } from "lucide-react";
 
 interface SpecialistCardProps {
   name: string;
@@ -16,6 +16,7 @@ interface SpecialistCardProps {
   avatar: string;
   delay: number;
   isHighlighted?: boolean;
+  timeText?: string;
 }
 
 const SpecialistCard = ({ 
@@ -26,7 +27,8 @@ const SpecialistCard = ({
   tags, 
   avatar,
   delay,
-  isHighlighted = false
+  isHighlighted = false,
+  timeText
 }: SpecialistCardProps) => {
   return (
     <motion.div
@@ -85,6 +87,13 @@ const SpecialistCard = ({
               </Badge>
             ))}
           </div>
+          
+          {timeText && (
+            <div className="flex items-center text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full mb-4 self-start">
+              <Clock className="h-3 w-3 mr-1" />
+              {timeText}
+            </div>
+          )}
           
           <Button className="w-full" size="sm">
             <MessageSquare className="mr-2 h-4 w-4" /> Chat with {name.split(' ')[0]}
