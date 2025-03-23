@@ -53,13 +53,13 @@ const PatientCard = ({ patient, delay = 0, onViewRecords, onNewConsultation }: P
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay }}
     >
-      <Card className="hover:shadow-md transition-shadow">
+      <Card className="card-elevated gradient-card card-hover-lift">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
-              <Avatar className="h-12 w-12">
+              <Avatar className="h-12 w-12 border-2 border-blue-100">
                 <AvatarImage src={`/avatar-placeholder.jpg`} />
-                <AvatarFallback className="bg-secondary">
+                <AvatarFallback className="bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
                   {patient.name.split(" ").map((n) => n[0]).join("")}
                 </AvatarFallback>
               </Avatar>
@@ -93,11 +93,11 @@ const PatientCard = ({ patient, delay = 0, onViewRecords, onNewConsultation }: P
               <span className="text-muted-foreground">{patient.doctor}</span>
             </div>
             <div className="flex space-x-2 pt-2">
-              <Button variant="outline" size="sm" className="flex-1" onClick={onViewRecords}>
+              <Button variant="outline" size="sm" className="flex-1 border-blue-200 hover:bg-blue-50" onClick={onViewRecords}>
                 <FileText className="mr-2 h-4 w-4" />
                 View Records
               </Button>
-              <Button size="sm" className="flex-1" onClick={onNewConsultation}>
+              <Button size="sm" className="flex-1 gradient-btn-blue text-white" onClick={onNewConsultation}>
                 <Plus className="mr-2 h-4 w-4" />
                 New Consultation
               </Button>

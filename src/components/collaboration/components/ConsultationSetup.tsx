@@ -55,9 +55,9 @@ const ConsultationSetup = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="md:col-span-2">
-        <Card className="h-full">
+        <Card className="h-full card-elevated gradient-card">
           <CardHeader>
-            <CardTitle>Patient Symptoms</CardTitle>
+            <CardTitle className="gradient-text">Patient Symptoms</CardTitle>
             <CardDescription>
               Describe the patient's symptoms in detail for the specialists to analyze
             </CardDescription>
@@ -65,7 +65,7 @@ const ConsultationSetup = ({
           <CardContent>
             <Textarea 
               placeholder="Example: 55-year-old male experiencing chest pain radiating to the left arm for the past hour, with mild shortness of breath and dizziness. Blood pressure 145/90, pulse 92. No prior cardiac history but does have hypertension."
-              className="min-h-[200px]"
+              className="min-h-[200px] input-gradient"
               value={patientSymptoms}
               onChange={(e) => onSymptomsChange(e.target.value)}
             />
@@ -100,7 +100,7 @@ const ConsultationSetup = ({
                 </div>
               </div>
               
-              <div className="text-sm p-4 bg-slate-50 dark:bg-slate-900 rounded-md">
+              <div className="text-sm p-4 bg-blue-50 dark:bg-slate-900 rounded-md">
                 {isTurnBasedMode ? (
                   <p>
                     <strong>Turn-based mode:</strong> Specialists will respond one-by-one in sequence, allowing each expert to see and
@@ -120,6 +120,7 @@ const ConsultationSetup = ({
               onClick={handleStartConsultation} 
               disabled={isLoading}
               size="lg"
+              className="gradient-btn-blue text-white"
             >
               {isLoading ? "Starting Consultation..." : "Start Consultation"}
             </Button>
@@ -128,10 +129,10 @@ const ConsultationSetup = ({
       </div>
       
       <div className="md:col-span-1">
-        <Card className="h-full">
+        <Card className="h-full card-elevated gradient-card-purple">
           <CardHeader className="flex flex-row items-start justify-between">
             <div>
-              <CardTitle>Selected Specialists</CardTitle>
+              <CardTitle className="gradient-text">Selected Specialists</CardTitle>
               <CardDescription>
                 {selectedAgents.length === 0 
                   ? "Choose which medical specialists to consult" 
@@ -140,14 +141,14 @@ const ConsultationSetup = ({
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline" className="ml-2">
+                <Button size="sm" variant="outline" className="ml-2 border-indigo-200 hover:bg-indigo-50">
                   <Plus className="h-4 w-4 mr-1" />
                   Add Specialist
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Select Medical Specialists</DialogTitle>
+                  <DialogTitle className="gradient-text">Select Medical Specialists</DialogTitle>
                 </DialogHeader>
                 <ScrollArea className="max-h-[60vh] mt-4 overflow-y-auto pr-4">
                   <div className="grid grid-cols-1 gap-4">
@@ -176,7 +177,7 @@ const ConsultationSetup = ({
                   </div>
                 </ScrollArea>
                 <div className="flex justify-end mt-4">
-                  <Button onClick={() => setIsDialogOpen(false)}>
+                  <Button onClick={() => setIsDialogOpen(false)} className="gradient-btn-purple text-white">
                     Done
                   </Button>
                 </div>

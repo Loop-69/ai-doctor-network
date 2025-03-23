@@ -4,8 +4,8 @@ import LoginForm from "@/components/auth/LoginForm";
 
 const Login = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-aida-50 to-white flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-5xl flex flex-col md:flex-row bg-white rounded-2xl shadow-card overflow-hidden">
+    <div className="min-h-screen page-gradient flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-5xl flex flex-col md:flex-row bg-white rounded-2xl shadow-lg overflow-hidden card-hover-lift">
         <motion.div 
           className="w-full md:w-1/2 p-8 md:p-12 flex items-center justify-center"
           initial={{ opacity: 0, x: -20 }}
@@ -16,7 +16,7 @@ const Login = () => {
         </motion.div>
         
         <motion.div 
-          className="hidden md:block w-1/2 bg-aida-500 p-12 text-white relative overflow-hidden"
+          className="hidden md:block w-1/2 bg-gradient-to-br from-medical-purple to-blue-600 p-12 text-white relative overflow-hidden"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -30,8 +30,8 @@ const Login = () => {
               <h2 className="text-3xl font-display font-bold mb-6">
                 AI-Powered Decision Support for Medical Professionals
               </h2>
-              <p className="mb-8 text-aida-100">
-                AIDA connects doctors with specialized AI agents for real-time assistance, 
+              <p className="mb-8 text-blue-100">
+                LENY-AI connects doctors with specialized AI agents for real-time assistance, 
                 enhancing diagnostic accuracy and treatment decisions.
               </p>
             </motion.div>
@@ -50,9 +50,9 @@ const Login = () => {
           </div>
           
           {/* Abstract background pattern */}
-          <div className="absolute top-0 right-0 w-full h-full opacity-10">
+          <div className="absolute top-0 right-0 w-full h-full opacity-20">
             <svg width="100%" height="100%" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g opacity="0.5">
+              <g opacity="0.8">
                 <circle cx="180" cy="180" r="150" stroke="white" strokeWidth="2" />
                 <circle cx="180" cy="180" r="100" stroke="white" strokeWidth="2" />
                 <circle cx="180" cy="180" r="50" stroke="white" strokeWidth="2" />
