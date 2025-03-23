@@ -50,16 +50,16 @@ const SpecialistCard = ({
       >
         <Card className={cn(
           "h-full hover:shadow-md transition-all duration-200 overflow-hidden group",
-          isHighlighted && "border-medical-purple border-2 shadow-md"
+          isHighlighted && "border-medical-teal border-2 shadow-md"
         )}>
           <CardContent className="p-5">
             <div className="flex justify-between items-start mb-3">
               <div className="flex items-center">
-                <Avatar className="h-12 w-12 ring-2 ring-offset-2 ring-medical-purple/20">
+                <Avatar className="h-12 w-12 ring-2 ring-offset-2 ring-medical-teal/20">
                   <AvatarImage src={avatar} alt={name} />
                   <AvatarFallback className={cn(
                     "bg-gradient-to-br text-white",
-                    color ? `from-${color} to-medical-purple` : "from-medical-red to-medical-purple"
+                    color ? `from-${color} to-medical-blue` : "from-medical-teal to-medical-blue"
                   )}>
                     {name.substring(0, 2)}
                   </AvatarFallback>
@@ -68,7 +68,7 @@ const SpecialistCard = ({
                 {Icon && (
                   <div className={cn(
                     "w-7 h-7 rounded-full flex items-center justify-center -ml-3 mt-6 shadow-md",
-                    `bg-gradient-to-r from-${color} to-medical-purple text-white`
+                    `bg-gradient-to-r from-${color} to-medical-blue text-white`
                   )}>
                     <Icon className="w-4 h-4" />
                   </div>
@@ -77,7 +77,7 @@ const SpecialistCard = ({
               
               <div className="flex items-center">
                 {isNew && (
-                  <Badge variant="outline" className="bg-medical-purple/10 text-medical-purple border-medical-purple/30 mr-2">
+                  <Badge variant="outline" className="bg-medical-teal/10 text-medical-teal border-medical-teal/30 mr-2">
                     <Sparkles className="h-3 w-3 mr-1" /> New
                   </Badge>
                 )}
@@ -121,7 +121,7 @@ const SpecialistCard = ({
             )}
             
             <Button 
-              className="w-full bg-gradient-to-r from-medical-purple to-medical-red hover:opacity-90 group-hover:shadow-md transition-all" 
+              className="w-full bg-gradient-to-r from-medical-teal to-medical-blue hover:opacity-90 group-hover:shadow-md transition-all" 
               size="sm"
               onClick={() => setIsChatModalOpen(true)}
             >

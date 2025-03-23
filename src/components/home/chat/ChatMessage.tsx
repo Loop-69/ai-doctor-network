@@ -18,7 +18,7 @@ const ChatMessage = ({ message, agentName }: ChatMessageProps) => {
       className={`flex mb-4 ${isUser ? "justify-end" : "justify-start"}`}
     >
       {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-medical-purple to-medical-red flex-shrink-0 flex items-center justify-center mr-2">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-medical-teal to-medical-blue flex-shrink-0 flex items-center justify-center mr-2">
           <span className="text-white font-semibold text-xs">
             {agentName.charAt(0)}
           </span>
@@ -28,7 +28,7 @@ const ChatMessage = ({ message, agentName }: ChatMessageProps) => {
         className={`max-w-[80%] p-3 rounded-lg ${
           isUser
             ? "bg-gray-100 text-gray-800 rounded-tr-none"
-            : "bg-gradient-to-r from-medical-purple/10 to-medical-red/10 text-gray-800 rounded-tl-none"
+            : "bg-gradient-to-r from-medical-teal/10 to-medical-blue/10 text-gray-800 rounded-tl-none"
         }`}
       >
         <p className="text-sm">{message.content}</p>
