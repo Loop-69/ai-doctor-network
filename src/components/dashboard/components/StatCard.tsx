@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 interface StatCardProps {
   title: string;
   icon: React.ReactNode;
-  count: string | number;
+  count: React.ReactNode; // Changed from string | number to React.ReactNode
   trend?: {
     value: string;
     isPositive: boolean;
