@@ -34,16 +34,16 @@ const ActionCard = ({ icon, title, description, to, colorClass, delay }: ActionC
           "h-full cursor-pointer transition-all duration-200 hover:shadow-md overflow-hidden group border-l-4",
           `border-l-${colorClass}`
         )}>
-          <CardContent className="p-5 flex items-start">
+          <CardContent className="p-4 flex items-start">
             <div className={cn(
-              "mr-4 p-2 rounded-full",
+              "mr-3 p-2 rounded-full",
               `text-${colorClass} bg-${colorClass}/10`
             )}>
               {icon}
             </div>
             <div>
               <h3 className="font-medium mb-1 group-hover:text-medical-purple transition-colors">{title}</h3>
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <p className="text-xs text-muted-foreground">{description}</p>
             </div>
           </CardContent>
         </Card>
@@ -105,26 +105,26 @@ const QuickActionsPreview = () => {
   ];
 
   return (
-    <section className="py-10 bg-white">
+    <section className="py-20 pt-28 bg-white">
       <div className="container mx-auto px-6">
         <motion.div 
-          className="text-center mb-8"
+          className="text-center mb-6"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl font-bold mb-3">
+          <h2 className="text-2xl font-bold mb-2">
             <span className="bg-gradient-to-r from-medical-red to-medical-purple bg-clip-text text-transparent">
               Everything You Need
             </span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
             Discover all the ways LENY-AI can enhance your healthcare practice
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
           {actions.map((action, index) => (
             <ActionCard
               key={index}

@@ -63,23 +63,23 @@ const SpecialistsSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-14 bg-gray-50">
       <div className="container mx-auto px-6">
         <motion.div 
-          className="text-center mb-12"
+          className="text-center mb-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl font-bold mb-4">AI Medical Specialists</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold mb-3">AI Medical Specialists</h2>
+          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
             Choose up to 3 specialists for your medical task: 0/3
           </p>
           
-          <div className="relative max-w-xl mx-auto mt-8">
+          <div className="relative max-w-xl mx-auto mt-6">
             <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 bg-white shadow-sm">
-              <Search className="h-5 w-5 text-gray-400 mr-2" />
+              <Search className="h-4 w-4 text-gray-400 mr-2" />
               <input 
                 type="text" 
                 placeholder="Search specialists or tasks..." 
@@ -89,7 +89,7 @@ const SpecialistsSection = () => {
           </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {specialists.map((specialist, index) => (
             <SpecialistCard 
               key={index}
