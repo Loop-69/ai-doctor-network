@@ -15,8 +15,8 @@ const SubscriptionPrompt = () => {
         You've reached the preview limit!
       </p>
       <p className="text-xs text-gray-600 mb-3">
-        Subscribe to continue chatting with our AI specialists and unlock
-        all features.
+        Subscribe to continue chatting with our health assistants and access
+        personalized health advice.
       </p>
       <div className="flex gap-2">
         <Link to="/register" className="flex-1">

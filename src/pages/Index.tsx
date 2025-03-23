@@ -26,8 +26,8 @@ const Index = () => {
           <HeroSection />
           <RoundQuickActions />
         </div>
-        <QuickActionsPreview />
         <SpecialistsSection />
+        <QuickActionsPreview />
         <FeaturesSection />
         <AnalyticsSection />
         <CTASection />
