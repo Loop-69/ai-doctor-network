@@ -23,7 +23,7 @@ const SpecialistsSection = () => {
     color: agent.color
   }));
   return <section className="py-14 bg-gradient-to-br from-gray-50 to-blue-50/30">
-      <div className="container mx-auto px-6 my-[10px]">
+      <div className="container mx-auto px-6 my-[20px]">
         <motion.div className="text-center mb-8" initial={{
         opacity: 0,
         y: 20
