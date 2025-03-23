@@ -53,7 +53,7 @@ const Dashboard = () => {
         >
           <Rocket className="h-8 w-8 text-medical-purple" />
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-medical-purple to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-medical-purple via-indigo-500 to-blue-500 bg-clip-text text-transparent">
               Command Center
             </span>
           </h1>
@@ -76,10 +76,10 @@ const Dashboard = () => {
       >
         {/* Patients Card */}
         <motion.div variants={itemVariants}>
-          <Card className="overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-blue-50">
+          <Card className="overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white via-blue-50 to-indigo-100">
             <CardHeader className="pb-2 border-b border-slate-100">
               <CardTitle className="flex items-center">
-                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-100 text-blue-600 mr-3 group-hover:bg-blue-200 transition-colors">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 text-white mr-3">
                   <Users className="h-5 w-5" />
                 </div>
                 <span>Patients</span>
@@ -106,10 +106,10 @@ const Dashboard = () => {
 
         {/* Consultations Card */}
         <motion.div variants={itemVariants}>
-          <Card className="overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
+          <Card className="overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white via-purple-50 to-indigo-100">
             <CardHeader className="pb-2 border-b border-slate-100">
               <CardTitle className="flex items-center">
-                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100 text-indigo-600 mr-3 group-hover:bg-indigo-200 transition-colors">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-indigo-400 to-purple-600 text-white mr-3">
                   <Brain className="h-5 w-5" />
                 </div>
                 <span>Consultations</span>
@@ -136,10 +136,10 @@ const Dashboard = () => {
 
         {/* Analytics Card */}
         <motion.div variants={itemVariants}>
-          <Card className="overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-green-50">
+          <Card className="overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white via-teal-50 to-green-100">
             <CardHeader className="pb-2 border-b border-slate-100">
               <CardTitle className="flex items-center">
-                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-green-100 text-green-600 mr-3 group-hover:bg-green-200 transition-colors">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-teal-400 to-green-500 text-white mr-3">
                   <BarChart4 className="h-5 w-5" />
                 </div>
                 <span>Analytics</span>
@@ -154,7 +154,7 @@ const Dashboard = () => {
               </div>
               <p className="text-sm text-muted-foreground mb-4">Performance metrics & trends</p>
               <Button 
-                className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-md hover:shadow-lg transition-all"
+                className="w-full bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600 text-white shadow-md hover:shadow-lg transition-all"
                 onClick={handleViewAnalytics}
               >
                 Explore Analytics
@@ -165,10 +165,10 @@ const Dashboard = () => {
 
         {/* Notifications Card */}
         <motion.div variants={itemVariants}>
-          <Card className="overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-amber-50">
+          <Card className="overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white via-orange-50 to-amber-100">
             <CardHeader className="pb-2 border-b border-slate-100">
               <CardTitle className="flex items-center">
-                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-amber-100 text-amber-600 mr-3 group-hover:bg-amber-200 transition-colors">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-white mr-3">
                   <Bell className="h-5 w-5" />
                 </div>
                 <span>Notifications</span>
@@ -183,7 +183,7 @@ const Dashboard = () => {
               </div>
               <p className="text-sm text-muted-foreground mb-4">Important updates & reminders</p>
               <Button 
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-md hover:shadow-lg transition-all"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg transition-all"
                 onClick={handleViewNotifications}
               >
                 View Notifications
@@ -202,13 +202,13 @@ const Dashboard = () => {
       >
         <h2 className="text-xl font-semibold mb-4 flex items-center">
           <Zap className="h-5 w-5 text-medical-purple mr-2" />
-          Quick Actions
+          <span className="bg-gradient-to-r from-medical-purple to-indigo-500 bg-clip-text text-transparent">Quick Actions</span>
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Button 
             variant="outline" 
             onClick={() => navigate("/patients/new")}
-            className="h-auto py-4 flex flex-col items-center hover:bg-blue-50 hover:border-blue-200 transition-colors"
+            className="h-auto py-4 flex flex-col items-center bg-gradient-to-b from-white to-blue-50 hover:bg-blue-100 hover:border-blue-200 transition-colors"
           >
             <Users className="h-6 w-6 mb-2 text-blue-600" />
             <span>New Patient</span>
@@ -216,7 +216,7 @@ const Dashboard = () => {
           <Button 
             variant="outline" 
             onClick={() => navigate("/collaboration/new")}
-            className="h-auto py-4 flex flex-col items-center hover:bg-purple-50 hover:border-purple-200 transition-colors"
+            className="h-auto py-4 flex flex-col items-center bg-gradient-to-b from-white to-purple-50 hover:bg-purple-100 hover:border-purple-200 transition-colors"
           >
             <FileText className="h-6 w-6 mb-2 text-purple-600" />
             <span>New Consultation</span>
@@ -224,7 +224,7 @@ const Dashboard = () => {
           <Button 
             variant="outline" 
             onClick={() => navigate("/agents")}
-            className="h-auto py-4 flex flex-col items-center hover:bg-green-50 hover:border-green-200 transition-colors"
+            className="h-auto py-4 flex flex-col items-center bg-gradient-to-b from-white to-green-50 hover:bg-green-100 hover:border-green-200 transition-colors"
           >
             <Brain className="h-6 w-6 mb-2 text-green-600" />
             <span>AI Assistant</span>
@@ -232,7 +232,7 @@ const Dashboard = () => {
           <Button 
             variant="outline" 
             onClick={() => navigate("/followup-scheduler")}
-            className="h-auto py-4 flex flex-col items-center hover:bg-amber-50 hover:border-amber-200 transition-colors"
+            className="h-auto py-4 flex flex-col items-center bg-gradient-to-b from-white to-amber-50 hover:bg-amber-100 hover:border-amber-200 transition-colors"
           >
             <Activity className="h-6 w-6 mb-2 text-amber-600" />
             <span>Schedule Follow-up</span>
