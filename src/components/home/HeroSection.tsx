@@ -41,7 +41,7 @@ const HeroSection = () => {
             
             <div className="flex flex-col sm:flex-row gap-3">
               <Link to={isAuthenticated ? "/dashboard" : "/register"}>
-                <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-medical-red to-medical-purple hover:from-medical-red/90 hover:to-medical-purple/90 text-white shadow-md hover:shadow-lg transition-all">
+                <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-medical-blue to-medical-purple hover:from-medical-green/90 hover:to-medical-blue/90 text-white shadow-md hover:shadow-lg transition-all">
                   <Zap className="mr-2 h-4 w-4" />
                   Get Started
                 </Button>
