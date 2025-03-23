@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Search, Clock, Zap, Sparkles } from "lucide-react";
 import SpecialistCard from "@/components/home/SpecialistCard";
@@ -37,8 +36,8 @@ const SpecialistsSection = () => {
         duration: 0.5
       }}>
           <h2 className="text-2xl font-bold mb-3 flex items-center justify-center gap-2">
-            <Sparkles className="h-6 w-6 text-medical-teal" />
-            <span className="bg-gradient-to-r from-medical-teal to-medical-blue bg-clip-text text-transparent">
+            <Sparkles className="h-6 w-6 text-medical-purple" />
+            <span className="bg-gradient-to-r from-medical-green to-medical-purple bg-clip-text text-transparent">
               AI Medical Specialists
             </span>
           </h2>
@@ -58,7 +57,7 @@ const SpecialistsSection = () => {
           duration: 0.3,
           delay: 0.3
         }}>
-            <div className="flex items-center bg-medical-teal/10 text-medical-teal px-3 py-1.5 rounded-full text-xs font-medium">
+            <div className="flex items-center bg-medical-purple/10 text-medical-purple px-3 py-1.5 rounded-full text-xs font-medium">
               <Zap className="h-3.5 w-3.5 mr-1" />
               <span>Time-saving AI assistance</span>
             </div>
@@ -69,8 +68,8 @@ const SpecialistsSection = () => {
           </motion.div>
           
           <div className="relative max-w-xl mx-auto mt-6">
-            <div className="flex items-center border border-medical-teal/30 rounded-full px-4 py-2 bg-white shadow-sm focus-within:ring-2 focus-within:ring-medical-teal/30 transition-all">
-              <Search className="h-4 w-4 text-medical-teal mr-2" />
+            <div className="flex items-center border border-medical-purple/30 rounded-full px-4 py-2 bg-white shadow-sm focus-within:ring-2 focus-within:ring-medical-purple/30 transition-all">
+              <Search className="h-4 w-4 text-medical-purple mr-2" />
               <input type="text" placeholder="Search specialists or tasks..." className="w-full bg-transparent border-none focus:outline-none text-sm" />
             </div>
           </div>
