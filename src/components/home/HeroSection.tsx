@@ -12,7 +12,7 @@ const HeroSection = () => {
   return <section className="py-10 md:py-16">
       <div className="container mx-auto px-6">
         <div className="flex flex-col-reverse md:flex-row items-center">
-          <motion.div className="md:w-1/2 md:pr-8 mt-8 md:mt-0" initial={{
+          <motion.div initial={{
           opacity: 0,
           y: 20
         }} animate={{
@@ -20,7 +20,7 @@ const HeroSection = () => {
           y: 0
         }} transition={{
           duration: 0.5
-        }}>
+        }} className="md:w-1/2 md:pr-8 mt-8 md:mt-0 mx-[30px]">
             <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-medical-purple/10 text-medical-purple mb-2">
               Medical AI Assistant
             </span>
