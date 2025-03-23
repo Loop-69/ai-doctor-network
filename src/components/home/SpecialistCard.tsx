@@ -1,118 +1,103 @@
 
-import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, CheckCircle, Star, Calendar } from "lucide-react";
-import PreviewChatModal from "./PreviewChatModal";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { MessageSquare, Star } from "lucide-react";
 
 interface SpecialistCardProps {
   name: string;
   title: string;
   description: string;
-  isNew?: boolean;
+  isNew: boolean;
   tags: string[];
   avatar: string;
-  delay?: number;
+  delay: number;
+  isHighlighted?: boolean;
 }
 
 const SpecialistCard = ({ 
   name, 
   title, 
   description, 
-  isNew = false,
-  tags,
+  isNew, 
+  tags, 
   avatar,
-  delay = 0 
+  delay,
+  isHighlighted = false
 }: SpecialistCardProps) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [showChatModal, setShowChatModal] = useState(false);
-  
   return (
-    <>
-      <motion.div
-        className={`bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${isHovered ? 'shadow-md transform -translate-y-1' : ''}`}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.3, delay }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div className="p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${isNew ? 'bg-green-500 animate-pulse' : 'bg-medical-yellow'}`}></div>
-              <span className="font-medium">{name}</span>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay }}
+    >
+      <Card className={cn(
+        "h-full hover:shadow-md transition-all duration-200 overflow-hidden",
+        isHighlighted && "border-medical-purple border-2 shadow-md"
+      )}>
+        <CardContent className="p-5">
+          <div className="flex justify-between items-start mb-3">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={avatar} alt={name} />
+              <AvatarFallback className="bg-gradient-to-br from-medical-red to-medical-purple text-white">
+                {name.substring(0, 2)}
+              </AvatarFallback>
+            </Avatar>
+            
+            <div className="flex items-center">
               {isNew && (
-                <Badge className="bg-aida-50 text-aida-500 hover:bg-aida-100 border-aida-200">
+                <Badge variant="outline" className="bg-medical-purple/10 text-medical-purple border-medical-purple/30 mr-2">
                   New
                 </Badge>
               )}
-            </div>
-            <div className="flex items-center text-amber-400">
-              <Star className="h-3.5 w-3.5 fill-current" />
-              <Star className="h-3.5 w-3.5 fill-current" />
-              <Star className="h-3.5 w-3.5 fill-current" />
-              <Star className="h-3.5 w-3.5 fill-current" />
-              <Star className="h-3.5 w-3.5 fill-current text-gray-200" />
+              {isHighlighted && (
+                <Badge variant="outline" className="bg-medical-green/10 text-medical-green border-medical-green/30">
+                  Recommended
+                </Badge>
+              )}
             </div>
           </div>
           
-          <h3 className="text-transparent bg-gradient-to-r from-medical-red to-medical-purple bg-clip-text font-medium mb-2">{title}</h3>
+          <h3 className="font-medium text-lg mb-1">{name}</h3>
+          <p className="text-muted-foreground text-sm mb-1">{title}</p>
           
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border-2 border-medical-purple/20">
-              <img src={avatar} alt={name} className="w-full h-full object-cover" />
+          {isHighlighted && (
+            <div className="flex items-center mb-2 text-sm text-amber-500">
+              <Star className="h-4 w-4 fill-current mr-1" />
+              <Star className="h-4 w-4 fill-current mr-1" />
+              <Star className="h-4 w-4 fill-current mr-1" />
+              <Star className="h-4 w-4 fill-current mr-1" />
+              <Star className="h-4 w-4 fill-current" />
+              <span className="ml-2 text-muted-foreground">4.9 (1,284)</span>
             </div>
-            <p className="text-sm text-gray-600">{description}</p>
-          </div>
+          )}
+          
+          <p className="text-sm mb-4">{description}</p>
           
           <div className="flex flex-wrap gap-2 mb-4">
-            {tags.map((tag, index) => (
-              <Badge 
-                key={index} 
-                variant="outline" 
-                className="bg-gray-50 hover:bg-gray-100 text-gray-700"
-              >
+            {tags.map((tag, i) => (
+              <Badge key={i} variant="secondary" className="font-normal text-xs">
                 {tag}
               </Badge>
             ))}
           </div>
           
-          <div className="grid grid-cols-2 gap-2">
-            <Button 
-              className="bg-gradient-to-r from-medical-red to-medical-purple hover:opacity-90 transition-opacity text-white"
-              onClick={() => setShowChatModal(true)}
-            >
-              <MessageSquare className="mr-1 h-4 w-4" />
-              Try me
-            </Button>
-            <Button variant="outline" className="border-medical-purple/30 text-medical-purple hover:bg-medical-purple/5">
-              <Calendar className="mr-1 h-4 w-4" />
-              Consult
-            </Button>
-          </div>
+          <Button className="w-full" size="sm">
+            <MessageSquare className="mr-2 h-4 w-4" /> Chat with {name.split(' ')[0]}
+          </Button>
           
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <div className="flex justify-between text-xs text-gray-500">
-              <div className="flex items-center">
-                <CheckCircle className="h-3 w-3 text-green-500 mr-1" />
-                <span>HIPAA Compliant</span>
-              </div>
-              <span>{Math.floor(Math.random() * 100) + 1} active consults</span>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      <PreviewChatModal 
-        isOpen={showChatModal}
-        onClose={() => setShowChatModal(false)}
-        agentName={name}
-        agentSpecialty={title}
-      />
-    </>
+          {isHighlighted && (
+            <p className="text-xs text-center mt-3 text-muted-foreground">
+              Free for 2 messages • No credit card required
+            </p>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 

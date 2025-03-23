@@ -6,13 +6,23 @@ import SpecialistCard from "@/components/home/SpecialistCard";
 const SpecialistsSection = () => {
   const specialists = [
     {
+      name: "GeneralMD",
+      title: "General Medicine Expert",
+      description: "Your primary AI assistant for general medical advice and patient care.",
+      isNew: true,
+      tags: ["Primary Care", "General Medicine"],
+      avatar: "/placeholder.svg",
+      delay: 0.1,
+      isHighlighted: true
+    },
+    {
       name: "Sarah",
       title: "Thoracic Surgery Specialist",
       description: "I can help with pre and post op care instructions. What do you need?",
       isNew: true,
       tags: ["Surgery", "Post-Op"],
       avatar: "/placeholder.svg",
-      delay: 0.1
+      delay: 0.2
     },
     {
       name: "Michael",
@@ -21,7 +31,7 @@ const SpecialistsSection = () => {
       isNew: false,
       tags: ["Cardiology", "Recovery"],
       avatar: "/placeholder.svg",
-      delay: 0.2
+      delay: 0.3
     },
     {
       name: "Emma",
@@ -30,7 +40,7 @@ const SpecialistsSection = () => {
       isNew: false,
       tags: ["Assessment", "Treatment"],
       avatar: "/placeholder.svg",
-      delay: 0.3
+      delay: 0.4
     },
     {
       name: "John",
@@ -39,7 +49,7 @@ const SpecialistsSection = () => {
       isNew: true,
       tags: ["Neurology", "Assessment"],
       avatar: "/placeholder.svg",
-      delay: 0.4
+      delay: 0.5
     },
     {
       name: "Maria",
@@ -47,15 +57,6 @@ const SpecialistsSection = () => {
       description: "From vaccinations to developmental milestones, I'm here to assist with pediatric care.",
       isNew: false,
       tags: ["Pediatrics", "Primary Care"],
-      avatar: "/placeholder.svg",
-      delay: 0.5
-    },
-    {
-      name: "David",
-      title: "Emergency Triage Expert",
-      description: "Need urgent medical advice? I can help assess the situation quickly.",
-      isNew: false,
-      tags: ["Emergency", "Triage"],
       avatar: "/placeholder.svg",
       delay: 0.6
     }
@@ -99,6 +100,7 @@ const SpecialistsSection = () => {
               tags={specialist.tags}
               avatar={specialist.avatar}
               delay={specialist.delay}
+              isHighlighted={specialist.isHighlighted}
             />
           ))}
         </div>
