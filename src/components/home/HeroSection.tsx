@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { Clock, Zap } from "lucide-react";
 import ChatPreview from "@/components/home/ChatPreview";
 
 const HeroSection = () => {
@@ -26,17 +27,26 @@ const HeroSection = () => {
               Healthcare AI<br />
               <span className="bg-gradient-to-r from-medical-red to-medical-purple bg-clip-text text-transparent">Made Simple</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-6 max-w-md">
+            <p className="text-lg text-muted-foreground mb-4 max-w-md">
               LENY-AI streamlines your workflow with intelligent medical assistance for documentation, followups, and patient care.
             </p>
+            
+            <div className="flex items-center space-x-2 mb-6 p-3 bg-blue-50 rounded-lg border border-blue-100">
+              <Zap className="h-5 w-5 text-medical-yellow flex-shrink-0" />
+              <p className="text-sm font-medium text-blue-800">
+                <span className="font-bold">Save up to 70% of your time</span> on administrative tasks and documentation
+              </p>
+            </div>
+            
             <div className="flex flex-col sm:flex-row gap-3">
               <Link to={isAuthenticated ? "/dashboard" : "/register"}>
-                <Button size="lg" className="w-full sm:w-auto bg-medical-red hover:bg-medical-red/90">
+                <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-medical-red to-medical-purple hover:from-medical-red/90 hover:to-medical-purple/90 text-white shadow-md hover:shadow-lg transition-all">
+                  <Zap className="mr-2 h-4 w-4" />
                   Get Started
                 </Button>
               </Link>
               <Link to="/features">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-medical-purple/30 text-medical-purple hover:bg-medical-purple/5">
                   Learn More
                 </Button>
               </Link>

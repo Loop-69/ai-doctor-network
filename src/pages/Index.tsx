@@ -11,7 +11,7 @@ import RoundQuickActions from "@/components/home/RoundQuickActions";
 const Index = () => {
   return (
     <PublicLayout showHeader={true}>
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/30">
         <div className="relative">
           <HeroSection />
           <RoundQuickActions />
