@@ -9,7 +9,7 @@ const SubscriptionPrompt = () => {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full mb-4 p-3 bg-gradient-to-r from-medical-purple/10 to-medical-red/10 rounded-lg"
+      className="w-full mb-4 p-3 bg-gradient-to-r from-medical-teal/10 to-medical-blue/10 rounded-lg"
     >
       <p className="text-sm font-medium mb-2">
         You've reached the preview limit!
@@ -20,7 +20,7 @@ const SubscriptionPrompt = () => {
       </p>
       <div className="flex gap-2">
         <Link to="/register" className="flex-1">
-          <Button className="w-full bg-gradient-to-r from-medical-purple to-medical-red hover:opacity-90 text-white">
+          <Button className="w-full bg-gradient-to-r from-medical-teal to-medical-blue hover:opacity-90 text-white">
             Subscribe Now
             <ExternalLink className="ml-2 h-4 w-4" />
           </Button>

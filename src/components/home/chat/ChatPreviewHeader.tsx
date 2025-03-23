@@ -4,7 +4,7 @@ import { Sparkles } from "lucide-react";
 
 const ChatPreviewHeader = () => {
   return (
-    <div className="bg-gradient-to-r from-medical-purple to-medical-red p-4 flex items-center justify-between text-white">
+    <div className="bg-gradient-to-r from-teal-500 to-blue-500 p-4 flex items-center justify-between text-white">
       <div className="flex items-center gap-2">
         <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
           <span className="text-white font-semibold text-xs">LA</span>

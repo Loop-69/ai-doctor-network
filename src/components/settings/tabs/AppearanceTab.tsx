@@ -20,7 +20,7 @@ const AppearanceTab = () => {
     >
       <Card className="card-elevated gradient-card">
         <CardHeader>
-          <CardTitle className="text-xl gradient-text">Appearance Settings</CardTitle>
+          <CardTitle className="text-xl gradient-text-blue">Appearance Settings</CardTitle>
           <CardDescription>
             Customize how the application looks
           </CardDescription>
@@ -32,7 +32,7 @@ const AppearanceTab = () => {
               <div className="flex flex-col items-center space-y-2">
                 <Button variant="outline" className="w-full h-24 border-2 border-primary card-hover-lift">
                   <div className="w-full h-full bg-background flex flex-col">
-                    <div className="h-1/3 w-full bg-gradient-to-r from-blue-400 to-indigo-500"></div>
+                    <div className="h-1/3 w-full bg-gradient-to-r from-medical-teal to-medical-blue"></div>
                     <div className="flex-grow flex items-center justify-center text-xs">
                       Light
                     </div>
@@ -42,7 +42,7 @@ const AppearanceTab = () => {
               <div className="flex flex-col items-center space-y-2">
                 <Button variant="outline" className="w-full h-24 card-hover-lift">
                   <div className="w-full h-full bg-slate-900 flex flex-col">
-                    <div className="h-1/3 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+                    <div className="h-1/3 w-full bg-gradient-to-r from-medical-teal to-medical-blue"></div>
                     <div className="flex-grow flex items-center justify-center text-xs text-white">
                       Dark
                     </div>
@@ -52,7 +52,7 @@ const AppearanceTab = () => {
               <div className="flex flex-col items-center space-y-2">
                 <Button variant="outline" className="w-full h-24 card-hover-lift">
                   <div className="w-full h-full bg-background flex flex-col">
-                    <div className="h-1/3 w-full bg-gradient-to-r from-indigo-400 to-blue-500"></div>
+                    <div className="h-1/3 w-full bg-gradient-to-r from-medical-teal to-medical-blue"></div>
                     <div className="flex-grow flex items-center justify-center text-xs">
                       <MonitorSmartphone className="h-4 w-4 mr-1" />
                       System
