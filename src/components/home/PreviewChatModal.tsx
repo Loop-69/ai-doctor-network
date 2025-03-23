@@ -16,12 +16,15 @@ import TypingIndicator from "./chat/TypingIndicator";
 import SubscriptionPrompt from "./chat/SubscriptionPrompt";
 import ChatInput from "./chat/ChatInput";
 import { MessageType } from "./chat/types";
+import { generateAIResponse } from "@/components/agents/services/agentService";
+import { agents } from "@/components/agents/data/agentsData";
 
 interface PreviewChatModalProps {
   isOpen: boolean;
   onClose: () => void;
   agentName: string;
   agentSpecialty: string;
+  agentId: string;
 }
 
 const PreviewChatModal = ({
@@ -29,6 +32,7 @@ const PreviewChatModal = ({
   onClose,
   agentName,
   agentSpecialty,
+  agentId,
 }: PreviewChatModalProps) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [promptCount, setPromptCount] = useState(0);
@@ -78,53 +82,62 @@ const PreviewChatModal = ({
     const newPromptCount = promptCount + 1;
     setPromptCount(newPromptCount);
 
-    // Simulate API delay
-    setTimeout(() => {
-      let response: MessageType;
-
+    try {
       // If we've hit the limit, show subscription message
       if (newPromptCount >= 2) {
-        response = {
+        const limitMessage: MessageType = {
           id: (Date.now() + 1).toString(),
           role: "assistant",
           content:
             "I'd be happy to continue our conversation! To access unlimited assistance from our AI specialists, please subscribe to our service.",
           timestamp: new Date(),
         };
+        setMessages((prev) => [...prev, limitMessage]);
         setShowSubscribePrompt(true);
       } else {
-        // Simulate AI response based on user message
-        let responseText;
-        const userQuery = userMessage.content.toLowerCase();
+        // Find the actual agent from our data
+        const agent = agents.find(a => a.id === agentId);
         
-        if (userQuery.includes("hello") || userQuery.includes("hi")) {
-          responseText = `Hello! How can I assist you with ${agentSpecialty} today?`;
-        } else if (userQuery.includes("help") || userQuery.includes("assist")) {
-          responseText = `I can help with various ${agentSpecialty} questions. For example, you could ask me about common symptoms, treatment options, or prevention measures.`;
-        } else if (userQuery.includes("symptom") || userQuery.includes("pain")) {
-          responseText = `When discussing symptoms like that, I'd need to gather more information. In a full consultation, I'd ask about duration, severity, and other relevant factors to provide better guidance.`;
+        if (agent) {
+          // Use the real agent service to generate a response
+          const responseText = await generateAIResponse(inputValue, agent);
+          
+          const response: MessageType = {
+            id: (Date.now() + 1).toString(),
+            role: "assistant",
+            content: responseText,
+            timestamp: new Date(),
+          };
+          
+          // Add AI response
+          setMessages((prev) => [...prev, response]);
         } else {
-          responseText = `That's an interesting question about ${agentSpecialty}. In a full consultation, I could provide you with detailed information and personalized recommendations based on your specific situation.`;
+          // Fallback if agent not found
+          const fallbackResponse: MessageType = {
+            id: (Date.now() + 1).toString(),
+            role: "assistant",
+            content: `I can help you with questions related to ${agentSpecialty}. What specific information are you looking for?`,
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, fallbackResponse]);
         }
-
-        response = {
-          id: (Date.now() + 1).toString(),
-          role: "assistant",
-          content: responseText,
-          timestamp: new Date(),
-        };
       }
-
-      // Add AI response
-      setMessages((prev) => [...prev, response]);
+    } catch (error) {
+      console.error("Error generating response:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate a response. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const getInputPlaceholder = () => {
     return showSubscribePrompt
       ? "Subscribe to continue chatting..."
-      : `Ask ${agentName} a question...`;
+      : `Ask ${agentName.split(' ')[0]} a question...`;
   };
 
   return (

@@ -1,13 +1,17 @@
 
 import React from "react";
+import { Sparkles } from "lucide-react";
 
 const ChatPreviewHeader = () => {
   return (
-    <div className="bg-gradient-to-r from-medical-purple to-medical-red p-4 flex items-center gap-2 text-white">
-      <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center">
-        <span className="text-white font-semibold text-xs">LA</span>
+    <div className="bg-gradient-to-r from-medical-purple to-medical-red p-4 flex items-center justify-between text-white">
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+          <span className="text-white font-semibold text-xs">LA</span>
+        </div>
+        <span className="font-medium text-sm">Leny AI Medical Assistant</span>
       </div>
-      <span className="font-medium text-sm">1-800-LENY-AI</span>
+      <Sparkles className="h-4 w-4 text-white/80" />
     </div>
   );
 };

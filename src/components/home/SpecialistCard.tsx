@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Star, Clock } from "lucide-react";
+import { MessageSquare, Star, Clock, Sparkles } from "lucide-react";
 import PreviewChatModal from "./PreviewChatModal";
 
 interface SpecialistCardProps {
+  id: string;
   name: string;
   title: string;
   description: string;
@@ -19,9 +20,12 @@ interface SpecialistCardProps {
   delay: number;
   isHighlighted?: boolean;
   timeText?: string;
+  icon?: React.FC<{ className?: string }>;
+  color?: string;
 }
 
 const SpecialistCard = ({ 
+  id,
   name, 
   title, 
   description, 
@@ -30,7 +34,9 @@ const SpecialistCard = ({
   avatar,
   delay,
   isHighlighted = false,
-  timeText
+  timeText,
+  icon: Icon,
+  color
 }: SpecialistCardProps) => {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
 
@@ -43,22 +49,36 @@ const SpecialistCard = ({
         transition={{ duration: 0.4, delay }}
       >
         <Card className={cn(
-          "h-full hover:shadow-md transition-all duration-200 overflow-hidden",
+          "h-full hover:shadow-md transition-all duration-200 overflow-hidden group",
           isHighlighted && "border-medical-purple border-2 shadow-md"
         )}>
           <CardContent className="p-5">
             <div className="flex justify-between items-start mb-3">
-              <Avatar className="h-12 w-12">
-                <AvatarImage src={avatar} alt={name} />
-                <AvatarFallback className="bg-gradient-to-br from-medical-red to-medical-purple text-white">
-                  {name.substring(0, 2)}
-                </AvatarFallback>
-              </Avatar>
+              <div className="flex items-center">
+                <Avatar className="h-12 w-12 ring-2 ring-offset-2 ring-medical-purple/20">
+                  <AvatarImage src={avatar} alt={name} />
+                  <AvatarFallback className={cn(
+                    "bg-gradient-to-br text-white",
+                    color ? `from-${color} to-medical-purple` : "from-medical-red to-medical-purple"
+                  )}>
+                    {name.substring(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                
+                {Icon && (
+                  <div className={cn(
+                    "w-7 h-7 rounded-full flex items-center justify-center -ml-3 mt-6 shadow-md",
+                    `bg-gradient-to-r from-${color} to-medical-purple text-white`
+                  )}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                )}
+              </div>
               
               <div className="flex items-center">
                 {isNew && (
                   <Badge variant="outline" className="bg-medical-purple/10 text-medical-purple border-medical-purple/30 mr-2">
-                    New
+                    <Sparkles className="h-3 w-3 mr-1" /> New
                   </Badge>
                 )}
                 {isHighlighted && (
@@ -101,7 +121,7 @@ const SpecialistCard = ({
             )}
             
             <Button 
-              className="w-full" 
+              className="w-full bg-gradient-to-r from-medical-purple to-medical-red hover:opacity-90 group-hover:shadow-md transition-all" 
               size="sm"
               onClick={() => setIsChatModalOpen(true)}
             >
@@ -122,6 +142,7 @@ const SpecialistCard = ({
         onClose={() => setIsChatModalOpen(false)}
         agentName={name}
         agentSpecialty={title}
+        agentId={id}
       />
     </>
   );

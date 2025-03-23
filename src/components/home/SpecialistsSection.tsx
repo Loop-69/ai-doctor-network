@@ -1,72 +1,25 @@
 
 import { motion } from "framer-motion";
-import { Search, Clock, Zap } from "lucide-react";
+import { Search, Clock, Zap, Sparkles } from "lucide-react";
 import SpecialistCard from "@/components/home/SpecialistCard";
+import { agents } from "@/components/agents/data/agentsData";
 
 const SpecialistsSection = () => {
-  const specialists = [
-    {
-      name: "GeneralMD",
-      title: "General Medicine Expert",
-      description: "Your primary AI assistant for general medical advice and patient care.",
-      isNew: true,
-      tags: ["Primary Care", "General Medicine"],
-      avatar: "/placeholder.svg",
-      delay: 0.1,
-      isHighlighted: true,
-      timeText: "Saves 30+ min per consultation"
-    },
-    {
-      name: "Sarah",
-      title: "Thoracic Surgery Specialist",
-      description: "I can help with pre and post op care instructions. What do you need?",
-      isNew: true,
-      tags: ["Surgery", "Post-Op"],
-      avatar: "/placeholder.svg",
-      delay: 0.2,
-      timeText: "Saves 45+ min per patient"
-    },
-    {
-      name: "Michael",
-      title: "Cardiac Recovery Expert",
-      description: "Need help with heart health or recovery plans? I'm here to assist.",
-      isNew: false,
-      tags: ["Cardiology", "Recovery"],
-      avatar: "/placeholder.svg",
-      delay: 0.3,
-      timeText: "Saves 25+ min on documentation"
-    },
-    {
-      name: "Emma",
-      title: "Advanced Wound Care Specialist",
-      description: "I can guide you through wound care procedures. What's your concern?",
-      isNew: false,
-      tags: ["Assessment", "Treatment"],
-      avatar: "/placeholder.svg",
-      delay: 0.4,
-      timeText: "Saves 20+ min per assessment"
-    },
-    {
-      name: "John",
-      title: "Neurological Assessment Expert",
-      description: "Have questions about neurological symptoms? I can help assess them.",
-      isNew: true,
-      tags: ["Neurology", "Assessment"],
-      avatar: "/placeholder.svg",
-      delay: 0.5,
-      timeText: "Saves 40+ min on complex cases"
-    },
-    {
-      name: "Maria",
-      title: "Pediatric Care Specialist",
-      description: "From vaccinations to developmental milestones, I'm here to assist with pediatric care.",
-      isNew: false,
-      tags: ["Pediatrics", "Primary Care"],
-      avatar: "/placeholder.svg",
-      delay: 0.6,
-      timeText: "Saves 15+ min per patient"
-    }
-  ];
+  // Map our real agents to the specialists format needed by the SpecialistCard
+  const specialists = agents.slice(0, 6).map((agent, index) => ({
+    id: agent.id,
+    name: agent.name,
+    title: agent.specialty,
+    description: agent.description,
+    isNew: index < 3, // First 3 agents will be marked as new
+    tags: agent.capabilities.slice(0, 2), // Use first 2 capabilities as tags
+    avatar: `/agents/${agent.id}.jpg`, // We'll create these images in public folder
+    delay: 0.1 * (index + 1),
+    isHighlighted: index === 0, // Highlight the first agent
+    timeText: `Saves ${25 + (index * 5)}+ min per consultation`,
+    icon: agent.icon,
+    color: agent.color
+  }));
 
   return (
     <section className="py-14 bg-gradient-to-br from-gray-50 to-blue-50/30">
@@ -78,8 +31,11 @@ const SpecialistsSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-2xl font-bold mb-3 bg-gradient-to-r from-medical-green to-medical-purple bg-clip-text text-transparent">
-            AI Medical Specialists
+          <h2 className="text-2xl font-bold mb-3 flex items-center justify-center gap-2">
+            <Sparkles className="h-6 w-6 text-medical-purple" />
+            <span className="bg-gradient-to-r from-medical-green to-medical-purple bg-clip-text text-transparent">
+              AI Medical Specialists
+            </span>
           </h2>
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-3">
             Choose up to 3 specialists for your medical task: 0/3
@@ -117,7 +73,8 @@ const SpecialistsSection = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {specialists.map((specialist, index) => (
             <SpecialistCard 
-              key={index}
+              key={specialist.id}
+              id={specialist.id}
               name={specialist.name}
               title={specialist.title}
               description={specialist.description}
@@ -127,6 +84,8 @@ const SpecialistsSection = () => {
               delay={specialist.delay}
               isHighlighted={specialist.isHighlighted}
               timeText={specialist.timeText}
+              icon={specialist.icon}
+              color={specialist.color}
             />
           ))}
         </div>
