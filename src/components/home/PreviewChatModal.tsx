@@ -1,17 +1,21 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { X, SendHorizontal, ExternalLink } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
   DialogFooter,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import ChatMessage from "./chat/ChatMessage";
+import TypingIndicator from "./chat/TypingIndicator";
+import SubscriptionPrompt from "./chat/SubscriptionPrompt";
+import ChatInput from "./chat/ChatInput";
+import { MessageType } from "./chat/types";
 
 interface PreviewChatModalProps {
   isOpen: boolean;
@@ -20,29 +24,14 @@ interface PreviewChatModalProps {
   agentSpecialty: string;
 }
 
-type MessageType = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  timestamp: Date;
-};
-
 const PreviewChatModal = ({
   isOpen,
   onClose,
   agentName,
   agentSpecialty,
 }: PreviewChatModalProps) => {
-  const [messages, setMessages] = useState<MessageType[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content: `Hello, I'm ${agentName}, an AI assistant specializing in ${agentSpecialty}. How can I help you today?`,
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const [promptCount, setPromptCount] = useState(0);
-  const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSubscribePrompt, setShowSubscribePrompt] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -72,7 +61,7 @@ const PreviewChatModal = ({
     }
   }, [isOpen, agentName, agentSpecialty]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (inputValue: string) => {
     if (!inputValue.trim() || isLoading) return;
 
     // Add user message
@@ -83,7 +72,6 @@ const PreviewChatModal = ({
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, userMessage]);
-    setInputValue("");
     setIsLoading(true);
 
     // Increment prompt count
@@ -133,11 +121,10 @@ const PreviewChatModal = ({
     }, 1500);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
+  const getInputPlaceholder = () => {
+    return showSubscribePrompt
+      ? "Subscribe to continue chatting..."
+      : `Ask ${agentName} a question...`;
   };
 
   return (
@@ -170,120 +157,26 @@ const PreviewChatModal = ({
         <div className="flex-1 overflow-y-auto p-4 min-h-[300px] max-h-[50vh]">
           <AnimatePresence initial={false}>
             {messages.map((message) => (
-              <motion.div
+              <ChatMessage
                 key={message.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className={`flex mb-4 ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                {message.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-medical-purple to-medical-red flex-shrink-0 flex items-center justify-center mr-2">
-                    <span className="text-white font-semibold text-xs">
-                      {agentName.charAt(0)}
-                    </span>
-                  </div>
-                )}
-                <div
-                  className={`max-w-[80%] p-3 rounded-lg ${
-                    message.role === "user"
-                      ? "bg-gray-100 text-gray-800 rounded-tr-none"
-                      : "bg-gradient-to-r from-medical-purple/10 to-medical-red/10 text-gray-800 rounded-tl-none"
-                  }`}
-                >
-                  <p className="text-sm">{message.content}</p>
-                  <span
-                    className={`text-xs block mt-1 ${
-                      message.role === "user"
-                        ? "text-gray-500"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {message.timestamp.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                </div>
-                {message.role === "user" && (
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center ml-2">
-                    <span className="text-gray-600 font-semibold text-xs">
-                      You
-                    </span>
-                  </div>
-                )}
-              </motion.div>
+                message={message}
+                agentName={agentName}
+              />
             ))}
           </AnimatePresence>
           
-          {isLoading && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex items-center space-x-2 text-gray-400 text-sm ml-10"
-            >
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-medical-purple opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-medical-purple"></span>
-              </span>
-              <p>Typing...</p>
-            </motion.div>
-          )}
+          {isLoading && <TypingIndicator />}
           <div ref={messagesEndRef} />
         </div>
 
         <DialogFooter className="flex flex-col w-full p-4 border-t">
-          {showSubscribePrompt && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full mb-4 p-3 bg-gradient-to-r from-medical-purple/10 to-medical-red/10 rounded-lg"
-            >
-              <p className="text-sm font-medium mb-2">
-                You've reached the preview limit!
-              </p>
-              <p className="text-xs text-gray-600 mb-3">
-                Subscribe to continue chatting with our AI specialists and unlock
-                all features.
-              </p>
-              <div className="flex gap-2">
-                <Link to="/register" className="flex-1">
-                  <Button className="w-full bg-gradient-to-r from-medical-purple to-medical-red hover:opacity-90 text-white">
-                    Subscribe Now
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          )}
+          {showSubscribePrompt && <SubscriptionPrompt />}
 
-          <div className="flex w-full items-center gap-2">
-            <textarea
-              className="flex-1 py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-medical-purple/50 min-h-[40px] max-h-[120px] resize-none"
-              placeholder={
-                showSubscribePrompt
-                  ? "Subscribe to continue chatting..."
-                  : `Ask ${agentName} a question...`
-              }
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={showSubscribePrompt || isLoading}
-              rows={1}
-            />
-            <Button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || showSubscribePrompt || isLoading}
-              className={`bg-gradient-to-r from-medical-purple to-medical-red text-white hover:opacity-90 ${
-                (!inputValue.trim() || showSubscribePrompt || isLoading) &&
-                "opacity-50 cursor-not-allowed"
-              }`}
-            >
-              <SendHorizontal className="h-4 w-4" />
-            </Button>
-          </div>
+          <ChatInput
+            onSendMessage={handleSendMessage}
+            isDisabled={showSubscribePrompt || isLoading}
+            placeholderText={getInputPlaceholder()}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>
