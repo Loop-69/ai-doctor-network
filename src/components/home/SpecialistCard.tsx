@@ -50,89 +50,64 @@ const SpecialistCard = ({
       >
         <Card className={cn(
           "h-full hover:shadow-md transition-all duration-200 overflow-hidden group",
-          isHighlighted && "border-medical-teal border-2 shadow-md"
+          isHighlighted && "border-medical-teal border-2 shadow-lg" // Slightly increased shadow for highlighted
         )}>
-          <CardContent className="p-5">
-            <div className="flex justify-between items-start mb-3">
-              <div className="flex items-center">
-                <Avatar className="h-12 w-12 ring-2 ring-offset-2 ring-medical-teal/20">
-                  <AvatarImage src={avatar} alt={name} />
-                  <AvatarFallback className={cn(
-                    "bg-gradient-to-br text-white",
-                    color ? `from-${color} to-medical-blue` : "from-medical-teal to-medical-blue"
-                  )}>
-                    {name.substring(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                
-                {Icon && (
-                  <div className={cn(
-                    "w-7 h-7 rounded-full flex items-center justify-center -ml-3 mt-6 shadow-md",
-                    `bg-gradient-to-r from-${color} to-medical-blue text-white`
-                  )}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex items-center">
-                {isNew && (
-                  <Badge variant="outline" className="bg-medical-teal/10 text-medical-teal border-medical-teal/30 mr-2">
-                    <Sparkles className="h-3 w-3 mr-1" /> New
-                  </Badge>
-                )}
-                {isHighlighted && (
-                  <Badge variant="outline" className="bg-medical-green/10 text-medical-green border-medical-green/30">
-                    Recommended
-                  </Badge>
-                )}
-              </div>
+          {/* Image Container */}
+          <div className="relative">
+            <img 
+              src={avatar || '/placeholder.svg'} // Use placeholder if avatar is missing
+              alt={name} 
+              className="w-full h-40 object-cover rounded-t-lg" // Image styling
+            />
+            {isNew && (
+              <Badge variant="outline" className="absolute top-2 right-2 bg-white text-medical-teal border-medical-teal/50 shadow">
+                <Sparkles className="h-3 w-3 mr-1" /> New
+              </Badge>
+            )}
+          </div>
+
+          <CardContent className="p-4"> {/* Adjusted padding */}
+            {/* Content Below Image */}
+            <h3 className="font-semibold text-base mb-0.5 truncate">{name}</h3> {/* Slightly smaller, bold */}
+            <p className="text-muted-foreground text-xs mb-1 truncate">{title}</p>
+            
+            {/* Always render rating container and stars */}
+            <div className="flex items-center mb-2 text-xs min-h-5"> 
+              <span className={cn(
+                "flex items-center", 
+                isHighlighted ? "text-amber-600" : "text-gray-300" // Conditional color
+              )}>
+                <Star className={cn("h-3.5 w-3.5 mr-0.5", isHighlighted && "fill-current")} /> {/* Conditional fill */}
+                <Star className={cn("h-3.5 w-3.5 mr-0.5", isHighlighted && "fill-current")} />
+                <Star className={cn("h-3.5 w-3.5 mr-0.5", isHighlighted && "fill-current")} />
+                <Star className={cn("h-3.5 w-3.5 mr-0.5", isHighlighted && "fill-current")} />
+                <Star className={cn("h-3.5 w-3.5", isHighlighted && "fill-current")} />
+              </span>
+              {isHighlighted && ( // Conditionally render rating text
+                <span className="ml-1.5 text-muted-foreground text-xs">4.9 (1,284)</span> 
+              )}
             </div>
             
-            <h3 className="font-medium text-lg mb-1">{name}</h3>
-            <p className="text-muted-foreground text-sm mb-1">{title}</p>
+            {/* Removed description and timeText */}
             
-            {isHighlighted && (
-              <div className="flex items-center mb-2 text-sm text-amber-500">
-                <Star className="h-4 w-4 fill-current mr-1" />
-                <Star className="h-4 w-4 fill-current mr-1" />
-                <Star className="h-4 w-4 fill-current mr-1" />
-                <Star className="h-4 w-4 fill-current mr-1" />
-                <Star className="h-4 w-4 fill-current" />
-                <span className="ml-2 text-muted-foreground">4.9 (1,284)</span>
-              </div>
-            )}
-            
-            <p className="text-sm mb-4">{description}</p>
-            
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-1.5 mb-3 mt-1"> {/* Adjusted spacing */}
               {tags.map((tag, i) => (
-                <Badge key={i} variant="secondary" className="font-normal text-xs">
+                <Badge key={i} variant="outline" className="font-normal text-[10px] px-1.5 py-0.5"> {/* Smaller tags */}
                   {tag}
                 </Badge>
               ))}
             </div>
             
-            {timeText && (
-              <div className="flex items-center text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full mb-4 self-start">
-                <Clock className="h-3 w-3 mr-1" />
-                {timeText}
-              </div>
-            )}
-            
             <Button 
-              className="w-full bg-gradient-to-r from-medical-teal to-medical-blue hover:opacity-90 group-hover:shadow-md transition-all" 
+              variant="outline" // Changed variant for less emphasis
+              className="w-full border-medical-teal/50 text-medical-teal hover:bg-medical-teal/10 hover:text-medical-teal" 
               size="sm"
               onClick={() => setIsChatModalOpen(true)}
             >
-              <MessageSquare className="mr-2 h-4 w-4" /> Chat with {name.split(' ')[0]}
+              <MessageSquare className="mr-1.5 h-3.5 w-3.5" /> Chat with {name.split(' ')[0]}
             </Button>
             
-            {isHighlighted && (
-              <p className="text-xs text-center mt-3 text-muted-foreground">
-                Free for 2 messages • No credit card required
-              </p>
-            )}
+            {/* Removed highlighted free message text */}
           </CardContent>
         </Card>
       </motion.div>
