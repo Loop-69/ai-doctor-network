@@ -24,11 +24,9 @@ const HeroSection = () => {
             
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-4">
               Healthcare AI<br />
-              <span className="bg-gradient-to-r from-medical-blue to-medical-green bg-clip-text text-transparent">Made Simple</span>
+              
             </h1>
-            <p className="text-lg text-muted-foreground mb-4 max-w-md">
-              LENY-AI streamlines your workflow with intelligent medical assistance for documentation, followups, and patient care.
-            </p>
+            
             
             <div className="flex items-center space-x-2 mb-6 p-3 bg-blue-50 rounded-lg border border-blue-100">
               <Zap className="h-5 w-5 text-medical-yellow flex-shrink-0" />
