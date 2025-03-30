@@ -1,4 +1,5 @@
 
 import AppLayout from "./AppLayout";
+import PublicLayout from "./PublicLayout";
 
-export { AppLayout };
+export { AppLayout, PublicLayout };

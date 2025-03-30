@@ -45,10 +45,8 @@ const PublicLayout = ({
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Home</Link>
                 <Link to="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</Link>
                 <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">About Us</Link>
-                <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
               </motion.div>
               <motion.div 
                 className="flex items-center space-x-4"

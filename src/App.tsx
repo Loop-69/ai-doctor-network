@@ -21,7 +21,6 @@ import FollowupScheduler from "./pages/FollowupScheduler";
 import FollowupMonitoring from "./pages/FollowupMonitoring";
 import Features from "./pages/Features";
 import AboutUs from "./pages/AboutUs";
-import Contact from "./pages/Contact";
 import Notifications from "./pages/Notifications";
 import AIExpertsSettings from "./pages/AIExpertsSettings";
 import EditAIExpert from "./pages/EditAIExpert";
@@ -45,7 +44,6 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/features" element={<Features />} />
               <Route path="/about" element={<AboutUs />} />
-              <Route path="/contact" element={<Contact />} />
               <Route 
                 path="/dashboard" 
                 element={
