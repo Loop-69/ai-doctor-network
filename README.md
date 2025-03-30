@@ -3,8 +3,6 @@
 
 A comprehensive platform enabling healthcare professionals to collaborate with AI medical specialists for patient diagnosis and treatment recommendations.
 
-![AI Medical Platform](https://lovable.dev/projects/aa578b3b-4cba-47c3-ac6c-85204b5045c1)
-
 ## Overview
 
 The AI Medical Collaboration Platform assists healthcare professionals by providing AI-powered diagnostics and recommendations from multiple specialized AI agents. Doctors can describe patient symptoms, consult with AI specialists, and receive detailed diagnoses and treatment plans. The platform enables multi-agent collaboration where AI specialists from different fields can work together on complex cases.
@@ -163,8 +161,6 @@ src/
 ## Deployment
 
 Deploy the application using your preferred hosting provider like Netlify, Vercel, or directly from GitHub.
-
-For detailed deployment instructions, visit: [https://docs.lovable.dev/tips-tricks/custom-domain/](https://docs.lovable.dev/tips-tricks/custom-domain/)
 
 ## Getting Started
 
