@@ -21,9 +21,7 @@ const HeroSection = () => {
         }} transition={{
           duration: 0.5
         }} className="md:w-1/2 md:pr-8 mt-8 md:mt-0 mx-[30px]">
-            <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-medical-purple/10 text-medical-purple mb-2">
-              Medical AI Assistant
-            </span>
+            
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-4">
               Healthcare AI<br />
               <span className="bg-gradient-to-r from-medical-blue to-medical-green bg-clip-text text-transparent">Made Simple</span>
@@ -39,19 +37,7 @@ const HeroSection = () => {
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link to={isAuthenticated ? "/dashboard" : "/register"}>
-                <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-medical-blue to-medical-purple hover:from-medical-green/90 hover:to-medical-blue/90 text-white shadow-md hover:shadow-lg transition-all">
-                  <Zap className="mr-2 h-4 w-4" />
-                  Get Started
-                </Button>
-              </Link>
-              <Link to="/features">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto border-medical-purple/30 text-medical-purple hover:bg-medical-purple/5">
-                  Learn More
-                </Button>
-              </Link>
-            </div>
+            
           </motion.div>
           
           
