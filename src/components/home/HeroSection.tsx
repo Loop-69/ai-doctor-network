@@ -54,9 +54,7 @@ const HeroSection = () => {
             </div>
           </motion.div>
           
-          <div className="md:w-1/2 flex justify-center">
-            <ChatPreview />
-          </div>
+          
         </div>
       </div>
     </section>;
