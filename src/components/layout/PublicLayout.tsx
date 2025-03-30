@@ -1,6 +1,5 @@
-
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // Ensure Link is imported
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { LayoutDashboard } from "lucide-react";
@@ -12,10 +11,10 @@ type PublicLayoutProps = {
   showFooter?: boolean;
 };
 
-const PublicLayout = ({ 
-  children, 
-  showHeader = true, 
-  showFooter = true 
+const PublicLayout = ({
+  children,
+  showHeader = true,
+  showFooter = true
 }: PublicLayoutProps) => {
   const { user } = useAuth();
   const isAuthenticated = !!user;
@@ -26,19 +25,23 @@ const PublicLayout = ({
         <header className="border-b bg-white bg-opacity-80 backdrop-blur-sm">
           <div className="container mx-auto px-6 py-4">
             <nav className="flex items-center justify-between">
-              <motion.div 
-                className="flex items-center space-x-2"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="w-8 h-8 rounded-md bg-gradient-to-r from-medical-purple to-blue-500 flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm">LA</span>
-                </div>
-                <span className="font-display font-bold text-lg gradient-text">
-                  LENY-AI
-                </span>
-              </motion.div>
+              {/* Added Link wrapper */}
+              <Link to="/">
+                <motion.div
+                  className="flex items-center space-x-2"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="w-8 h-8 rounded-md bg-gradient-to-r from-medical-purple to-blue-500 flex items-center justify-center">
+                    <span className="text-white font-semibold text-sm">LA</span>
+                  </div>
+                  <span className="font-display font-bold text-lg gradient-text">
+                    LENY-AI
+                  </span>
+                </motion.div>
+              </Link>
+              {/* End Link wrapper */}
               <motion.div
                 className="hidden md:flex items-center space-x-6"
                 initial={{ opacity: 0 }}
@@ -48,7 +51,7 @@ const PublicLayout = ({
                 <Link to="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</Link>
                 <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">About Us</Link>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="flex items-center space-x-4"
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}

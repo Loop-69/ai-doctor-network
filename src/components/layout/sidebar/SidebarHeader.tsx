@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Link } from "react-router-dom"; // Import Link
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Menu } from "lucide-react";
 
@@ -12,14 +13,14 @@ const SidebarHeader = ({ collapsed, toggleSidebar }: SidebarHeaderProps) => {
   return (
     <div className="flex items-center justify-between p-4 border-b border-border">
       {!collapsed && (
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-md bg-aida-500 flex items-center justify-center">
+        <Link to="/" className="flex items-center space-x-2 group"> {/* Wrap with Link */}
+          <div className="w-8 h-8 rounded-md bg-aida-500 flex items-center justify-center group-hover:opacity-90 transition-opacity">
             <span className="text-white font-semibold text-sm">LA</span>
           </div>
-          <span className="font-display font-bold text-lg text-foreground">
+          <span className="font-display font-bold text-lg text-foreground group-hover:text-aida-700 transition-colors">
             LENY-AI
           </span>
-        </div>
+        </Link>
       )}
       {collapsed && (
         <div className="mx-auto">

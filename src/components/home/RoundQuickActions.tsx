@@ -2,16 +2,20 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { 
-  FileText, 
-  Calendar, 
-  MessageSquare, 
+  FileText,
+  Calendar,
+  MessageSquare,
   Activity,
   Brain,
   ClipboardList,
   UserCircle,
   BarChart2,
   Clock,
-  Zap
+  Zap,
+  Users, // Added for Agents
+  NotebookPen, // Added for Notes
+  LayoutDashboard, // Added for Panel
+  MessagesSquare // Added for Chat (alternative)
 } from "lucide-react";
 
 interface QuickActionButtonProps {
@@ -32,8 +36,8 @@ const QuickActionButton = ({ icon, label, to, colorClass, delay }: QuickActionBu
       className="flex flex-col items-center"
     >
       <Link to={to} className="group">
-        <motion.div 
-          className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all duration-300 shadow-sm group-hover:shadow-md bg-${colorClass}/10 text-${colorClass} border border-${colorClass}/20 group-hover:bg-${colorClass}/20`}
+        <motion.div
+          className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all duration-300 shadow-sm group-hover:shadow-lg bg-slate-100 text-${colorClass} border border-blue-200 group-hover:bg-${colorClass}/10`} // Changed border color, kept icon color hover
           whileHover={{ scale: 1.05, y: -3 }}
         >
           {icon}
@@ -47,60 +51,32 @@ const QuickActionButton = ({ icon, label, to, colorClass, delay }: QuickActionBu
 const RoundQuickActions = () => {
   const actions = [
     {
-      icon: <Brain className="h-6 w-6" />,
-      label: "AI Consult",
+      icon: <Users className="h-6 w-6" />, // Changed icon
+      label: "Agents",
       to: "/agents",
       colorClass: "medical-purple",
       delay: 0.1
     },
     {
-      icon: <Zap className="h-6 w-6" />,
-      label: "Time Saver",
-      to: "/features",
+      icon: <NotebookPen className="h-6 w-6" />, // Changed icon
+      label: "Notes",
+      to: "/features", // Consider if this 'to' path needs updating
       colorClass: "medical-yellow",
       delay: 0.15
     },
     {
-      icon: <FileText className="h-6 w-6" />,
-      label: "Document",
-      to: "/features",
+      icon: <LayoutDashboard className="h-6 w-6" />, // Changed icon
+      label: "Panel",
+      to: "/features", // Consider if this 'to' path needs updating
       colorClass: "medical-green",
       delay: 0.2
     },
     {
-      icon: <Calendar className="h-6 w-6" />,
-      label: "Schedule",
-      to: "/followup-scheduler",
-      colorClass: "medical-red",
-      delay: 0.25
-    },
-    {
-      icon: <ClipboardList className="h-6 w-6" />,
-      label: "Patient Records",
-      to: "/patient-records",
-      colorClass: "medical-purple",
-      delay: 0.3
-    },
-    {
-      icon: <MessageSquare className="h-6 w-6" />,
-      label: "Collaborate",
+      icon: <MessagesSquare className="h-6 w-6" />, // Changed icon
+      label: "Chat",
       to: "/collaboration",
       colorClass: "medical-green",
       delay: 0.35
-    },
-    {
-      icon: <Activity className="h-6 w-6" />,
-      label: "Monitor",
-      to: "/followup-monitoring",
-      colorClass: "medical-red",
-      delay: 0.4
-    },
-    {
-      icon: <BarChart2 className="h-6 w-6" />,
-      label: "Analytics",
-      to: "/analytics",
-      colorClass: "medical-yellow",
-      delay: 0.45
     }
   ];
 
@@ -115,7 +91,7 @@ const RoundQuickActions = () => {
           transition={{ duration: 0.5 }}
           whileHover={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
         >
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-4 justify-items-center">
+          <div className="grid grid-cols-4 md:grid-cols-4 gap-4 justify-items-center"> {/* Changed md:grid-cols-8 to md:grid-cols-4 */}
             {actions.map((action, index) => (
               <QuickActionButton
                 key={index}
